@@ -3,6 +3,8 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import './index.css';
 import useProfileSettings from '../../hooks/useProfileSettings';
+import ImageUpload from '../imageUpload';
+import BadgeDisplay from '../badgeDisplay';
 
 const ProfileSettings: React.FC = () => {
   const {
@@ -28,13 +30,33 @@ const ProfileSettings: React.FC = () => {
     handleUpdateBiography,
     handleDeleteUser,
     handleViewCollectionsPage,
+    badges,
+    displayedBadgeIds,
+    uploadingImage,
+    handleProfilePictureUpload,
+    handleBannerImageUpload,
+    handleToggleBadge,
   } = useProfileSettings();
 
   if (loading) {
     return (
       <div className='profile-settings'>
-        <div className='profile-card'>
-          <h2>Loading user data...</h2>
+        <div className='loading-container'>
+          <p>Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!userData) {
+    return (
+      <div className='profile-settings'>
+        <div className='profile-container'>
+          <div className='profile-card'>
+            <div className='profile-section'>
+              <p>User not found. Please check the username and try again.</p>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -42,128 +64,217 @@ const ProfileSettings: React.FC = () => {
 
   return (
     <div className='profile-settings'>
-      <div className='profile-card'>
-        <h2>Profile</h2>
+      <div className='profile-container'>
+        {/* Success/Error Messages */}
+        {successMessage && <div className='success-message'>{successMessage}</div>}
+        {errorMessage && <div className='error-message'>{errorMessage}</div>}
 
-        {successMessage && <p className='success-message'>{successMessage}</p>}
-        {errorMessage && <p className='error-message'>{errorMessage}</p>}
+        {/* Profile Header Card */}
+        <div className='profile-card profile-header'>
+          {/* Banner */}
+          <div className='profile-banner'>
+            {userData.bannerImage ? <img src={userData.bannerImage} alt='Profile banner' /> : null}
+          </div>
 
-        {userData ? (
-          <>
-            <h4>General Information</h4>
-            <p>
-              <strong>Username:</strong> {userData.username}
-            </p>
+          {/* Profile Info */}
+          <div className='profile-main-info'>
+            <div className='profile-picture-section'>
+              <div className='profile-picture-wrapper'>
+                {userData.profilePicture ? (
+                  <img src={userData.profilePicture} alt={userData.username} />
+                ) : (
+                  <div className='profile-picture-placeholder'>
+                    {userData.username.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+              <div className='profile-identity'>
+                <h1 className='profile-name'>{userData.username}</h1>
+                <p className='profile-username'>@{userData.username}</p>
+                {userData.dateJoined && (
+                  <p className='profile-date'>
+                    Joined{' '}
+                    {new Date(userData.dateJoined).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                    })}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
 
-            {/* ---- Biography Section ---- */}
-            <p>
-              <strong>Biography:</strong>
-            </p>
-            <div className='bio-section'>
-              {!editBioMode && (
-                <>
-                  <Markdown remarkPlugins={[remarkGfm]}>
-                    {userData.biography || 'No biography yet.'}
-                  </Markdown>
-                  {canEditProfile && (
-                    <button
-                      className='button button-primary'
-                      onClick={() => {
-                        setEditBioMode(true);
-                        setNewBio(userData.biography || '');
-                      }}>
-                      Edit
-                    </button>
-                  )}
-                </>
-              )}
-
-              {editBioMode && canEditProfile && (
-                <div className='bio-edit'>
-                  <input
-                    className='input-text'
-                    type='text'
-                    value={newBio}
-                    onChange={e => setNewBio(e.target.value)}
-                  />
-                  <button className='button button-primary' onClick={handleUpdateBiography}>
-                    Save
-                  </button>
-                  <button className='button button-danger' onClick={() => setEditBioMode(false)}>
-                    Cancel
-                  </button>
-                </div>
+        {/* Biography Section */}
+        <div className='profile-card'>
+          <div className='profile-section'>
+            <div className='section-header'>
+              <h2 className='section-title'>About</h2>
+              {canEditProfile && !editBioMode && (
+                <button
+                  className='button button-secondary'
+                  onClick={() => {
+                    setEditBioMode(true);
+                    setNewBio(userData.biography || '');
+                  }}>
+                  Edit
+                </button>
               )}
             </div>
 
-            <p>
-              <strong>Date Joined:</strong>{' '}
-              {userData.dateJoined ? new Date(userData.dateJoined).toLocaleDateString() : 'N/A'}
-            </p>
-
-            <button className='button button-primary' onClick={handleViewCollectionsPage}>
-              View Collections
-            </button>
-
-            {/* ---- Reset Password Section ---- */}
-            {canEditProfile && (
-              <>
-                <h4>Reset Password</h4>
-                <input
+            {!editBioMode ? (
+              <div className='bio-section'>
+                <div className='bio-content'>
+                  <Markdown remarkPlugins={[remarkGfm]}>
+                    {userData.biography || 'No biography yet.'}
+                  </Markdown>
+                </div>
+              </div>
+            ) : (
+              <div className='bio-edit'>
+                <textarea
                   className='input-text'
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder='New Password'
-                  value={newPassword}
-                  onChange={e => setNewPassword(e.target.value)}
+                  value={newBio}
+                  onChange={e => setNewBio(e.target.value)}
+                  placeholder='Write something about yourself...'
                 />
-                <input
-                  className='input-text'
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder='Confirm New Password'
-                  value={confirmNewPassword}
-                  onChange={e => setConfirmNewPassword(e.target.value)}
-                />
-                <div className='password-actions'>
-                  <button className='button button-secondary' onClick={togglePasswordVisibility}>
-                    {showPassword ? 'Hide Passwords' : 'Show Passwords'}
+                <div className='button-group'>
+                  <button className='button button-primary' onClick={handleUpdateBiography}>
+                    Save
                   </button>
-                  <button className='button button-primary' onClick={handleResetPassword}>
-                    Reset
+                  <button className='button button-secondary' onClick={() => setEditBioMode(false)}>
+                    Cancel
                   </button>
                 </div>
-              </>
+              </div>
             )}
+          </div>
+        </div>
 
-            {/* ---- Danger Zone (Delete User) ---- */}
-            {canEditProfile && (
-              <>
-                <h4>Danger Zone</h4>
-                <button className='button button-danger' onClick={handleDeleteUser}>
-                  Delete This User
-                </button>
-              </>
-            )}
-          </>
-        ) : (
-          <p>No user data found. Make sure the username parameter is correct.</p>
+        {/* Badges Section */}
+        {badges.length > 0 && (
+          <div className='profile-card'>
+            <div className='profile-section'>
+              <h2 className='section-title'>Badges & Achievements</h2>
+              <BadgeDisplay
+                badges={badges}
+                displayedBadgeIds={displayedBadgeIds}
+                onToggleBadge={canEditProfile ? handleToggleBadge : undefined}
+                showProgress
+                editable={canEditProfile}
+              />
+            </div>
+          </div>
         )}
 
-        {/* ---- Confirmation Modal for Delete ---- */}
+        {/* Profile Customization (Edit Mode Only) */}
+        {canEditProfile && (
+          <div className='profile-card'>
+            <div className='profile-section'>
+              <h2 className='section-title'>Profile Customization</h2>
+              {uploadingImage && (
+                <div className='uploading-indicator'>
+                  <span>Uploading image...</span>
+                </div>
+              )}
+              <div className='image-upload-section'>
+                <ImageUpload
+                  label='Profile Picture'
+                  aspectRatio='square'
+                  currentImageUrl={userData.profilePicture}
+                  onUpload={handleProfilePictureUpload}
+                />
+                <ImageUpload
+                  label='Banner Image'
+                  aspectRatio='banner'
+                  currentImageUrl={userData.bannerImage}
+                  onUpload={handleBannerImageUpload}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className='profile-card'>
+          <div className='profile-section'>
+            <h2 className='section-title'>Actions</h2>
+            <div className='button-group'>
+              <button className='button button-primary' onClick={handleViewCollectionsPage}>
+                View Collections
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Account Settings (Edit Mode Only) */}
+        {canEditProfile && (
+          <>
+            {/* Reset Password */}
+            <div className='profile-card'>
+              <div className='profile-section'>
+                <h2 className='section-title'>Reset Password</h2>
+                <div className='password-section'>
+                  <input
+                    className='input-text'
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder='New Password'
+                    value={newPassword}
+                    onChange={e => setNewPassword(e.target.value)}
+                  />
+                  <input
+                    className='input-text'
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder='Confirm New Password'
+                    value={confirmNewPassword}
+                    onChange={e => setConfirmNewPassword(e.target.value)}
+                  />
+                  <div className='password-actions'>
+                    <button className='button button-secondary' onClick={togglePasswordVisibility}>
+                      {showPassword ? 'Hide' : 'Show'} Passwords
+                    </button>
+                    <button className='button button-primary' onClick={handleResetPassword}>
+                      Update Password
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Danger Zone */}
+            <div className='profile-card'>
+              <div className='profile-section'>
+                <div className='danger-zone'>
+                  <h3 className='danger-zone-title'>Danger Zone</h3>
+                  <p className='danger-zone-text'>
+                    Once you delete your account, there is no going back. Please be certain.
+                  </p>
+                  <button className='button button-danger' onClick={handleDeleteUser}>
+                    Delete Account
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Confirmation Modal */}
         {showConfirmation && (
           <div className='modal'>
             <div className='modal-content'>
+              <h3>Delete Account</h3>
               <p>
-                Are you sure you want to delete user <strong>{userData?.username}</strong>? This
-                action cannot be undone.
+                Are you sure you want to delete <strong>{userData.username}</strong>? This action
+                cannot be undone.
               </p>
               <div className='modal-actions'>
-                <button className='button button-danger' onClick={() => pendingAction?.()}>
-                  Confirm
-                </button>
                 <button
                   className='button button-secondary'
                   onClick={() => setShowConfirmation(false)}>
                   Cancel
+                </button>
+                <button className='button button-danger' onClick={() => pendingAction?.()}>
+                  Delete Account
                 </button>
               </div>
             </div>

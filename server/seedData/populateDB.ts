@@ -8,6 +8,7 @@ import QuestionModel from '../models/questions.model';
 import TagModel from '../models/tags.model';
 import UserModel from '../models/users.model';
 import MessageModel from '../models/messages.model';
+import BadgeModel from '../models/badges.model';
 
 import answersResolver from './resolvers/answer';
 import questionsResolver from './resolvers/question';
@@ -56,6 +57,10 @@ const collectionMapping = {
   collection: {
     model: CollectionModel,
     resolver: collectionsResolver,
+  },
+  badge: {
+    model: BadgeModel,
+    resolver: identityResolver,
   },
 };
 

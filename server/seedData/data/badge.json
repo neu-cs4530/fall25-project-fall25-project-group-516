@@ -1,0 +1,122 @@
+{
+  "badge1": {
+    "name": "First Question",
+    "description": "Asked your first question on the platform",
+    "icon": "",
+    "category": "participation",
+    "requirement": {
+      "type": "first_question",
+      "threshold": 1
+    },
+    "hint": "Ask your first question to earn this badge",
+    "progress": false
+  },
+  "badge2": {
+    "name": "First Answer",
+    "description": "Posted your first answer to help the community",
+    "icon": "",
+    "category": "participation",
+    "requirement": {
+      "type": "first_answer",
+      "threshold": 1
+    },
+    "hint": "Answer your first question to earn this badge",
+    "progress": false
+  },
+  "badge3": {
+    "name": "Curious Mind",
+    "description": "Asked 10 questions",
+    "icon": "",
+    "category": "achievement",
+    "requirement": {
+      "type": "question_count",
+      "threshold": 10
+    },
+    "hint": "Ask 10 questions to earn this badge. Keep asking!",
+    "progress": true
+  },
+  "badge4": {
+    "name": "Helpful Helper",
+    "description": "Provided 10 answers",
+    "icon": "",
+    "category": "achievement",
+    "requirement": {
+      "type": "answer_count",
+      "threshold": 10
+    },
+    "hint": "Answer 10 questions to earn this badge",
+    "progress": true
+  },
+  "badge5": {
+    "name": "Popular Contributor",
+    "description": "Received 50 upvotes across all your posts",
+    "icon": "",
+    "category": "achievement",
+    "requirement": {
+      "type": "upvote_count",
+      "threshold": 50
+    },
+    "hint": "Get 50 total upvotes on your questions and answers",
+    "progress": true
+  },
+  "badge6": {
+    "name": "Dedicated User",
+    "description": "Maintained a 7-day login streak",
+    "icon": "",
+    "category": "streak",
+    "requirement": {
+      "type": "login_streak",
+      "threshold": 7
+    },
+    "hint": "Log in for 7 consecutive days to earn this badge",
+    "progress": true
+  },
+  "badge7": {
+    "name": "Streak Champion",
+    "description": "Maintained a 30-day login streak",
+    "icon": "",
+    "category": "streak",
+    "requirement": {
+      "type": "login_streak",
+      "threshold": 30
+    },
+    "hint": "Log in for 30 consecutive days to earn this badge",
+    "progress": true
+  },
+  "badge8": {
+    "name": "Engaged Commenter",
+    "description": "Made 25 comments",
+    "icon": "",
+    "category": "achievement",
+    "requirement": {
+      "type": "comment_count",
+      "threshold": 25
+    },
+    "hint": "Comment on 25 posts to earn this badge",
+    "progress": true
+  },
+  "badge9": {
+    "name": "Community Star",
+    "description": "Received 100 upvotes across all your posts",
+    "icon": "",
+    "category": "achievement",
+    "requirement": {
+      "type": "upvote_count",
+      "threshold": 100
+    },
+    "hint": "Get 100 total upvotes on your questions and answers",
+    "progress": true
+  },
+  "badge10": {
+    "name": "Expert Asker",
+    "description": "Asked 50 questions",
+    "icon": "",
+    "category": "achievement",
+    "requirement": {
+      "type": "question_count",
+      "threshold": 50
+    },
+    "hint": "Ask 50 questions to earn this badge",
+    "progress": true
+  }
+}

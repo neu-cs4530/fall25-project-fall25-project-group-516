@@ -6,6 +6,7 @@ import { SafeDatabaseUser } from './user';
 import { BaseMove, GameInstance, GameInstanceID, GameMove, GameState } from './game';
 import { DatabaseCommunity } from './community';
 import { PopulatedDatabaseCollection } from './collection';
+import { DatabaseBadge } from './badge';
 
 /**
  * Payload for an answer update event.
@@ -116,6 +117,26 @@ export interface CollectionUpdatePayload {
 }
 
 /**
+ * Interface representing the payload for a badge update event.
+ * - `badge`: The badge that was created or updated.
+ * - `type`: The type of update (`'created'` or `'updated'`).
+ */
+export interface BadgeUpdatePayload {
+  badge: DatabaseBadge;
+  type: 'created' | 'updated';
+}
+
+/**
+ * Interface representing the payload for a badge awarded event.
+ * - `username`: The username of the user who earned badges.
+ * - `badges`: The array of newly earned badges.
+ */
+export interface BadgeAwardedPayload {
+  username: string;
+  badges: DatabaseBadge[];
+}
+
+/**
  * Interface representing the events the client can emit to the server.
  * - `makeMove`: Client can emit a move in the game.
  * - `joinGame`: Client can join a game.
@@ -145,6 +166,8 @@ export interface ClientToServerEvents {
  * - `chatUpdate`: Server sends updated chat.
  * - `communityUpdate`: Server sends updated community.
  * - `collectionUpdate`: Server sends updated collection.
+ * - `badgeUpdate`: Server sends updated badge.
+ * - `badgeAwarded`: Server notifies when badges are awarded to a user.
  */
 export interface ServerToClientEvents {
   questionUpdate: (question: PopulatedDatabaseQuestion) => void;
@@ -159,4 +182,6 @@ export interface ServerToClientEvents {
   chatUpdate: (chat: ChatUpdatePayload) => void;
   communityUpdate: (community: CommunityUpdatePayload) => void;
   collectionUpdate: (community: CollectionUpdatePayload) => void;
+  badgeUpdate: (badge: BadgeUpdatePayload) => void;
+  badgeAwarded: (awarded: BadgeAwardedPayload) => void;
 }

@@ -1,10 +1,11 @@
-import { JSX, useState } from 'react';
+import { JSX, useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './layout';
 import Login from './auth/login';
 import { FakeSOSocket, SafeDatabaseUser } from '../types/types';
 import LoginContext from '../contexts/LoginContext';
 import UserContext from '../contexts/UserContext';
+import { verifyStoredToken } from '../services/userService';
 import QuestionPage from './main/questionPage';
 import TagPage from './main/tagPage';
 import NewQuestionPage from './main/newQuestion';
@@ -46,13 +47,47 @@ const ProtectedRoute = ({
  */
 const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
   const [user, setUser] = useState<SafeDatabaseUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Check for stored token on mount and auto-login if valid
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const userData = await verifyStoredToken();
+        if (userData) {
+          setUser(userData);
+        }
+      } catch (error) {
+        // console.error('Error verifying token:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  // Show loading screen while checking authentication
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}>
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <LoginContext.Provider value={{ setUser }}>
       <Routes>
-        {/* Public Route */}
-        <Route path='/' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
+        {/* Public Routes - redirect to /home if already logged in */}
+        <Route path='/' element={user ? <Navigate to='/home' /> : <Login />} />
+        <Route path='/signup' element={user ? <Navigate to='/home' /> : <Signup />} />
         {/* Protected Routes */}
         {
           <Route

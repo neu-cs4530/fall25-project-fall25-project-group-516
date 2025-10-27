@@ -1,0 +1,154 @@
+.badge-display {
+  margin: 16px 0 0 0;
+}
+
+.badge-section {
+  margin-bottom: 24px;
+}
+
+.badge-section:last-child {
+  margin-bottom: 0;
+}
+
+.badge-section h3 {
+  margin: 0 0 16px 0;
+  color: #000000e6;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.badge-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.badge-item.earned {
+  border-color: #057642;
+  background-color: #f0f9f5;
+}
+
+.badge-item.unearned {
+  opacity: 0.65;
+  background-color: #fafafa;
+}
+
+.badge-item.displayed {
+  box-shadow: 0 0 0 2px #0a66c2;
+  border-color: #0a66c2;
+}
+
+.badge-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.badge-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.badge-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badge-placeholder {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+}
+
+.badge-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.badge-name {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #000000e6;
+}
+
+.badge-description {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  color: #00000099;
+  line-height: 1.4;
+}
+
+.badge-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #057642 0%, #16a34a 100%);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #00000099;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.badge-hint {
+  margin: 6px 0 0 0;
+  font-size: 12px;
+  color: #00000099;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.badge-toggle-btn {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #0a66c2;
+  background-color: transparent;
+  color: #0a66c2;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+.badge-toggle-btn:hover {
+  background-color: #eef3f8;
+  box-shadow: inset 0 0 0 1px #0a66c2;
+}

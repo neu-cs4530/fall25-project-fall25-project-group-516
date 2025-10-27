@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { getAuthToken } from '../utils/auth';
 
 /**
  * Function to handle successful responses
@@ -18,9 +19,16 @@ const api = axios.create({ withCredentials: true });
 
 /**
  * Add a request interceptor to the Axios instance.
+ * Automatically attaches JWT token to requests if available.
  */
 api.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => config,
+  (config: InternalAxiosRequestConfig) => {
+    const token = getAuthToken();
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
   (error: AxiosError) => handleErr(error),
 );
 

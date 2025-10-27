@@ -17,10 +17,28 @@ export interface UserCredentials {
  * - `password`: The user's password.
  * - `dateJoined`: The date when the user registered.
  * - `biography`: A short description or bio of the user (optional).
+ * - `profilePicture`: URL/path to user's profile picture.
+ * - `bannerImage`: URL/path to user's banner image.
+ * - `oauthProvider`: OAuth provider used ('local', 'google', 'github').
+ * - `oauthId`: ID from OAuth provider.
+ * - `badges`: Array of badge IDs the user has earned.
+ * - `displayedBadges`: Array of badge IDs the user wants to display.
+ * - `loginStreak`: Number of consecutive days logged in.
+ * - `lastLogin`: The last date/time the user logged in.
+ * - `showLoginStreak`: Whether to display the login streak on profile.
  */
 export interface User extends UserCredentials {
   dateJoined: Date;
   biography?: string;
+  profilePicture?: string;
+  bannerImage?: string;
+  oauthProvider?: 'local' | 'google' | 'github';
+  oauthId?: string;
+  badges?: ObjectId[];
+  displayedBadges?: ObjectId[];
+  loginStreak?: number;
+  lastLogin?: Date;
+  showLoginStreak?: boolean;
 }
 
 /**

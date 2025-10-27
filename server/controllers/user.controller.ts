@@ -15,6 +15,8 @@ import {
   saveUser,
   updateUser,
 } from '../services/user.service';
+import { upload, processProfilePicture, processBannerImage } from '../utils/upload';
+import { generateToken, verifyToken } from '../utils/jwt';
 
 const userController = (socket: FakeSOSocket) => {
   const router: Router = express.Router();
@@ -41,11 +43,14 @@ const userController = (socket: FakeSOSocket) => {
         throw new Error(result.error);
       }
 
+      // Generate JWT token for the new user
+      const token = generateToken(result);
+
       socket.emit('userUpdate', {
         user: result,
         type: 'created',
       });
-      res.status(200).json(result);
+      res.status(200).json({ user: result, token });
     } catch (error) {
       res.status(500).send(`Error when saving user: ${error}`);
     }
@@ -70,7 +75,10 @@ const userController = (socket: FakeSOSocket) => {
         throw Error(user.error);
       }
 
-      res.status(200).json(user);
+      // Generate JWT token for the logged-in user
+      const token = generateToken(user);
+
+      res.status(200).json({ user, token });
     } catch (error) {
       res.status(500).send('Login failed');
     }
@@ -193,14 +201,148 @@ const userController = (socket: FakeSOSocket) => {
     }
   };
 
+  /**
+   * Uploads and updates a user's profile picture.
+   * @param req The request containing the image file and username in the body.
+   * @param res The response, either confirming the update or returning an error.
+   * @returns A promise resolving to void.
+   */
+  const uploadProfilePicture = async (req: Request, res: Response): Promise<void> => {
+    try {
+      if (!req.file) {
+        res.status(400).send('No file uploaded');
+        return;
+      }
+
+      const { username, cropData } = req.body;
+
+      if (!username) {
+        res.status(400).send('Username is required');
+        return;
+      }
+
+      // Parse crop data if provided
+      let parsedCropData;
+      if (cropData) {
+        parsedCropData = JSON.parse(cropData);
+      }
+
+      // Process and get base64 encoded image
+      const base64Image = await processProfilePicture(req.file, parsedCropData);
+
+      // Update user with new profile picture (base64 string)
+      const updatedUser = await updateUser(username, { profilePicture: base64Image });
+
+      if ('error' in updatedUser) {
+        throw new Error(updatedUser.error);
+      }
+
+      socket.emit('userUpdate', {
+        user: updatedUser,
+        type: 'updated',
+      });
+
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      res.status(500).send(`Error uploading profile picture: ${error}`);
+    }
+  };
+
+  /**
+   * Uploads and updates a user's banner image.
+   * @param req The request containing the image file and username in the body.
+   * @param res The response, either confirming the update or returning an error.
+   * @returns A promise resolving to void.
+   */
+  const uploadBannerImage = async (req: Request, res: Response): Promise<void> => {
+    try {
+      if (!req.file) {
+        res.status(400).send('No file uploaded');
+        return;
+      }
+
+      const { username, cropData } = req.body;
+
+      if (!username) {
+        res.status(400).send('Username is required');
+        return;
+      }
+
+      // Parse crop data if provided
+      let parsedCropData;
+      if (cropData) {
+        parsedCropData = JSON.parse(cropData);
+      }
+
+      // Process and get base64 encoded image
+      const base64Image = await processBannerImage(req.file, parsedCropData);
+
+      // Update user with new banner image (base64 string)
+      const updatedUser = await updateUser(username, { bannerImage: base64Image });
+
+      if ('error' in updatedUser) {
+        throw new Error(updatedUser.error);
+      }
+
+      socket.emit('userUpdate', {
+        user: updatedUser,
+        type: 'updated',
+      });
+
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      res.status(500).send(`Error uploading banner image: ${error}`);
+    }
+  };
+
+  /**
+   * Verifies a JWT token and returns the user data if valid.
+   * @param req The request containing the token in the Authorization header.
+   * @param res The response, either returning the user or an error.
+   * @returns A promise resolving to void.
+   */
+  const verifyTokenRoute = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const authHeader = req.headers.authorization;
+
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        res.status(401).json({ error: 'No token provided' });
+        return;
+      }
+
+      const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+      const decoded = verifyToken(token);
+
+      if (!decoded) {
+        res.status(401).json({ error: 'Invalid or expired token' });
+        return;
+      }
+
+      // Get user data from database using the decoded username
+      const user = await getUserByUsername(decoded.username);
+
+      if ('error' in user) {
+        res.status(404).json({ error: 'User not found' });
+        return;
+      }
+
+      res.status(200).json({ user });
+    } catch (error) {
+      res.status(500).send(`Error verifying token: ${error}`);
+    }
+  };
+
   // Define routes for the user-related operations.
   router.post('/signup', createUser);
   router.post('/login', userLogin);
+  router.get('/verify-token', verifyTokenRoute);
   router.patch('/resetPassword', resetPassword);
   router.get('/getUser/:username', getUser);
   router.get('/getUsers', getUsers);
   router.delete('/deleteUser/:username', deleteUser);
   router.patch('/updateBiography', updateBiography);
+  router.post('/uploadProfilePicture', upload.single('profilePicture'), uploadProfilePicture);
+  router.post('/uploadBannerImage', upload.single('bannerImage'), uploadBannerImage);
   return router;
 };
 

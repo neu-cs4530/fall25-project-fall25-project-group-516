@@ -1,8 +1,17 @@
 import axios from 'axios';
 import { UserCredentials, SafeDatabaseUser } from '../types/types';
 import api from './config';
+import { setAuthToken, getAuthToken, removeAuthToken } from '../utils/auth';
 
 const USER_API_URL = `/api/user`;
+
+interface AuthResponse {
+  user: SafeDatabaseUser;
+  token: string;
+}
+
+// Re-export auth functions for convenience
+export { setAuthToken, getAuthToken, removeAuthToken };
 
 /**
  * Function to get users
@@ -39,8 +48,10 @@ const getUserByUsername = async (username: string): Promise<SafeDatabaseUser> =>
  */
 const createUser = async (user: UserCredentials): Promise<SafeDatabaseUser> => {
   try {
-    const res = await api.post(`${USER_API_URL}/signup`, user);
-    return res.data;
+    const res = await api.post<AuthResponse>(`${USER_API_URL}/signup`, user);
+    // Store the token in localStorage
+    setAuthToken(res.data.token);
+    return res.data.user;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(`Error while signing up: ${error.response.data}`);
@@ -59,14 +70,45 @@ const createUser = async (user: UserCredentials): Promise<SafeDatabaseUser> => {
  */
 const loginUser = async (user: UserCredentials): Promise<SafeDatabaseUser> => {
   try {
-    const res = await api.post(`${USER_API_URL}/login`, user);
-    return res.data;
+    const res = await api.post<AuthResponse>(`${USER_API_URL}/login`, user);
+    // Store the token in localStorage
+    setAuthToken(res.data.token);
+    return res.data.user;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       throw new Error(`Error while logging in: ${error.response.data}`);
     } else {
       throw new Error('Error while logging in');
     }
+  }
+};
+
+/**
+ * Verifies the stored JWT token and returns the user data if valid.
+ * @returns The user object if token is valid, null otherwise
+ * @throws Error if verification fails
+ */
+const verifyStoredToken = async (): Promise<SafeDatabaseUser | null> => {
+  try {
+    const token = getAuthToken();
+    if (!token) {
+      return null;
+    }
+
+    const res = await api.get<{ user: SafeDatabaseUser }>(`${USER_API_URL}/verify-token`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.status === 200) {
+      return res.data.user;
+    }
+    return null;
+  } catch (error) {
+    // Token is invalid or expired, remove it
+    removeAuthToken();
+    return null;
   }
 };
 
@@ -123,6 +165,68 @@ const updateBiography = async (
   return res.data;
 };
 
+/**
+ * Uploads a profile picture for a user.
+ * @param username The unique username of the user
+ * @param file The image file to upload
+ * @param cropData Optional crop data {x, y, width, height}
+ * @returns A promise resolving to the updated user
+ * @throws Error if the request fails
+ */
+const uploadProfilePicture = async (
+  username: string,
+  file: File,
+  cropData?: { x: number; y: number; width: number; height: number },
+): Promise<SafeDatabaseUser> => {
+  const formData = new FormData();
+  formData.append('profilePicture', file);
+  formData.append('username', username);
+  if (cropData) {
+    formData.append('cropData', JSON.stringify(cropData));
+  }
+
+  const res = await api.post(`${USER_API_URL}/uploadProfilePicture`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  if (res.status !== 200) {
+    throw new Error('Error when uploading profile picture');
+  }
+  return res.data;
+};
+
+/**
+ * Uploads a banner image for a user.
+ * @param username The unique username of the user
+ * @param file The image file to upload
+ * @param cropData Optional crop data {x, y, width, height}
+ * @returns A promise resolving to the updated user
+ * @throws Error if the request fails
+ */
+const uploadBannerImage = async (
+  username: string,
+  file: File,
+  cropData?: { x: number; y: number; width: number; height: number },
+): Promise<SafeDatabaseUser> => {
+  const formData = new FormData();
+  formData.append('bannerImage', file);
+  formData.append('username', username);
+  if (cropData) {
+    formData.append('cropData', JSON.stringify(cropData));
+  }
+
+  const res = await api.post(`${USER_API_URL}/uploadBannerImage`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  if (res.status !== 200) {
+    throw new Error('Error when uploading banner image');
+  }
+  return res.data;
+};
+
 export {
   getUsers,
   getUserByUsername,
@@ -131,4 +235,7 @@ export {
   deleteUser,
   resetPassword,
   updateBiography,
+  uploadProfilePicture,
+  uploadBannerImage,
+  verifyStoredToken,
 };
