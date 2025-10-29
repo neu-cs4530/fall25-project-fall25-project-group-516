@@ -6,6 +6,7 @@ import {
   UserCredentials,
   UserResponse,
   UsersResponse,
+  OAuthUserProfile
 } from '../types/types';
 
 /**
@@ -147,5 +148,80 @@ export const updateUser = async (
     return updatedUser;
   } catch (error) {
     return { error: `Error occurred when updating user: ${error}` };
+  }
+};
+
+/**
+ * Finds a user by their OAuth provider/ID or email, or creates a new user if not found.
+ * Links OAuth details to an existing email account if found.
+ *
+ * @param {string} oauthProvider - The name of the OAuth provider (e.g., 'github').
+ * @param {string} oauthId - The unique ID provided by the OAuth provider.
+ * @param {OAuthUserProfile} profile - Profile information from the OAuth provider.
+ * @returns {Promise<UserResponse>} - Resolves with the found or created user object (without password) or an error message.
+ */
+export const findOrCreateOAuthUser = async (
+  oauthProvider: 'google' | 'github',
+  oauthId: string,
+  profile: OAuthUserProfile,
+): Promise<UserResponse> => {
+  try {
+    let user: SafeDatabaseUser | null = await UserModel.findOne({
+      oauthProvider,
+      oauthId,
+    }).select('-password');
+
+    if (user) {
+      return user;
+    }
+
+    if (profile.email) {
+      const existingUserByEmail: SafeDatabaseUser | null = await UserModel.findOne({
+        email: profile.email,
+      }).select('-password');
+
+      if (existingUserByEmail) {
+        existingUserByEmail.oauthProvider = oauthProvider;
+        existingUserByEmail.oauthId = oauthId;
+
+        const updatedUserResult = await updateUser(existingUserByEmail.username, {
+          oauthProvider: oauthProvider,
+          oauthId: oauthId,
+        });
+
+        if ('error' in updatedUserResult) {
+          throw new Error(
+            `Failed to link OAuth to existing email account: ${updatedUserResult.error}`,
+          );
+        }
+        return updatedUserResult;
+      }
+    }
+
+    let usernameToSave = profile.username || `${oauthProvider}_${profile.id}`; // Default username idea
+    const existingUsername = await UserModel.findOne({ username: usernameToSave });
+
+    if (existingUsername) {
+      usernameToSave = `${usernameToSave}_${Math.random().toString(36).substring(2, 7)}`;
+    }
+
+    const newUserResult = await saveUser({
+      username: usernameToSave,
+      email: profile.email,
+      dateJoined: new Date(),
+      oauthProvider,
+      oauthId,
+      biography: profile.bio || '',
+      profilePicture: profile.avatar_url || '',
+    });
+
+    if ('error' in newUserResult) {
+      throw new Error(`Failed to save new OAuth user: ${newUserResult.error}`);
+    }
+
+    return newUserResult;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return { error: `Error during OAuth user processing: ${message}` };
   }
 };

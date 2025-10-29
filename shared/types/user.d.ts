@@ -8,7 +8,7 @@ import { ObjectId } from 'mongodb';
  */
 export interface UserCredentials {
   username: string;
-  password: string;
+  password?: string;
 }
 
 /**
@@ -39,6 +39,7 @@ export interface User extends UserCredentials {
   loginStreak?: number;
   lastLogin?: Date;
   showLoginStreak?: boolean;
+  email?: string;
 }
 
 /**

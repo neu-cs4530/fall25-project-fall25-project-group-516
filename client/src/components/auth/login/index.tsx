@@ -17,6 +17,15 @@ const Login = () => {
     togglePasswordVisibility,
   } = useAuth('login');
 
+  const handleGitHubLogin = () => {
+    const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8000';
+
+    const redirectUrl = `${serverUrl}/api/auth/github`;
+    console.log('Redirecting to:', redirectUrl);
+
+    window.location.href = redirectUrl;
+  };
+
   return (
     <div className='container'>
       <h2>Welcome to FakeStackOverflow!</h2>
@@ -55,6 +64,9 @@ const Login = () => {
           Submit
         </button>
       </form>
+      <button onClick={handleGitHubLogin} className='github-button'>
+        Login with GitHub
+      </button>
       {err && <p className='error-message'>{err}</p>}
       <Link to='/signup' className='signup-link'>
         Don&apos;t have an account? Sign up here.
