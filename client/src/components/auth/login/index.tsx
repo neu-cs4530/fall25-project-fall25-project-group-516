@@ -19,7 +19,6 @@ const Login = () => {
     togglePasswordVisibility,
   } = useAuth('login');
 
-
   return (
     <div className='container'>
       <h2>Welcome to FakeStackOverflow!</h2>
@@ -54,7 +53,7 @@ const Login = () => {
           />
           <label htmlFor='showPasswordToggle'>Show Password</label>
         </div>
-         <button type='submit' className='login-button'>
+        <button type='submit' className='login-button'>
           Submit
         </button>
         <button type='button' className='github-button' onClick={handleGitHubOAuth}>

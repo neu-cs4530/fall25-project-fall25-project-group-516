@@ -111,7 +111,6 @@ const useAuth = (authType: 'login' | 'signup') => {
     const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8000';
 
     const redirectUrl = `${serverUrl}/api/auth/github`;
-    console.log('Redirecting to:', redirectUrl);
 
     window.location.href = redirectUrl;
   };
@@ -120,7 +119,6 @@ const useAuth = (authType: 'login' | 'signup') => {
     const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8000';
 
     const redirectUrl = `${serverUrl}/api/auth/google`;
-    console.log('Redirecting to:', redirectUrl);
 
     window.location.href = redirectUrl;
   };

@@ -113,7 +113,7 @@ app.use('/api/games', gameController(socket));
 app.use('/api/collection', collectionController(socket));
 app.use('/api/community', communityController(socket));
 app.use('/api/badge', badgeController(socket));
-app.use('/api/auth', openAuthorizationController())
+app.use('/api/auth', openAuthorizationController());
 
 const openApiDocument = yaml.parse(fs.readFileSync('./openapi.yaml', 'utf8'));
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));

@@ -6,7 +6,7 @@ import {
   UserCredentials,
   UserResponse,
   UsersResponse,
-  OAuthUserProfile
+  OAuthUserProfile,
 } from '../types/types';
 
 /**
@@ -166,7 +166,7 @@ export const findOrCreateOAuthUser = async (
   profile: OAuthUserProfile,
 ): Promise<UserResponse> => {
   try {
-    let user: SafeDatabaseUser | null = await UserModel.findOne({
+    const user: SafeDatabaseUser | null = await UserModel.findOne({
       oauthProvider,
       oauthId,
     }).select('-password');

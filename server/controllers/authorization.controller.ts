@@ -16,7 +16,6 @@ const openAuthorizationController = () => {
     const clientId = process.env.GOOGLE_CLIENT_ID;
 
     if (!redirectUri || !clientId) {
-      console.error('Google OAuth environment variables are missing.');
       res.status(500).send('OAuth configuration error.');
       return;
     }
@@ -47,9 +46,6 @@ const openAuthorizationController = () => {
       return;
     }
     if (!clientId || !clientSecret || !process.env.SERVER_URL) {
-      console.error(
-        'Google OAuth environment variables (CLIENT_ID, CLIENT_SECRET, SERVER_URL) are missing.',
-      );
       res.status(500).send('OAuth configuration error.');
       return;
     }
@@ -71,13 +67,13 @@ const openAuthorizationController = () => {
         },
       );
 
-      const { access_token } = tokenRes.data;
-      if (!access_token) {
+      const { access_token: accessToken } = tokenRes.data;
+      if (!accessToken) {
         throw new Error('Failed to retrieve Google access token.');
       }
 
       const userRes = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
-        headers: { Authorization: `Bearer ${access_token}` },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
 
       const googleUser = userRes.data;
@@ -108,9 +104,7 @@ const openAuthorizationController = () => {
       const token = generateToken(userResult);
 
       res.redirect(`${clientUrl}/auth/callback?token=${token}`);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown OAuth error';
-      console.error('Google OAuth Callback Error:', message);
+    } catch {
       res.redirect(`${clientUrl}/auth/callback?error=google_oauth_failed`);
     }
   };
@@ -128,7 +122,6 @@ const openAuthorizationController = () => {
     const clientId = process.env.GITHUB_CLIENT_ID;
 
     if (!redirectUri || !clientId) {
-      console.error('GitHub OAuth environment variables are missing.');
       res.status(500).send('OAuth configuration error.');
       return;
     }
@@ -158,9 +151,6 @@ const openAuthorizationController = () => {
       return;
     }
     if (!clientId || !clientSecret) {
-      console.error(
-        'GitHub OAuth environment variables GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET are missing.',
-      );
       res.status(500).send('OAuth configuration error.');
       return;
     }
@@ -197,8 +187,8 @@ const openAuthorizationController = () => {
         });
         const emails: GitHubEmail[] = emailRes.data;
         primaryEmail = emails.find((e: GitHubEmail) => e.primary && e.verified)?.email;
-      } catch (emailError) {
-        console.warn('Could not fetch GitHub user emails:', emailError);
+      } catch {
+        throw new Error('Github email not verified.');
       }
 
       const userProfile: OAuthUserProfile = {
@@ -224,8 +214,6 @@ const openAuthorizationController = () => {
 
       res.redirect(`${clientUrl}/auth/callback?token=${token}`);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown OAuth error';
-      console.error('GitHub OAuth Callback Error:', errorMessage);
       res.redirect(`${clientUrl}/auth/callback?error=github_oauth_failed`);
     }
   };

@@ -1,7 +1,6 @@
-
 import React from 'react';
-import useAuthCallback from '../../../hooks/useAuthCallbackPage'
-import '../callback/index.css'; 
+import useAuthCallback from '../../../hooks/useAuthCallbackPage';
+import '../callback/index.css';
 
 const AuthCallbackPage: React.FC = () => {
   const { isLoading, error } = useAuthCallback();
