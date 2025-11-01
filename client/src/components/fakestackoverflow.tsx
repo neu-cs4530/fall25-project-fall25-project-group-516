@@ -24,6 +24,7 @@ import CommunityPage from './main/communities/communityPage';
 import AllCollectionsPage from './main/collections/allCollectionsPage';
 import CollectionPage from './main/collections/collectionPage';
 import NewCollectionPage from './main/collections/newCollectionPage';
+import AuthCallbackPage from './auth/callback';
 
 const ProtectedRoute = ({
   user,
@@ -88,6 +89,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
         {/* Public Routes - redirect to /home if already logged in */}
         <Route path='/' element={user ? <Navigate to='/home' /> : <Login />} />
         <Route path='/signup' element={user ? <Navigate to='/home' /> : <Signup />} />
+        <Route path='/auth/callback' element={<AuthCallbackPage />} />
         {/* Protected Routes */}
         {
           <Route
