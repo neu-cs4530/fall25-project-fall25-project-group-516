@@ -82,13 +82,13 @@ form {
 
 /* Signup link styles */
 .signup-link {
-  margin-top: 30px; /* Increased spacing */
+  margin-top: 30px;
   font-size: 14px;
   color: #007bff;
   text-decoration: none;
   cursor: pointer;
   transition: color 0.3s;
-  text-align: center; /* Center the link */
+  text-align: center;
 }
 
 .signup-link:hover {
@@ -101,4 +101,65 @@ form {
   font-size: 14px;
   margin-top: 20px;
   text-align: center;
+}
+
+.github-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #24292e;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.github-button:hover {
+  background-color: #555;
+}
+
+.github-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+}
+
+.github-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+  fill: currentColor;
+}
+
+.google-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.google-button:hover {
+  background-color: #0056b3;
+}
+
+.google-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(66, 133, 244, 0.3);
+}
+
+.google-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
 }

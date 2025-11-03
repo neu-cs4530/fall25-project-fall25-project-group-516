@@ -107,6 +107,22 @@ const useAuth = (authType: 'login' | 'signup') => {
     }
   };
 
+  const handleGitHubOAuth = () => {
+    const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8000';
+
+    const redirectUrl = `${serverUrl}/api/auth/github`;
+
+    window.location.href = redirectUrl;
+  };
+
+  const handleGoogleOAuth = () => {
+    const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8000';
+
+    const redirectUrl = `${serverUrl}/api/auth/google`;
+
+    window.location.href = redirectUrl;
+  };
+
   return {
     username,
     password,
@@ -115,6 +131,8 @@ const useAuth = (authType: 'login' | 'signup') => {
     err,
     handleInputChange,
     handleSubmit,
+    handleGitHubOAuth,
+    handleGoogleOAuth,
     togglePasswordVisibility,
   };
 };
