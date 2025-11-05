@@ -32,14 +32,15 @@ export const saveUser = async (user: User): Promise<UserResponse> => {
       throw Error('Failed to create user');
     }
 
-    // Get the user without password using select, which includes all fields
-    const safeUser: SafeDatabaseUser | null = await UserModel.findById(result._id).select(
-      '-password',
-    );
-
-    if (!safeUser) {
-      throw Error('Failed to retrieve created user');
-    }
+    const safeUser: SafeDatabaseUser = {
+      _id: result._id,
+      username: result.username,
+      dateJoined: result.dateJoined,
+      biography: result.biography,
+      lastLogin: result.lastLogin,
+      loginStreak: result.loginStreak,
+      maxLoginStreak: result.maxLoginStreak,
+    };
 
     return safeUser;
   } catch (error) {

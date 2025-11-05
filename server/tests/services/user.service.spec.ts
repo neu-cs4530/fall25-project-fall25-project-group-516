@@ -8,7 +8,7 @@ import {
   saveUser,
   updateUser,
 } from '../../services/user.service';
-import { SafeDatabaseUser, User, UserCredentials } from '../../types/types';
+import { DatabaseUser, SafeDatabaseUser, User, UserCredentials } from '../../types/types';
 import { user, safeUser } from '../mockData.models';
 
 describe('User model', () => {
@@ -18,11 +18,10 @@ describe('User model', () => {
 
   describe('saveUser', () => {
     it('should return the saved user', async () => {
-      jest
-        .spyOn(UserModel, 'create')
-        .mockResolvedValueOnce({ ...user, _id: mongoose.Types.ObjectId } as unknown as ReturnType<
-          typeof UserModel.create<User>
-        >);
+      jest.spyOn(UserModel, 'create').mockResolvedValueOnce({
+        ...safeUser,
+        _id: new mongoose.Types.ObjectId(),
+      } as unknown as ReturnType<typeof UserModel.create<User>>);
 
       const savedUser = (await saveUser(user)) as SafeDatabaseUser;
 
@@ -142,7 +141,7 @@ describe('loginUser', () => {
   });
 
   it('should return the user if authentication succeeds', async () => {
-    jest.spyOn(UserModel, 'findOne').mockImplementation((filter?: any) => {
+    jest.spyOn(UserModel, 'findOne').mockImplementationOnce((filter?: any) => {
       expect(filter.username).toBeDefined();
       expect(filter.password).toBeDefined();
       const query: any = {};
@@ -190,7 +189,7 @@ describe('loginUser', () => {
   it('should return error when findOne returns null with select in loginUser', async () => {
     jest.spyOn(UserModel, 'findOne').mockReturnValue({
       select: jest.fn().mockResolvedValue(null),
-    } as unknown as Query<SafeDatabaseUser, typeof UserModel>);
+    } as unknown as Query<DatabaseUser, typeof UserModel>);
 
     const credentials: UserCredentials = {
       username: user.username,

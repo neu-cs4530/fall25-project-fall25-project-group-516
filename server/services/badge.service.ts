@@ -183,7 +183,7 @@ export const checkAndAwardBadges = async (username: string): Promise<DatabaseBad
 
     return newlyEarnedBadges;
   } catch (error) {
-    return [];
+    throw new Error('Failed to check and award badges');
   }
 };
 
