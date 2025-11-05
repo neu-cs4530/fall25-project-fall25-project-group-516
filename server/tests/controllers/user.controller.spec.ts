@@ -2,6 +2,7 @@ import supertest from 'supertest';
 import mongoose from 'mongoose';
 import { app } from '../../app';
 import * as util from '../../services/user.service';
+import * as badgeUtil from '../../services/badge.service';
 import { SafeDatabaseUser, User } from '../../types/types';
 
 const mockUser: User = {
@@ -39,6 +40,7 @@ describe('Test userController', () => {
       };
 
       saveUserSpy.mockResolvedValueOnce({ ...mockSafeUser, biography: mockReqBody.biography });
+      jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValueOnce([]);
 
       const response = await supertest(app).post('/api/user/signup').send(mockReqBody);
 
@@ -132,6 +134,7 @@ describe('Test userController', () => {
       };
 
       loginUserSpy.mockResolvedValueOnce(mockSafeUser);
+      jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValueOnce([]);
 
       const response = await supertest(app).post('/api/user/login').send(mockReqBody);
 

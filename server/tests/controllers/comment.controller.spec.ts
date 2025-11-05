@@ -3,6 +3,7 @@ import supertest from 'supertest';
 import { app } from '../../app';
 import * as commentUtil from '../../services/comment.service';
 import * as databaseUtil from '../../utils/database.util';
+import * as badgeUtil from '../../services/badge.service';
 
 const saveCommentSpy = jest.spyOn(commentUtil, 'saveComment');
 const addCommentSpy = jest.spyOn(commentUtil, 'addComment');
@@ -44,6 +45,8 @@ describe('POST /addComment', () => {
       comments: [mockComment._id],
       community: null,
     });
+
+    jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValueOnce([]);
 
     popDocSpy.mockResolvedValueOnce({
       _id: validQid,
@@ -100,6 +103,8 @@ describe('POST /addComment', () => {
       ansDateTime: new Date('2024-06-03'),
       comments: [mockComment._id],
     });
+
+    jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValueOnce([]);
 
     popDocSpy.mockResolvedValueOnce({
       _id: validAid,
@@ -356,6 +361,7 @@ describe('POST /addComment', () => {
 
     saveCommentSpy.mockResolvedValueOnce(mockComment);
     addCommentSpy.mockResolvedValueOnce(mockQuestion);
+    jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValueOnce([]);
     popDocSpy.mockResolvedValueOnce({ error: 'Error when populating document' });
 
     const response = await supertest(app).post('/api/comment/addComment').send(mockReqBody);

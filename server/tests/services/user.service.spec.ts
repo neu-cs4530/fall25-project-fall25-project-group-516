@@ -18,11 +18,10 @@ describe('User model', () => {
 
   describe('saveUser', () => {
     it('should return the saved user', async () => {
-      jest
-        .spyOn(UserModel, 'create')
-        .mockResolvedValueOnce({ ...user, _id: mongoose.Types.ObjectId } as unknown as ReturnType<
-          typeof UserModel.create<User>
-        >);
+      jest.spyOn(UserModel, 'create').mockResolvedValueOnce({
+        ...safeUser,
+        _id: new mongoose.Types.ObjectId(),
+      } as unknown as ReturnType<typeof UserModel.create<User>>);
 
       const savedUser = (await saveUser(user)) as SafeDatabaseUser;
 
@@ -143,12 +142,27 @@ describe('loginUser', () => {
 
   it('should return the user if authentication succeeds', async () => {
     jest.spyOn(UserModel, 'findOne').mockImplementation((filter?: any) => {
-      expect(filter.username).toBeDefined();
-      expect(filter.password).toBeDefined();
-      const query: any = {};
-      query.select = jest.fn().mockReturnValue(Promise.resolve(safeUser));
-      return query;
+      if (filter.username && filter.password) {
+        return Promise.resolve({
+          username: user.username,
+          password: user.password,
+          dateJoined: user.dateJoined,
+          loginStreak: 5,
+          maxLoginStreak: 10,
+          lastLogin: new Date('2025-10-31'),
+        } as any);
+      } else if (filter.username && !filter.password) {
+        const query: any = {};
+        query.select = jest.fn().mockResolvedValue(safeUser);
+        return query;
+      }
+      return Promise.resolve(null);
     });
+
+    jest.spyOn(UserModel, 'updateOne').mockResolvedValue({
+      acknowledged: true,
+      modifiedCount: 1,
+    } as any);
 
     const credentials: UserCredentials = {
       username: user.username,
@@ -188,9 +202,14 @@ describe('loginUser', () => {
   });
 
   it('should return error when findOne returns null with select in loginUser', async () => {
-    jest.spyOn(UserModel, 'findOne').mockReturnValue({
-      select: jest.fn().mockResolvedValue(null),
-    } as unknown as Query<SafeDatabaseUser, typeof UserModel>);
+    jest.spyOn(UserModel, 'findOne').mockImplementation((filter?: any) => {
+      if (filter.username && filter.password) {
+        return Promise.resolve(null);
+      }
+      const query: any = {};
+      query.select = jest.fn().mockResolvedValue(null);
+      return query;
+    });
 
     const credentials: UserCredentials = {
       username: user.username,

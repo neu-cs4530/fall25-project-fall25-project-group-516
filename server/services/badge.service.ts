@@ -83,7 +83,8 @@ export const calculateBadgeProgress = async (
         return count;
       }
       case 'login_streak': {
-        return user.loginStreak || 0;
+        // Use max streak so badge isn't lost when streak breaks
+        return user.maxLoginStreak || 0;
       }
       case 'upvote_count': {
         // Count total upvotes on user's questions (answers don't have upvotes in current schema)
@@ -182,7 +183,7 @@ export const checkAndAwardBadges = async (username: string): Promise<DatabaseBad
 
     return newlyEarnedBadges;
   } catch (error) {
-    return [];
+    throw new Error('Failed to check and award badges');
   }
 };
 
