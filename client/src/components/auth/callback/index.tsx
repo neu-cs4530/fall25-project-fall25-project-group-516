@@ -1,4 +1,3 @@
-import React from 'react';
 import useAuthCallback from '../../../hooks/useAuthCallbackPage';
 import '../callback/index.css';
 
