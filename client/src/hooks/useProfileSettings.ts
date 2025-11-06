@@ -142,7 +142,7 @@ const useProfileSettings = () => {
 
   const handleEnteringEditMode = () => {
     if (userData?.profilePicture) setProfileImageUrl(userData?.profilePicture);
-    if (userData?.bannerImage) setProfileImageUrl(userData?.bannerImage);
+    if (userData?.bannerImage) setBannerImageUrl(userData?.bannerImage);
   };
 
   /**
