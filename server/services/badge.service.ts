@@ -180,7 +180,7 @@ export const checkAndAwardBadges = async (username: string): Promise<DatabaseBad
           { $addToSet: { badges: badge._id } }, // $addToSet prevents duplicates
         );
         newlyEarnedBadges.push(badge);
-        await makeTransaction(user._id.toString(), badge.coinValue, 'add');
+        await makeTransaction(user.username, badge.coinValue, 'add');
       }
     }
 
