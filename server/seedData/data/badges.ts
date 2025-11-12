@@ -12,6 +12,7 @@ const BADGES: Badge[] = [
     },
     hint: 'Ask your first question to earn this badge',
     progress: false,
+    coinValue: 10,
   },
   {
     name: 'First Answer',
@@ -24,6 +25,7 @@ const BADGES: Badge[] = [
     },
     hint: 'Answer your first question to earn this badge',
     progress: false,
+    coinValue: 10,
   },
   {
     name: 'Curious Mind',
@@ -36,6 +38,7 @@ const BADGES: Badge[] = [
     },
     hint: 'Ask 10 questions to earn this badge. Keep asking!',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Helpful Helper',
@@ -48,6 +51,7 @@ const BADGES: Badge[] = [
     },
     hint: 'Answer 10 questions to earn this badge',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Popular Contributor',
@@ -60,6 +64,7 @@ const BADGES: Badge[] = [
     },
     hint: 'Get 50 total upvotes on your questions and answers',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Dedicated User',
@@ -72,6 +77,7 @@ const BADGES: Badge[] = [
     },
     hint: 'Log in for 7 consecutive days to earn this badge',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Streak Champion',
@@ -84,6 +90,7 @@ const BADGES: Badge[] = [
     },
     hint: 'Log in for 30 consecutive days to earn this badge',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Engaged Commenter',
@@ -96,6 +103,7 @@ const BADGES: Badge[] = [
     },
     hint: 'Comment on 25 posts to earn this badge',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Community Star',
@@ -108,6 +116,7 @@ const BADGES: Badge[] = [
     },
     hint: 'Get 100 total upvotes on your questions and answers',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Expert Asker',
@@ -120,6 +129,7 @@ const BADGES: Badge[] = [
     },
     hint: 'Ask 50 questions to earn this badge',
     progress: true,
+    coinValue: 10,
   },
 ];
 
