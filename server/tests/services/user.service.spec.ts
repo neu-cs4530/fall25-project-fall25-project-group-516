@@ -5,10 +5,11 @@ import {
   getUserByUsername,
   getUsersList,
   loginUser,
+  makeTransaction,
   saveUser,
   updateUser,
 } from '../../services/user.service';
-import { SafeDatabaseUser, User, UserCredentials } from '../../types/types';
+import { DatabaseUser, SafeDatabaseUser, User, UserCredentials } from '../../types/types';
 import { user, safeUser } from '../mockData.models';
 
 describe('User model', () => {
@@ -365,5 +366,139 @@ describe('updateUser', () => {
     const updatedError = await updateUser(user.username, biographyUpdates);
 
     expect('error' in updatedError).toBe(true);
+  });
+});
+
+describe('makeTransaction', () => {
+  const userWithCoins: DatabaseUser = {
+    ...user,
+    _id: new mongoose.Types.ObjectId(),
+    coins: 10,
+  };
+
+  const safeUpdatedUser: SafeDatabaseUser = {
+    _id: new mongoose.Types.ObjectId(),
+    username: user.username,
+    dateJoined: user.dateJoined,
+    coins: 20,
+  };
+
+  const safeUpdatedUser2: SafeDatabaseUser = {
+    _id: new mongoose.Types.ObjectId(),
+    username: user.username,
+    dateJoined: user.dateJoined,
+    coins: 0,
+  };
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('makeTransaction should add coins', async () => {
+    jest.spyOn(UserModel, 'findOne').mockImplementation((filter?: any) => {
+      if (filter.username) {
+        const query: any = {};
+        query.select = jest.fn().mockResolvedValue(userWithCoins);
+        return query;
+      } else {
+        return Promise.resolve(null);
+      }
+    });
+
+    jest.spyOn(UserModel, 'findOneAndUpdate').mockImplementation((filter?: any) => {
+      if (filter.username) {
+        const query: any = {};
+        query.select = jest.fn().mockResolvedValue(safeUpdatedUser);
+        return query;
+      } else {
+        return Promise.resolve(null);
+      }
+    });
+
+    const result = await makeTransaction(user.username, 10, 'add');
+
+    expect(result).toBeDefined();
+  });
+
+  it('makeTransaction should reduce coins', async () => {
+    jest.spyOn(UserModel, 'findOne').mockImplementation((filter?: any) => {
+      if (filter.username) {
+        const query: any = {};
+        query.select = jest.fn().mockResolvedValue(userWithCoins);
+        return query;
+      } else {
+        return Promise.resolve(null);
+      }
+    });
+
+    jest.spyOn(UserModel, 'findOneAndUpdate').mockImplementation((filter?: any) => {
+      if (filter.username) {
+        const query: any = {};
+        query.select = jest.fn().mockResolvedValue(safeUpdatedUser2);
+        return query;
+      } else {
+        return Promise.resolve(null);
+      }
+    });
+
+    const result = await makeTransaction(user.username, 10, 'reduce');
+
+    expect(result).toBeDefined();
+  });
+
+  it('should return error if findOne returns null', async () => {
+    jest.spyOn(UserModel, 'findOne').mockResolvedValueOnce(null);
+
+    const transactionError = await makeTransaction(user.username, 10, 'add');
+
+    expect('error' in transactionError).toBe(true);
+  });
+
+  it('should return error if findOneAndUpdate returns null', async () => {
+    jest.spyOn(UserModel, 'findOne').mockImplementationOnce((filter?: any) => {
+      if (filter.username) {
+        const query: any = {};
+        query.select = jest.fn().mockResolvedValue(userWithCoins);
+        return query;
+      } else {
+        return Promise.resolve(null);
+      }
+    });
+
+    jest.spyOn(UserModel, 'findOneAndUpdate').mockReturnValue({
+      select: jest.fn().mockResolvedValue(null),
+    } as unknown as Query<SafeDatabaseUser, typeof UserModel>);
+
+    const transactionError = await makeTransaction(user.username, 10, 'add');
+
+    expect('error' in transactionError).toBe(true);
+  });
+
+  test('should return an error if a database error occurs when finding the user', async () => {
+    jest.spyOn(UserModel, 'findOne').mockRejectedValueOnce(new Error('Error finding user'));
+
+    const transactionError = await makeTransaction(user.username, 10, 'add');
+
+    expect(transactionError).toEqual({ error: 'Error finding user' });
+  });
+
+  it('should throw an error if a database error occurs when updating the user', async () => {
+    jest.spyOn(UserModel, 'findOne').mockImplementationOnce((filter?: any) => {
+      if (filter.username) {
+        const query: any = {};
+        query.select = jest.fn().mockResolvedValue(userWithCoins);
+        return query;
+      } else {
+        return Promise.resolve(null);
+      }
+    });
+
+    jest.spyOn(UserModel, 'findOneAndUpdate').mockReturnValue({
+      select: jest.fn().mockRejectedValue(new Error('Error finding user')),
+    } as unknown as Query<SafeDatabaseUser, typeof UserModel>);
+
+    const transactionError = await makeTransaction(user.username, 10, 'add');
+
+    expect('error' in transactionError).toBe(true);
   });
 });

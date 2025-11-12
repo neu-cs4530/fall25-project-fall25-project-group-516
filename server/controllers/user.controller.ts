@@ -84,6 +84,12 @@ const userController = (socket: FakeSOSocket) => {
       // Check and award badges based on login streak
       await checkAndAwardBadges(user.username);
 
+      // Award coins based on login streak
+      if (user.loginStreak) {
+        const coinsAwarded = user.loginStreak % 7 == 0 ? 10 : user.loginStreak % 7;
+        await makeTransaction(user.username, coinsAwarded, 'add');
+      }
+
       // Generate JWT token for the logged-in user
       const token = generateToken(user);
 

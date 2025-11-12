@@ -127,6 +127,54 @@ const deleteUser = async (username: string): Promise<SafeDatabaseUser> => {
 };
 
 /**
+ * Add coins to a user's account.
+ * @param username - The unique username of the user
+ * @param cost - The amount of coins to add to their account
+ * @param description - Optional description for transaction
+ * @returns A promise that resolves to the updated user data
+ * @throws {Error} if the request to the server is unsuccessful
+ */
+const addCoins = async (
+  username: string,
+  cost: number,
+  description?: string,
+): Promise<SafeDatabaseUser> => {
+  const res = await api.patch(`${USER_API_URL}/addCoins`, {
+    username,
+    cost,
+    description,
+  });
+  if (res.status !== 200) {
+    throw new Error('Error when adding coins');
+  }
+  return res.data;
+};
+
+/**
+ * Reduce coins from a user's account.
+ * @param username - The unique username of the user
+ * @param cost - The amount of coins to reduce from their account
+ * @param description - Optional description for transaction
+ * @returns A promise that resolves to the updated user data
+ * @throws {Error} if the request to the server is unsuccessful
+ */
+const reduceCoins = async (
+  username: string,
+  cost: number,
+  description?: string,
+): Promise<SafeDatabaseUser> => {
+  const res = await api.patch(`${USER_API_URL}/reduceCoins`, {
+    username,
+    cost,
+    description,
+  });
+  if (res.status !== 200) {
+    throw new Error('Error when reducing coins');
+  }
+  return res.data;
+};
+
+/**
  * Resets the password for a user.
  * @param username - The unique username of the user
  * @param newPassword - The new password to be set for the user
@@ -238,4 +286,6 @@ export {
   uploadProfilePicture,
   uploadBannerImage,
   verifyStoredToken,
+  addCoins,
+  reduceCoins,
 };

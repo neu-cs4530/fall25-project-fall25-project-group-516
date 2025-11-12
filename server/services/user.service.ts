@@ -297,41 +297,43 @@ export const makeTransaction = async (
   cost: number,
   type: 'add' | 'reduce',
 ): Promise<UserResponse> => {
-  const user: DatabaseUser | null = await UserModel.findOne({ username });
-  if (!user) {
-    throw new Error('Could not find user to make transaction.');
-  }
+  try {
+    const user: DatabaseUser | null = await UserModel.findOne({ username: username });
 
-  let newCoinValue = cost;
-  if (type == 'add') {
-    if (user.coins) {
-      newCoinValue += user.coins;
+    if (!user) {
+      return { error: 'Error finding user to make transaction' };
     }
-  } else {
-    if (user.coins) {
-      newCoinValue -= user.coins;
+
+    let newCoinValue = cost;
+    if (type == 'add') {
+      if (user.coins) {
+        newCoinValue += user.coins;
+      }
     } else {
-      newCoinValue = 0;
+      if (user.coins) {
+        newCoinValue -= user.coins;
+      } else {
+        newCoinValue = 0;
+      }
     }
-  }
 
-  await UserModel.updateOne(
-    { username },
-    {
-      $set: {
-        coins: newCoinValue,
+    const updatedUser: SafeDatabaseUser | null = await UserModel.findOneAndUpdate(
+      { username },
+      {
+        $set: {
+          coins: newCoinValue,
+        },
       },
-    },
-  );
+      { new: true },
+    ).select('-password');
 
-  // Get updated user without password
-  const updatedUser: SafeDatabaseUser | null = await UserModel.findOne({ username }).select(
-    '-password',
-  );
+    if (!updatedUser) {
+      return { error: 'Error updating user coins' };
+    }
 
-  if (!updatedUser) {
-    throw Error('Failed to retrieve updated user');
+    return updatedUser;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return { error: message };
   }
-
-  return updatedUser;
 };

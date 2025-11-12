@@ -139,15 +139,11 @@ export interface BadgeAwardedPayload {
 /**
  * Interface representing payload for a transaction event.
  * - `username`: The username of the user who earned the coins.
- * - `amount`: The number of coins awarded.
- * - `description`: Description of the event causing the award.
- * - `awarded`: Whether the event was a coin awarding or redacting.
+ * - `amount`: The new number of coins of the user.
  */
 export interface TransactionEventPayload {
   username: string;
   amount: number;
-  description?: string;
-  awarded: boolean;
 }
 
 /**
