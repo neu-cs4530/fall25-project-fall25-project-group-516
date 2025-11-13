@@ -87,10 +87,7 @@ const userSchema: Schema = new Schema(
     roles: {
       type: Map,
       of: String,
-    },
-    tokenVersion: {
-      type: Number,
-      default: 0,
+      default: {},
     },
   },
   { collection: 'User' },

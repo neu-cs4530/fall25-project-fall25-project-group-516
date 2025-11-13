@@ -26,6 +26,7 @@ import collectionController from './controllers/collection.controller';
 import communityController from './controllers/community.controller';
 import badgeController from './controllers/badge.controller';
 import openAuthorizationController from './controllers/authorization.controller';
+import { protect } from './middleware/token.middleware';
 
 const MONGO_URL = `${process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017'}/fake_so`;
 const PORT = parseInt(process.env.PORT || '8000');
@@ -108,7 +109,7 @@ app.use('/api/answer', answerController(socket));
 app.use('/api/comment', commentController(socket));
 app.use('/api/message', messageController(socket));
 app.use('/api/user', userController(socket));
-app.use('/api/chat', chatController(socket));
+app.use('/api/chat', protect, chatController(socket));
 app.use('/api/games', gameController(socket));
 app.use('/api/collection', collectionController(socket));
 app.use('/api/community', communityController(socket));

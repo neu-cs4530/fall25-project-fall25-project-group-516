@@ -232,7 +232,7 @@ export const findOrCreateOAuthUser = async (
  */
 export const getUserRolesById = async (id: string): Promise<UserRolesResponse> => {
   try {
-    const roles = await UserModel.findById(id).select('roles tokenVersion');
+    const roles = await UserModel.findById(id).select('roles');
     if (!roles) {
       throw new Error('User not found');
     }

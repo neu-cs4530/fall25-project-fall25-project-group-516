@@ -1,7 +1,7 @@
 import { app } from '../../app';
 import supertest from 'supertest';
 import axios from 'axios';
-import { generateToken } from '../../utils/jwt';
+import { generateToken } from '../../utils/jwt.util';
 import { findOrCreateOAuthUser } from '../../services/user.service';
 
 jest.mock('axios');

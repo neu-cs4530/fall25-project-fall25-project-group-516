@@ -1,7 +1,13 @@
 import { RedisClientType } from '@redis/client';
 import { createClient } from 'redis';
+import UserModel from '../models/users.model';
+import { SafeDatabaseUser, UserResponse } from '@fake-stack-overflow/shared';
+import { getUserRolesById } from '../services/user.service';
 
 type Cache = RedisClientType | null;
+
+const DEFAULT_ROLE_EXPIRATION = 3600;
+const DEFAULT_USER_EXPIRATION = 900;
 
 let cacheClient: Cache = null;
 
@@ -21,7 +27,7 @@ const initializeCache = async (): Promise<RedisClientType> => {
       socket: {
         host: process.env.REDIS_HOST || 'redis-11500.c44.us-east-1-2.ec2.cloud.redislabs.com',
         port: 11500,
-        tls: true,
+        tls: false,
         reconnectStrategy: retries => {
           if (retries > 10) {
             console.error('Redis: Max reconnection attempts reached');
@@ -69,4 +75,73 @@ export const closeCache = async (): Promise<void> => {
       cacheClient.destroy();
     }
   }
+};
+
+export const getCachedUserRoles = async (userId: string): Promise<Map<string, string>> => {
+  const cache = await getCache();
+
+  const cachedUserRoles = await cache.get(`roles:${userId}`);
+
+  if (cachedUserRoles !== null) {
+    // Cache hit: Already a plain object, just parse
+    console.log('role cache hit');
+    const parsedRoles = JSON.parse(cachedUserRoles);
+    const roleMap: Map<string, string> = new Map(Object.entries(parsedRoles));
+    return roleMap;
+  }
+
+  const result = await getUserRolesById(userId);
+
+  if ('error' in result) {
+    throw new Error(result.error);
+  }
+
+  if (result.roles === undefined || result.roles === null) {
+    throw new Error(`Roles not found`);
+  }
+
+  // 2. Cache the plain object
+  await cache.setEx(
+    `roles:${userId}`,
+    DEFAULT_ROLE_EXPIRATION,
+    JSON.stringify(result.roles), // Stringify the plain object
+  );
+
+  // 3. Return the plain object
+  return result.roles;
+};
+
+export const getCachedUser = async (userId: string): Promise<UserResponse> => {
+  const cache = await getCache();
+
+  const cachedUser = await cache.get(`user:${userId}`);
+
+  if (cachedUser !== null) {
+    // Cache hit: Already a plain object, just parse
+    console.log('user cache hit');
+    const parsedUser: SafeDatabaseUser = JSON.parse(cachedUser);
+    console.log(parsedUser)
+    return parsedUser;
+  }
+
+  // Cache miss:
+  console.log('cache miss')
+  const user = await UserModel.findById(userId).select('-password');
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  // 1. Convert the Mongoose document to a plain object
+  const userObject = user.toObject() as SafeDatabaseUser;
+
+  // 2. Cache the plain object
+  await cache.setEx(
+    `user:${userId}`,
+    DEFAULT_ROLE_EXPIRATION,
+    JSON.stringify(userObject), // Stringify the plain object
+  );
+
+  // 3. Return the plain object
+  return userObject;
 };
