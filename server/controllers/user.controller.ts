@@ -84,12 +84,6 @@ const userController = (socket: FakeSOSocket) => {
       // Check and award badges based on login streak
       await checkAndAwardBadges(user.username);
 
-      // Award coins based on login streak
-      if (user.loginStreak) {
-        const coinsAwarded = user.loginStreak % 7 == 0 ? 10 : user.loginStreak % 7;
-        await makeTransaction(user.username, coinsAwarded, 'add');
-      }
-
       // Generate JWT token for the logged-in user
       const token = generateToken(user);
 
@@ -382,7 +376,7 @@ const userController = (socket: FakeSOSocket) => {
     type: 'add' | 'reduce',
   ): Promise<void> => {
     try {
-      const { username, cost, description } = req.body;
+      const { username, cost } = req.body;
 
       if (!username || !cost) {
         res.status(400).send('Username and cost must be provided');
@@ -402,13 +396,11 @@ const userController = (socket: FakeSOSocket) => {
         throw new Error(status.error);
       }
 
-      const awarded = type == 'add';
+      const amount = status.coins;
 
       socket.emit('transactionEvent', {
         username,
-        cost,
-        description,
-        awarded,
+        amount,
       });
       res.status(200).json(status);
     } catch (error) {

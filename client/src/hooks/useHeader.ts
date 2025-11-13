@@ -23,7 +23,7 @@ const useHeader = () => {
   const { user, socket } = useUserContext();
 
   const [val, setVal] = useState<string>('');
-  const [coins, setCoins] = useState<number>();
+  const [coins, setCoins] = useState<number>(0);
 
   /**
    * Updates the state value when the input field value changes.
@@ -52,22 +52,31 @@ const useHeader = () => {
   };
 
   useEffect(() => {
-    if (user.coins) {
-      setCoins(user.coins);
-    } else {
-      setCoins(0);
-    }
-  }, [user.coins]);
+    /**
+     * Sets coin display based on user's current amount of coins.
+     */
+    const fetchCurrentCoins = () => {
+      if (user.coins) {
+        setCoins(user.coins);
+      } else {
+        setCoins(0);
+      }
+    };
 
-  useEffect(() => {
     const handleCoinUpdate = async (payload: TransactionEventPayload) => {
       if (payload.username == user.username) {
         setCoins(payload.amount);
       }
     };
 
+    fetchCurrentCoins();
+
     socket.on('transactionEvent', handleCoinUpdate);
-  }, [socket]);
+
+    return () => {
+      socket.off('transactionEvent', handleCoinUpdate);
+    };
+  }, [socket, user.username]);
 
   /**
    * Signs the user out by clearing the user context, removing the auth token, and navigating to the landing page.

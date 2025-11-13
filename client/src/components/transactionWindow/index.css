@@ -1,16 +1,45 @@
-.popup {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 50%; height: 50%;
-    background: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
+.transaction-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.popup-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    text-align: center;
+.transaction-error {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+}
+
+.modal-close {
+  display: none
+}
+
+.warning-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: #dc2626;
+}
+
+.error-title {
+  margin: 0 0 4px 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #991b1b;
+}
+
+.error-text {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #7f1d1d;
+  line-height: 1.5;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }

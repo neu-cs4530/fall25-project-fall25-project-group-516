@@ -71,8 +71,10 @@ const createUser = async (user: UserCredentials): Promise<SafeDatabaseUser> => {
 const loginUser = async (user: UserCredentials): Promise<SafeDatabaseUser> => {
   try {
     const res = await api.post<AuthResponse>(`${USER_API_URL}/login`, user);
+
     // Store the token in localStorage
     setAuthToken(res.data.token);
+
     return res.data.user;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

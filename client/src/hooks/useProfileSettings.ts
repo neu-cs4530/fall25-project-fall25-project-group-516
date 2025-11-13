@@ -11,6 +11,7 @@ import {
 import { getUserBadges, updateDisplayedBadges } from '../services/badgeService';
 import { SafeDatabaseUser, BadgeWithProgress } from '../types/types';
 import useUserContext from './useUserContext';
+import useHeader from './useHeader';
 
 /**
  * A custom hook to encapsulate all logic/state for the ProfileSettings component.
@@ -19,6 +20,7 @@ const useProfileSettings = () => {
   const { username } = useParams<{ username: string }>();
   const navigate = useNavigate();
   const { user: currentUser } = useUserContext();
+  const { handleSignOut } = useHeader();
 
   // Local state
   const [userData, setUserData] = useState<SafeDatabaseUser | null>(null);
@@ -127,7 +129,7 @@ const useProfileSettings = () => {
       await deleteUser(username);
       setSuccessMessage(`User "${username}" deleted successfully.`);
       setErrorMessage(null);
-      navigate('/');
+      handleSignOut();
     } catch (error) {
       setErrorMessage('Failed to delete user.');
       setSuccessMessage(null);
