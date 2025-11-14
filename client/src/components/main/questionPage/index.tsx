@@ -45,6 +45,7 @@ const QuestionPage = () => {
         onClose={() => setShowLoginReward(false)}
         onConfirm={() => loginClaimed()}
         cost={loginReward}
+        title='Login Reward'
         description={
           loginStreak > 0
             ? `For logging in for ${loginStreak} days! Log back in tomorrow for ${loginReward + 1 == 7 ? 10 : loginReward + 1} coins!`

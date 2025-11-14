@@ -283,12 +283,10 @@ const useProfileSettings = () => {
     if (profileImageUrl) {
       URL.revokeObjectURL(profileImageUrl);
       setProfileImageUrl(null);
-      changed = true;
     }
     if (bannerImageUrl) {
       URL.revokeObjectURL(bannerImageUrl);
       setBannerImageUrl(null);
-      changed = true;
     }
     if (changed) setSuccessMessage('All changes cancelled!');
   };

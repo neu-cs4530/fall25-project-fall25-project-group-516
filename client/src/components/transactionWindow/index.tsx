@@ -9,6 +9,7 @@ interface TransactionProps {
   onClose: () => void;
   onConfirm: () => void;
   cost: number;
+  title: string;
   description?: string;
   awarded: boolean;
 }
@@ -18,6 +19,7 @@ const TransactionWindow = ({
   onClose,
   onConfirm,
   cost,
+  title,
   description,
   awarded,
 }: TransactionProps) => {
@@ -50,7 +52,7 @@ const TransactionWindow = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleCancelButton} title='Transaction'>
+    <Modal isOpen={isOpen} onClose={handleCancelButton} title={title}>
       <div className='transaction-modal'>
         {error.length > 0 && (
           <div className='transaction-error'>
@@ -73,22 +75,43 @@ const TransactionWindow = ({
             </div>
           </div>
         )}
-        <div className='transaction-content'>
-          {awarded ? (
-            <h3>{`You have been awarded ${cost} coins`}</h3>
-          ) : (
-            <h2>{`You will spend ${cost} coins`}</h2>
-          )}
-          {description ? <div>{description}</div> : <div>For mysterious reasons.</div>}
+        <p className='modal-description'>
+          {awarded ? <h2>{`You have been awarded...`}</h2> : <h2>{`You will spend...`}</h2>}
+          <div className='container-container'>
+            <div className='coin-container'>
+              <img
+                className='coin-image'
+                src='\coinPicture\stack-coin.PNG'
+                alt='Coin emblazoned stack of pancakes'
+                background-color='transparent'
+              />
+              <div className='text-block'>
+                <h2>{`x${cost}`}</h2>
+              </div>
+            </div>
+          </div>
+          {description && <h3>{description}</h3>}
+        </p>
+        <div>
           {!awarded ? (
-            <div>
-              <button onClick={() => handleConfirmButton(cost, awarded, description)}>
+            <div className='modal-actions'>
+              <button onClick={() => handleCancelButton()} className='button button-secondary'>
+                Cancel
+              </button>
+              <button
+                onClick={() => handleConfirmButton(cost, awarded, description)}
+                className='button button-primary'>
                 {submitting ? 'Confirming...' : 'Confirm'}
               </button>
-              <button onClick={() => handleCancelButton()}>Cancel</button>
             </div>
           ) : (
-            <button onClick={() => handleConfirmButton(cost, awarded, description)}>Accept</button>
+            <div className='modal-actions'>
+              <button
+                className='button button-primary'
+                onClick={() => handleConfirmButton(cost, awarded, description)}>
+                Accept
+              </button>
+            </div>
           )}
         </div>
       </div>
