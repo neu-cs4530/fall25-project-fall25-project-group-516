@@ -1,7 +1,9 @@
-import { ChangeEvent, useState, KeyboardEvent } from 'react';
+import { ChangeEvent, useState, KeyboardEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useLoginContext from './useLoginContext';
 import { removeAuthToken } from '../services/userService';
+import useUserContext from './useUserContext';
+import { TransactionEventPayload } from '@fake-stack-overflow/shared';
 
 /**
  * Custom hook to manage the state and logic for a header input field.
@@ -18,8 +20,10 @@ import { removeAuthToken } from '../services/userService';
 const useHeader = () => {
   const navigate = useNavigate();
   const { setUser } = useLoginContext();
+  const { user, socket } = useUserContext();
 
   const [val, setVal] = useState<string>('');
+  const [coins, setCoins] = useState<number>(0);
 
   /**
    * Updates the state value when the input field value changes.
@@ -47,6 +51,33 @@ const useHeader = () => {
     }
   };
 
+  useEffect(() => {
+    /**
+     * Sets coin display based on user's current amount of coins.
+     */
+    const fetchCurrentCoins = () => {
+      if (user.coins) {
+        setCoins(user.coins);
+      } else {
+        setCoins(0);
+      }
+    };
+
+    const handleCoinUpdate = async (payload: TransactionEventPayload) => {
+      if (payload.username == user.username) {
+        setCoins(payload.amount);
+      }
+    };
+
+    fetchCurrentCoins();
+
+    socket.on('transactionEvent', handleCoinUpdate);
+
+    return () => {
+      socket.off('transactionEvent', handleCoinUpdate);
+    };
+  }, [socket, user.username]);
+
   /**
    * Signs the user out by clearing the user context, removing the auth token, and navigating to the landing page.
    */
@@ -62,6 +93,7 @@ const useHeader = () => {
     handleInputChange,
     handleKeyDown,
     handleSignOut,
+    coins,
   };
 };
 

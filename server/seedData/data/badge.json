@@ -9,7 +9,8 @@
       "threshold": 1
     },
     "hint": "Ask your first question to earn this badge",
-    "progress": false
+    "progress": false,
+    "coinValue": 10
   },
   "badge2": {
     "name": "First Answer",
@@ -21,7 +22,8 @@
       "threshold": 1
     },
     "hint": "Answer your first question to earn this badge",
-    "progress": false
+    "progress": false,
+    "coinValue": 10
   },
   "badge3": {
     "name": "Curious Mind",
@@ -33,7 +35,8 @@
       "threshold": 10
     },
     "hint": "Ask 10 questions to earn this badge. Keep asking!",
-    "progress": true
+    "progress": true,
+    "coinValue": 10
   },
   "badge4": {
     "name": "Helpful Helper",
@@ -45,7 +48,8 @@
       "threshold": 10
     },
     "hint": "Answer 10 questions to earn this badge",
-    "progress": true
+    "progress": true,
+    "coinValue": 10
   },
   "badge5": {
     "name": "Popular Contributor",
@@ -57,7 +61,8 @@
       "threshold": 50
     },
     "hint": "Get 50 total upvotes on your questions and answers",
-    "progress": true
+    "progress": true,
+    "coinValue": 10
   },
   "badge6": {
     "name": "Dedicated User",
@@ -69,7 +74,8 @@
       "threshold": 7
     },
     "hint": "Log in for 7 consecutive days to earn this badge",
-    "progress": true
+    "progress": true,
+    "coinValue": 10
   },
   "badge7": {
     "name": "Streak Champion",
@@ -81,7 +87,8 @@
       "threshold": 30
     },
     "hint": "Log in for 30 consecutive days to earn this badge",
-    "progress": true
+    "progress": true,
+    "coinValue": 10
   },
   "badge8": {
     "name": "Engaged Commenter",
@@ -93,7 +100,8 @@
       "threshold": 25
     },
     "hint": "Comment on 25 posts to earn this badge",
-    "progress": true
+    "progress": true,
+    "coinValue": 10
   },
   "badge9": {
     "name": "Community Star",
@@ -105,7 +113,8 @@
       "threshold": 100
     },
     "hint": "Get 100 total upvotes on your questions and answers",
-    "progress": true
+    "progress": true,
+    "coinValue": 10
   },
   "badge10": {
     "name": "Expert Asker",
@@ -117,6 +126,7 @@
       "threshold": 50
     },
     "hint": "Ask 50 questions to earn this badge",
-    "progress": true
+    "progress": true,
+    "coinValue": 10
   }
 }

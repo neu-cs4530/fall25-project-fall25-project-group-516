@@ -284,3 +284,56 @@ export const findOrCreateOAuthUser = async (
     return { error: `Error during OAuth user processing: ${message}` };
   }
 };
+
+/**
+ * Adds or removes coins from specified account.
+ * @param username User to whom coins will be allocated/ redacted
+ * @param cost amount of coins
+ * @param type whether the transaction is + or -
+ * @returns updated user with new coin amount
+ */
+export const makeTransaction = async (
+  username: string,
+  cost: number,
+  type: 'add' | 'reduce',
+): Promise<UserResponse> => {
+  try {
+    const user: DatabaseUser | null = await UserModel.findOne({ username: username });
+
+    if (!user) {
+      return { error: 'Error finding user to make transaction' };
+    }
+
+    let newCoinValue = cost;
+    if (type == 'add') {
+      if (user.coins) {
+        newCoinValue += user.coins;
+      }
+    } else {
+      if (user.coins) {
+        newCoinValue -= user.coins;
+      } else {
+        newCoinValue = 0;
+      }
+    }
+
+    const updatedUser: SafeDatabaseUser | null = await UserModel.findOneAndUpdate(
+      { username },
+      {
+        $set: {
+          coins: newCoinValue,
+        },
+      },
+      { new: true },
+    ).select('-password');
+
+    if (!updatedUser) {
+      return { error: 'Error updating user coins' };
+    }
+
+    return updatedUser;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return { error: message };
+  }
+};
