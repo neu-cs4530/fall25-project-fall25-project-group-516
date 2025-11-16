@@ -6,12 +6,15 @@ import {
   UserByUsernameRequest,
   FakeSOSocket,
   UpdateBiographyRequest,
+  TransactionRequest,
+  UpdateShowLoginStreakRequest,
 } from '../types/types';
 import {
   deleteUserByUsername,
   getUserByUsername,
   getUsersList,
   loginUser,
+  makeTransaction,
   saveUser,
   updateUser,
 } from '../services/user.service';
@@ -20,6 +23,7 @@ import { generateToken, verifyToken } from '../utils/jwt.util';
 import { protect } from '../middleware/token.middleware';
 import { getCachedUser } from '../utils/cache.util';
 import { cache, invalidate } from '../middleware/invalidateCache.middleware';
+import { checkAndAwardBadges } from '../services/badge.service';
 
 const userController = (socket: FakeSOSocket) => {
   const router: Router = express.Router();
@@ -45,6 +49,9 @@ const userController = (socket: FakeSOSocket) => {
       if ('error' in result) {
         throw new Error(result.error);
       }
+
+      // Check and award badges for the new user (e.g., First Steps badge)
+      await checkAndAwardBadges(result.username);
 
       // Generate JWT token for the new user
       const token = generateToken(result);
@@ -77,6 +84,9 @@ const userController = (socket: FakeSOSocket) => {
       if ('error' in user) {
         throw Error(user.error);
       }
+
+      // Check and award badges based on login streak
+      await checkAndAwardBadges(user.username);
 
       // Generate JWT token for the logged-in user
       const token = generateToken(user);
@@ -205,6 +215,39 @@ const userController = (socket: FakeSOSocket) => {
   };
 
   /**
+   * Updates a user's loginStreak visibility
+   * @param req The request containing the username and showLoginStreak in the body.
+   * @param res The response, either confirming the update or returning an error.
+   * @returns a promise resolving to void.
+   */
+  const updateShowLoginStreak = async (
+    req: UpdateShowLoginStreakRequest,
+    res: Response,
+  ): Promise<void> => {
+    try {
+      // Validate that request has username and showLoginStreak
+      const { username, showLoginStreak } = req.body;
+
+      // Call the same updateUser(...) service used by resetPassword
+      const updatedUser = await updateUser(username, { showLoginStreak });
+
+      if ('error' in updatedUser) {
+        throw new Error(updatedUser.error);
+      }
+
+      // Emit socket event for real-time updates
+      socket.emit('userUpdate', {
+        user: updatedUser,
+        type: 'updated',
+      });
+
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      res.status(500).send(`Error when updating user login streak visibility: ${error}`);
+    }
+  };
+
+  /**
    * Uploads and updates a user's profile picture.
    * @param req The request containing the image file and username in the body.
    * @param res The response, either confirming the update or returning an error.
@@ -329,6 +372,73 @@ const userController = (socket: FakeSOSocket) => {
     }
   };
 
+  /**
+   * Handles transactions where coins are added to a user's account.
+   * Request must contain the user's username and the cost of the transaction.
+   * Optionally it may also include a description of the transaction event.
+   * @param req The TransactionRequest object containing the username, cost, and description.
+   * @param res The response, containing either the updated user or an error.
+   */
+  const addCoinTransaction = async (req: TransactionRequest, res: Response): Promise<void> => {
+    coinTransaction(req, res, 'add');
+  };
+
+  /**
+   * Handles transactions where coins are reduced from a user's account.
+   * Request must contain the user's username and the cost of the transaction.
+   * Optionally it may also include a description of the transaction event.
+   * @param req The TransactionRequest object containing the username, cost, and description.
+   * @param res The response, containing either the updated user or an error.
+   */
+  const reduceCoinTransaction = async (req: TransactionRequest, res: Response): Promise<void> => {
+    coinTransaction(req, res, 'reduce');
+  };
+
+  /**
+   * Helper function to handle adding or reducing coins from user.
+   *
+  n* @param req The TransactionRequest object containing the username, cost, and description.
+   * @param res The response, containing either the updated user or an error.
+   * @param type The type of transaction to perform (add/ reduce).
+   */
+  const coinTransaction = async (
+    req: TransactionRequest,
+    res: Response,
+    type: 'add' | 'reduce',
+  ): Promise<void> => {
+    try {
+      const { username, cost } = req.body;
+
+      if (!username || !cost) {
+        res.status(400).send('Username and cost must be provided');
+      } else if (cost < 0) {
+        res.status(400).send('Invalid cost provided');
+      }
+
+      let status;
+
+      if (type == 'add') {
+        status = await makeTransaction(username, cost, type);
+      } else {
+        status = await makeTransaction(username, cost, type);
+      }
+
+      if ('error' in status) {
+        throw new Error(status.error);
+      }
+
+      const amount = status.coins;
+
+      socket.emit('transactionEvent', {
+        username,
+        amount,
+      });
+      res.status(200).json(status);
+    } catch (error) {
+      res.status(500).send(`Error making transaction: ${error}`);
+    }
+  };
+
   // Define routes for the user-related operations.
   router.post('/signup', createUser);
   router.post('/login', userLogin);
@@ -350,6 +460,10 @@ const userController = (socket: FakeSOSocket) => {
     uploadProfilePicture,
   );
   router.post('/uploadBannerImage', protect, upload.single('bannerImage'), uploadBannerImage);
+  router.patch('/updateShowLoginStreak', updateShowLoginStreak);
+  router.patch('/addCoins', addCoinTransaction);
+  router.patch('/reduceCoins', reduceCoinTransaction);
+
   return router;
 };
 

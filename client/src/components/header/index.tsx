@@ -9,9 +9,10 @@ import useUserContext from '../../hooks/useUserContext';
  * when they press Enter.
  */
 const Header = () => {
-  const { val, handleInputChange, handleKeyDown, handleSignOut } = useHeader();
+  const { val, handleInputChange, handleKeyDown, handleSignOut, coins } = useHeader();
   const { user: currentUser } = useUserContext();
   const navigate = useNavigate();
+
   return (
     <div id='header' className='header'>
       <div></div>
@@ -27,6 +28,18 @@ const Header = () => {
       <button onClick={handleSignOut} className='logout-button'>
         Log out
       </button>
+      <div id='image' className='image-with-text'>
+        <img
+          src='\coinPicture\stack-coin.PNG'
+          alt='Coin emblazoned stack of pancakes'
+          width='50'
+          height='50'
+          background-color='transparent'
+        />
+        <div id='text' text-align='center' justify-content='center'>
+          {coins}
+        </div>
+      </div>
       <button
         className='view-profile-button'
         onClick={() => navigate(`/user/${currentUser.username}`)}>

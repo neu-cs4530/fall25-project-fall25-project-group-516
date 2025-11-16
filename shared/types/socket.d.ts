@@ -137,6 +137,16 @@ export interface BadgeAwardedPayload {
 }
 
 /**
+ * Interface representing payload for a transaction event.
+ * - `username`: The username of the user who earned the coins.
+ * - `amount`: The new number of coins of the user.
+ */
+export interface TransactionEventPayload {
+  username: string;
+  amount: number;
+}
+
+/**
  * Interface representing the events the client can emit to the server.
  * - `makeMove`: Client can emit a move in the game.
  * - `joinGame`: Client can join a game.
@@ -184,4 +194,5 @@ export interface ServerToClientEvents {
   collectionUpdate: (community: CollectionUpdatePayload) => void;
   badgeUpdate: (badge: BadgeUpdatePayload) => void;
   badgeAwarded: (awarded: BadgeAwardedPayload) => void;
+  transactionEvent: (transaction: TransactionPayload) => void;
 }

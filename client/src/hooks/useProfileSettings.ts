@@ -7,6 +7,7 @@ import {
   updateBiography,
   uploadProfilePicture,
   uploadBannerImage,
+  updateShowLoginStreak,
 } from '../services/userService';
 import { getUserBadges, updateDisplayedBadges } from '../services/badgeService';
 import { SafeDatabaseUser, BadgeWithProgress } from '../types/types';
@@ -24,24 +25,21 @@ const useProfileSettings = () => {
 
   // Local state
   const [userData, setUserData] = useState<SafeDatabaseUser | null>(null);
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [editBioMode, setEditBioMode] = useState(false);
   const [newBio, setNewBio] = useState('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // For delete-user confirmation modal
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
-
-  const [showPassword, setShowPassword] = useState(false);
-
   // Badge and image upload state
   const [badges, setBadges] = useState<BadgeWithProgress[]>([]);
   const [displayedBadgeIds, setDisplayedBadgeIds] = useState<string[]>([]);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+  const [bannerImageUrl, setBannerImageUrl] = useState<string | null>(null);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [bannerImageFile, setBannerImageFile] = useState<File | null>(null);
+  const [showLoginStreak, setShowLoginStreak] = useState<boolean>(true);
 
   const canEditProfile =
     currentUser.username && userData?.username ? currentUser.username === userData.username : false;
@@ -76,45 +74,58 @@ const useProfileSettings = () => {
     fetchBadges();
   }, [username]);
 
+  // Auto-dismiss success messages after 10 seconds
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage]);
+
   /**
-   * Toggles the visibility of the password fields.
+   * Handler for updating login streak visibility in db
    */
-  const togglePasswordVisibility = () => {
-    setShowPassword(prevState => !prevState);
+  const handleToggleLoginStreak = async () => {
+    if (!username) return;
+    try {
+      // Await the async call to update the login streak vis
+      const updatedUser = await updateShowLoginStreak(username, showLoginStreak);
+
+      setUserData(updatedUser);
+
+      setSuccessMessage('Login streak visibility updated!');
+      setErrorMessage(null);
+    } catch (error) {
+      setErrorMessage('Failed to update biography.');
+      setSuccessMessage(null);
+    }
   };
 
   /**
-   * Validate the password fields before attempting to reset.
+   * Handler for previewing toggled login streak visibility
    */
-  const validatePasswords = () => {
-    if (newPassword.trim() === '' || confirmNewPassword.trim() === '') {
-      setErrorMessage('Please enter and confirm your new password.');
-      return false;
-    }
-    if (newPassword !== confirmNewPassword) {
-      setErrorMessage('Passwords do not match.');
-      return false;
-    }
-    return true;
+  const handleToggleLoginStreakPreview = async () => {
+    if (!username) return;
+    setShowLoginStreak(!showLoginStreak);
+    setSuccessMessage('Login streak toggle previewed!');
   };
 
   /**
    * Handler for resetting the password
    */
-  const handleResetPassword = async () => {
+  const handleResetPassword = async (newPassword: string) => {
     if (!username) return;
-    if (!validatePasswords()) {
-      return;
-    }
     try {
       await resetPassword(username, newPassword);
       setSuccessMessage('Password reset successful!');
       setErrorMessage(null);
-      setNewPassword('');
-      setConfirmNewPassword('');
     } catch (error) {
       setErrorMessage('Failed to reset password.');
       setSuccessMessage(null);
+      throw error;
     }
   };
 
@@ -140,9 +151,9 @@ const useProfileSettings = () => {
   };
 
   /**
-   * Handler for deleting the user (triggers confirmation modal)
+   * Handler for deleting the user
    */
-  const handleDeleteUser = () => {
+  const handleDeleteUser = async () => {
     if (!username) return;
     setShowConfirmation(true);
     setPendingAction(() => async () => {
@@ -166,15 +177,62 @@ const useProfileSettings = () => {
     return;
   };
 
+  const handleEnteringEditMode = () => {
+    if (userData?.profilePicture) setProfileImageUrl(userData?.profilePicture);
+    if (userData?.bannerImage) setBannerImageUrl(userData?.bannerImage);
+    if (userData?.showLoginStreak) setShowLoginStreak(userData?.showLoginStreak);
+  };
+
   /**
-   * Handler for uploading profile picture
+   * Handler for uploading profile picture for preview.
+   * @param file image
    */
-  const handleProfilePictureUpload = async (file: File) => {
+  const handleProfilePicturePreview = (file: File) => {
     if (!username) return;
+    const url = URL.createObjectURL(file);
+    if (url) {
+      setProfileImageUrl(url);
+      setProfileImageFile(file);
+      setSuccessMessage('Profile picture previewed!');
+    } else {
+      setErrorMessage('Failed to read file to url');
+    }
+  };
+
+  /**
+   * Handler for uploading banner picture for preview.
+   * @param file image
+   */
+  const handleBannerImagePreview = (file: File) => {
+    if (!username) return;
+    const url = URL.createObjectURL(file);
+    if (url) {
+      setBannerImageUrl(url);
+      setBannerImageFile(file);
+      setSuccessMessage('Banner image previewed!');
+    } else {
+      setErrorMessage('Failed to read file to url');
+    }
+  };
+
+  /**
+   * Handler for uploading profile picture to database
+   */
+  const handleProfilePictureUpload = async () => {
+    if (!username) return;
+    if (!profileImageFile) {
+      return;
+    }
     try {
       setUploadingImage(true);
-      const updatedUser = await uploadProfilePicture(username, file);
+      const updatedUser = await uploadProfilePicture(username, profileImageFile);
       setUserData(updatedUser);
+
+      // reset preview states
+      setProfileImageFile(null);
+      if (profileImageUrl) URL.revokeObjectURL(profileImageUrl);
+      setProfileImageUrl(null);
+
       setSuccessMessage('Profile picture updated!');
       setErrorMessage(null);
     } catch (error) {
@@ -186,14 +244,23 @@ const useProfileSettings = () => {
   };
 
   /**
-   * Handler for uploading banner image
+   * Handler for uploading banner image to database
    */
-  const handleBannerImageUpload = async (file: File) => {
+  const handleBannerImageUpload = async () => {
     if (!username) return;
+    if (!bannerImageFile) {
+      return;
+    }
     try {
       setUploadingImage(true);
-      const updatedUser = await uploadBannerImage(username, file);
+      const updatedUser = await uploadBannerImage(username, bannerImageFile);
       setUserData(updatedUser);
+
+      // reset preview states
+      setBannerImageFile(null);
+      if (bannerImageUrl) URL.revokeObjectURL(bannerImageUrl);
+      setBannerImageUrl(null);
+
       setSuccessMessage('Banner image updated!');
       setErrorMessage(null);
     } catch (error) {
@@ -227,12 +294,46 @@ const useProfileSettings = () => {
     }
   };
 
+  /**
+   * Handles done button for profile edit.
+   */
+  const handleDoneButton = () => {
+    handleProfilePictureUpload();
+    handleBannerImageUpload();
+    handleToggleLoginStreak();
+  };
+
+  /**
+   * Handles cancel button for profile edit.
+   */
+  const handleCancelButton = () => {
+    if (!username) return;
+    let changed = false;
+    if (profileImageFile) {
+      setProfileImageFile(null);
+      changed = true;
+    }
+    if (bannerImageFile) {
+      setBannerImageFile(null);
+      changed = true;
+    }
+    if (profileImageUrl) {
+      URL.revokeObjectURL(profileImageUrl);
+      setProfileImageUrl(null);
+    }
+    if (bannerImageUrl) {
+      URL.revokeObjectURL(bannerImageUrl);
+      setBannerImageUrl(null);
+    }
+    if (showLoginStreak) {
+      setShowLoginStreak(true);
+      changed = true;
+    }
+    if (changed) setSuccessMessage('All changes cancelled!');
+  };
+
   return {
     userData,
-    newPassword,
-    confirmNewPassword,
-    setNewPassword,
-    setConfirmNewPassword,
     loading,
     editBioMode,
     setEditBioMode,
@@ -240,15 +341,12 @@ const useProfileSettings = () => {
     setNewBio,
     successMessage,
     errorMessage,
-    showConfirmation,
-    setShowConfirmation,
-    pendingAction,
-    setPendingAction,
     canEditProfile,
-    showPassword,
-    togglePasswordVisibility,
     handleResetPassword,
     handleUpdateBiography,
+    showLoginStreak,
+    handleToggleLoginStreak,
+    handleToggleLoginStreakPreview,
     handleDeleteUser,
     handleViewCollectionsPage,
     badges,
@@ -257,6 +355,13 @@ const useProfileSettings = () => {
     handleProfilePictureUpload,
     handleBannerImageUpload,
     handleToggleBadge,
+    profileImageUrl,
+    bannerImageUrl,
+    handleBannerImagePreview,
+    handleProfilePicturePreview,
+    handleCancelButton,
+    handleDoneButton,
+    handleEnteringEditMode,
   };
 };
 

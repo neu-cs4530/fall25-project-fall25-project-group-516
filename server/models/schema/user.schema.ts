@@ -71,6 +71,10 @@ const userSchema: Schema = new Schema(
       type: Number,
       default: 0,
     },
+    maxLoginStreak: {
+      type: Number,
+      default: 0,
+    },
     lastLogin: {
       type: Date,
       default: null,
@@ -87,6 +91,14 @@ const userSchema: Schema = new Schema(
       type: Map,
       of: String,
       default: {},
+    },
+    lifeUpvotes: {
+      type: Number,
+      default: 0,
+    },
+    coins: {
+      type: Number,
+      default: 0,
     },
   },
   { collection: 'User' },

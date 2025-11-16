@@ -33,6 +33,27 @@
   margin-left: 10px; /* Add spacing from Logout button */
 }
 
+.image-with-text {
+  display: flex;
+  width: 100px;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-with-text img {
+  display: block;
+  background-color: transparent;
+  width: 50px;
+  height: 50px;
+  justify-content: left;
+}
+
+.image-with-text div {
+  justify-content: center;
+  height: 20px;
+  float: right;
+}
+
 .view-profile-button:hover {
   background-color: #0056b3;
 }

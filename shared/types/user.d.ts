@@ -24,8 +24,12 @@ export interface UserCredentials {
  * - `badges`: Array of badge IDs the user has earned.
  * - `displayedBadges`: Array of badge IDs the user wants to display.
  * - `loginStreak`: Number of consecutive days logged in.
+ * - `maxLoginStreak`: Maximum login streak ever achieved.
  * - `lastLogin`: The last date/time the user logged in.
  * - `showLoginStreak`: Whether to display the login streak on profile.
+ * - `email`: Email associated with user.
+ * - `lifeUpvotes`: Lifetime upvotes to user's posts (answers & questions).
+ * - `coins`: Amount of coins user currently has.
  */
 export interface User extends UserCredentials {
   dateJoined: Date;
@@ -37,10 +41,13 @@ export interface User extends UserCredentials {
   badges?: ObjectId[];
   displayedBadges?: ObjectId[];
   loginStreak?: number;
+  maxLoginStreak?: number;
   lastLogin?: Date;
   showLoginStreak?: boolean;
   email?: string;
   roles?: Map<string, string>;
+  lifeUpvotes?: number;
+  coins?: number;
 }
 
 /**
@@ -118,5 +125,31 @@ export interface UpdateBiographyRequest extends Request {
   body: {
     username: string;
     biography: string;
+  };
+}
+
+/**
+ * Express request for updating user's login streak visibility.
+ * - `username`: The username whose biography is being updated (body).
+ * - `showLoginStreak`: The new visibility to be set (body).
+ */
+export interface UpdateShowLoginStreakRequest extends Request {
+  body: {
+    username: string;
+    showLoginStreak: boolean;
+  };
+}
+
+/**
+ * Express request from user for making a transaction.
+ * - `username`: The username of user making transaction (body).
+ * - `cost`: cost of transaction (body).
+ * - `description`: description of event requiring transaction.
+ */
+export interface TransactionRequest extends Request {
+  body: {
+    username: string;
+    cost: number;
+    description?: string;
   };
 }

@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb';
 import { app } from '../../app';
 import * as answerUtil from '../../services/answer.service';
 import * as databaseUtil from '../../utils/database.util';
+import * as badgeUtil from '../../services/badge.service';
 
 const saveAnswerSpy = jest.spyOn(answerUtil, 'saveAnswer');
 const addAnswerToQuestionSpy = jest.spyOn(answerUtil, 'addAnswerToQuestion');
@@ -45,6 +46,8 @@ describe('POST /addAnswer', () => {
       comments: [],
       community: null,
     });
+
+    jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValueOnce([]);
 
     popDocSpy.mockResolvedValueOnce({
       _id: validQid,
@@ -176,6 +179,7 @@ describe('POST /addAnswer', () => {
 
     saveAnswerSpy.mockResolvedValueOnce(mockAnswer);
     addAnswerToQuestionSpy.mockResolvedValueOnce({ error: 'Error when adding answer to question' });
+    jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValueOnce([]);
 
     const response = await supertest(app).post('/api/answer/addAnswer').send(mockReqBody);
 

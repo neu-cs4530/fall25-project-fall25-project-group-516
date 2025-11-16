@@ -71,8 +71,10 @@ const createUser = async (user: UserCredentials): Promise<SafeDatabaseUser> => {
 const loginUser = async (user: UserCredentials): Promise<SafeDatabaseUser> => {
   try {
     const res = await api.post<AuthResponse>(`${USER_API_URL}/login`, user);
+
     // Store the token in localStorage
     setAuthToken(res.data.token);
+
     return res.data.user;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -127,6 +129,54 @@ const deleteUser = async (username: string): Promise<SafeDatabaseUser> => {
 };
 
 /**
+ * Add coins to a user's account.
+ * @param username - The unique username of the user
+ * @param cost - The amount of coins to add to their account
+ * @param description - Optional description for transaction
+ * @returns A promise that resolves to the updated user data
+ * @throws {Error} if the request to the server is unsuccessful
+ */
+const addCoins = async (
+  username: string,
+  cost: number,
+  description?: string,
+): Promise<SafeDatabaseUser> => {
+  const res = await api.patch(`${USER_API_URL}/addCoins`, {
+    username,
+    cost,
+    description,
+  });
+  if (res.status !== 200) {
+    throw new Error('Error when adding coins');
+  }
+  return res.data;
+};
+
+/**
+ * Reduce coins from a user's account.
+ * @param username - The unique username of the user
+ * @param cost - The amount of coins to reduce from their account
+ * @param description - Optional description for transaction
+ * @returns A promise that resolves to the updated user data
+ * @throws {Error} if the request to the server is unsuccessful
+ */
+const reduceCoins = async (
+  username: string,
+  cost: number,
+  description?: string,
+): Promise<SafeDatabaseUser> => {
+  const res = await api.patch(`${USER_API_URL}/reduceCoins`, {
+    username,
+    cost,
+    description,
+  });
+  if (res.status !== 200) {
+    throw new Error('Error when reducing coins');
+  }
+  return res.data;
+};
+
+/**
  * Resets the password for a user.
  * @param username - The unique username of the user
  * @param newPassword - The new password to be set for the user
@@ -161,6 +211,27 @@ const updateBiography = async (
   });
   if (res.status !== 200) {
     throw new Error('Error when updating biography');
+  }
+  return res.data;
+};
+
+/**
+ * Updates the user's login streak visibility.
+ * @param username The unique username of the user
+ * @param newBiography The new login streak visibility to set for this user
+ * @returns A promise resolving to the updated user
+ * @throws Error if the request fails
+ */
+const updateShowLoginStreak = async (
+  username: string,
+  showLoginStreak: boolean,
+): Promise<SafeDatabaseUser> => {
+  const res = await api.patch(`${USER_API_URL}/updateShowLoginStreak`, {
+    username,
+    showLoginStreak,
+  });
+  if (res.status !== 200) {
+    throw new Error('Error when updating login streak visibility');
   }
   return res.data;
 };
@@ -235,7 +306,10 @@ export {
   deleteUser,
   resetPassword,
   updateBiography,
+  updateShowLoginStreak,
   uploadProfilePicture,
   uploadBannerImage,
   verifyStoredToken,
+  addCoins,
+  reduceCoins,
 };

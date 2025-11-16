@@ -1,9 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose, { Query } from 'mongoose';
 import supertest from 'supertest';
 import { app } from '../../app';
 import * as questionUtil from '../../services/question.service';
 import * as tagUtil from '../../services/tag.service';
 import * as databaseUtil from '../../utils/database.util';
+import * as badgeUtil from '../../services/badge.service';
 import {
   Answer,
   DatabaseQuestion,
@@ -14,6 +15,7 @@ import {
   Tag,
   VoteResponse,
 } from '../../types/types';
+import QuestionModel from '../../models/questions.model';
 
 const addVoteToQuestionSpy = jest.spyOn(questionUtil, 'addVoteToQuestion');
 const getQuestionsByOrderSpy: jest.SpyInstance = jest.spyOn(questionUtil, 'getQuestionsByOrder');
@@ -208,10 +210,14 @@ const simplifyQuestion = (question: PopulatedDatabaseQuestion) => ({
 const EXPECTED_QUESTIONS = MOCK_POPULATED_QUESTIONS.map(question => simplifyQuestion(question));
 
 describe('Test questionController', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   describe('POST /addQuestion', () => {
     it('should add a new question', async () => {
       jest.spyOn(tagUtil, 'processTags').mockResolvedValue([dbTag1, dbTag2]);
       jest.spyOn(questionUtil, 'saveQuestion').mockResolvedValueOnce(mockDatabaseQuestion);
+      jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValueOnce([]);
       jest.spyOn(databaseUtil, 'populateDocument').mockResolvedValueOnce(mockPopulatedQuestion);
 
       // Making the request
@@ -238,6 +244,7 @@ describe('Test questionController', () => {
     it('should return 500 if error occurs in populateDocument while adding a new question', async () => {
       jest.spyOn(tagUtil, 'processTags').mockResolvedValue([dbTag1, dbTag2]);
       jest.spyOn(questionUtil, 'saveQuestion').mockResolvedValueOnce(mockDatabaseQuestion);
+      jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValueOnce([]);
       jest
         .spyOn(databaseUtil, 'populateDocument')
         .mockResolvedValueOnce({ error: 'Error while populating' });
@@ -355,6 +362,7 @@ describe('Test questionController', () => {
         comments: [],
         community: null,
       });
+      jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValueOnce([]);
 
       jest.spyOn(databaseUtil, 'populateDocument').mockResolvedValueOnce(result);
 
@@ -398,6 +406,11 @@ describe('Test questionController', () => {
 
       addVoteToQuestionSpy.mockResolvedValueOnce(mockResponse);
 
+      jest.spyOn(QuestionModel, 'findById').mockReturnValue({
+        populate: jest.fn().mockResolvedValue({ mockQuestion }),
+      } as unknown as Query<PopulatedDatabaseQuestion[], typeof QuestionModel>);
+      jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValueOnce([]);
+
       const response = await supertest(app).post('/api/question/upvoteQuestion').send(mockReqBody);
 
       expect(response.status).toBe(200);
@@ -423,6 +436,10 @@ describe('Test questionController', () => {
       };
 
       addVoteToQuestionSpy.mockResolvedValueOnce(mockFirstResponse);
+      jest.spyOn(QuestionModel, 'findById').mockReturnValue({
+        populate: jest.fn().mockResolvedValue({ mockQuestion }),
+      } as unknown as Query<PopulatedDatabaseQuestion[], typeof QuestionModel>);
+      jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValue([]);
 
       const firstResponse = await supertest(app)
         .post('/api/question/upvoteQuestion')
@@ -431,6 +448,10 @@ describe('Test questionController', () => {
       expect(firstResponse.body).toEqual(mockFirstResponse);
 
       addVoteToQuestionSpy.mockResolvedValueOnce(mockSecondResponse);
+      jest.spyOn(QuestionModel, 'findById').mockReturnValue({
+        populate: jest.fn().mockResolvedValue({ mockQuestion }),
+      } as unknown as Query<PopulatedDatabaseQuestion[], typeof QuestionModel>);
+      jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValue([]);
 
       const secondResponse = await supertest(app)
         .post('/api/question/upvoteQuestion')
@@ -454,6 +475,10 @@ describe('Test questionController', () => {
       };
 
       addVoteToQuestionSpy.mockResolvedValueOnce(mockResponseWithBothVotes);
+      jest.spyOn(QuestionModel, 'findById').mockReturnValue({
+        populate: jest.fn().mockResolvedValue({ mockQuestion }),
+      } as unknown as Query<PopulatedDatabaseQuestion[], typeof QuestionModel>);
+      jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValue([]);
 
       let response = await supertest(app).post('/api/question/upvoteQuestion').send(mockReqBody);
 
@@ -468,6 +493,10 @@ describe('Test questionController', () => {
       };
 
       addVoteToQuestionSpy.mockResolvedValueOnce(mockResponseWithBothVotes);
+      jest.spyOn(QuestionModel, 'findById').mockReturnValue({
+        populate: jest.fn().mockResolvedValue({ mockQuestion }),
+      } as unknown as Query<PopulatedDatabaseQuestion[], typeof QuestionModel>);
+      jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValue([]);
 
       response = await supertest(app).post('/api/question/downvoteQuestion').send(mockReqBody);
 
@@ -510,6 +539,10 @@ describe('Test questionController', () => {
       };
 
       addVoteToQuestionSpy.mockResolvedValueOnce(mockResponse);
+      jest.spyOn(QuestionModel, 'findById').mockReturnValue({
+        populate: jest.fn().mockResolvedValue({ mockQuestion }),
+      } as unknown as Query<PopulatedDatabaseQuestion[], typeof QuestionModel>);
+      jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValue([]);
 
       const response = await supertest(app)
         .post('/api/question/downvoteQuestion')

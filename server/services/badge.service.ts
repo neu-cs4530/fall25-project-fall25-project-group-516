@@ -5,6 +5,7 @@ import QuestionModel from '../models/questions.model';
 import AnswerModel from '../models/answers.model';
 import CommentModel from '../models/comments.model';
 import { ObjectId } from 'mongodb';
+import { makeTransaction } from './user.service';
 
 /**
  * Creates a new badge in the database.
@@ -83,7 +84,8 @@ export const calculateBadgeProgress = async (
         return count;
       }
       case 'login_streak': {
-        return user.loginStreak || 0;
+        // Use max streak so badge isn't lost when streak breaks
+        return user.maxLoginStreak || 0;
       }
       case 'upvote_count': {
         // Count total upvotes on user's questions (answers don't have upvotes in current schema)
@@ -135,6 +137,7 @@ export const getUserBadgesWithProgress = async (username: string): Promise<Badge
           requirement: badge.requirement,
           hint: badge.hint,
           progress: badge.progress,
+          coinValue: badge.coinValue,
           userProgress: progress,
           earned,
         };
@@ -177,12 +180,13 @@ export const checkAndAwardBadges = async (username: string): Promise<DatabaseBad
           { $addToSet: { badges: badge._id } }, // $addToSet prevents duplicates
         );
         newlyEarnedBadges.push(badge);
+        await makeTransaction(user.username, badge.coinValue, 'add');
       }
     }
 
     return newlyEarnedBadges;
   } catch (error) {
-    return [];
+    throw new Error('Failed to check and award badges');
   }
 };
 

@@ -4,7 +4,7 @@ const BADGES: Badge[] = [
   {
     name: 'First Question',
     description: 'Asked your first question on the platform',
-    icon: '',
+    icon: 'first-question.svg',
     category: 'participation',
     requirement: {
       type: 'first_question',
@@ -12,11 +12,12 @@ const BADGES: Badge[] = [
     },
     hint: 'Ask your first question to earn this badge',
     progress: false,
+    coinValue: 10,
   },
   {
     name: 'First Answer',
     description: 'Posted your first answer to help the community',
-    icon: '',
+    icon: 'first-answer.svg',
     category: 'participation',
     requirement: {
       type: 'first_answer',
@@ -24,11 +25,12 @@ const BADGES: Badge[] = [
     },
     hint: 'Answer your first question to earn this badge',
     progress: false,
+    coinValue: 10,
   },
   {
     name: 'Curious Mind',
     description: 'Asked 10 questions',
-    icon: '',
+    icon: 'curious-mind.svg',
     category: 'achievement',
     requirement: {
       type: 'question_count',
@@ -36,11 +38,12 @@ const BADGES: Badge[] = [
     },
     hint: 'Ask 10 questions to earn this badge. Keep asking!',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Helpful Helper',
     description: 'Provided 10 answers',
-    icon: '',
+    icon: 'helpful-helper.svg',
     category: 'achievement',
     requirement: {
       type: 'answer_count',
@@ -48,11 +51,12 @@ const BADGES: Badge[] = [
     },
     hint: 'Answer 10 questions to earn this badge',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Popular Contributor',
     description: 'Received 50 upvotes across all your posts',
-    icon: '',
+    icon: 'popular-contributor.svg',
     category: 'achievement',
     requirement: {
       type: 'upvote_count',
@@ -60,11 +64,12 @@ const BADGES: Badge[] = [
     },
     hint: 'Get 50 total upvotes on your questions and answers',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Dedicated User',
     description: 'Maintained a 7-day login streak',
-    icon: '',
+    icon: 'dedicated-user.svg',
     category: 'streak',
     requirement: {
       type: 'login_streak',
@@ -72,11 +77,12 @@ const BADGES: Badge[] = [
     },
     hint: 'Log in for 7 consecutive days to earn this badge',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Streak Champion',
     description: 'Maintained a 30-day login streak',
-    icon: '',
+    icon: 'streak-champion.svg',
     category: 'streak',
     requirement: {
       type: 'login_streak',
@@ -84,11 +90,12 @@ const BADGES: Badge[] = [
     },
     hint: 'Log in for 30 consecutive days to earn this badge',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Engaged Commenter',
     description: 'Made 25 comments',
-    icon: '',
+    icon: 'engaged-commenter.svg',
     category: 'achievement',
     requirement: {
       type: 'comment_count',
@@ -96,11 +103,12 @@ const BADGES: Badge[] = [
     },
     hint: 'Comment on 25 posts to earn this badge',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Community Star',
     description: 'Received 100 upvotes across all your posts',
-    icon: '',
+    icon: 'community-star.svg',
     category: 'achievement',
     requirement: {
       type: 'upvote_count',
@@ -108,11 +116,12 @@ const BADGES: Badge[] = [
     },
     hint: 'Get 100 total upvotes on your questions and answers',
     progress: true,
+    coinValue: 10,
   },
   {
     name: 'Expert Asker',
     description: 'Asked 50 questions',
-    icon: '',
+    icon: 'expert-asker.svg',
     category: 'achievement',
     requirement: {
       type: 'question_count',
@@ -120,6 +129,7 @@ const BADGES: Badge[] = [
     },
     hint: 'Ask 50 questions to earn this badge',
     progress: true,
+    coinValue: 10,
   },
 ];
 
