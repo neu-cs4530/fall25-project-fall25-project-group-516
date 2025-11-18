@@ -14,6 +14,7 @@ describe('POST /addMessage', () => {
     jest.clearAllMocks();
     setupMockAuth();
   });
+
   it('should add a new message', async () => {
     const validId = new mongoose.Types.ObjectId();
 

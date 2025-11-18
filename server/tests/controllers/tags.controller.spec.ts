@@ -16,6 +16,7 @@ describe('Test tagController', () => {
     jest.clearAllMocks();
     setupMockAuth();
   });
+
   describe('GET /getTagByName/:name', () => {
     it('should return the tag when found', async () => {
       // Mock a tag object to be returned by the findOne method

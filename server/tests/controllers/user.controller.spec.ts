@@ -38,6 +38,7 @@ describe('Test userController', () => {
     jest.clearAllMocks();
     setupMockAuth();
   });
+
   describe('POST /signup', () => {
     it('should create a new user given correct arguments', async () => {
       const mockReqBody = {

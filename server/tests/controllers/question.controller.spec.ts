@@ -216,6 +216,7 @@ describe('Test questionController', () => {
     jest.clearAllMocks();
     setupMockAuth();
   });
+
   describe('POST /addQuestion', () => {
     it('should add a new question', async () => {
       jest.spyOn(tagUtil, 'processTags').mockResolvedValue([dbTag1, dbTag2]);

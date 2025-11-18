@@ -33,6 +33,7 @@ describe('Chat Controller', () => {
     jest.clearAllMocks();
     setupMockAuth();
   });
+
   describe('POST /chat/createChat', () => {
     it('should create a new chat successfully', async () => {
       const validChatPayload = {

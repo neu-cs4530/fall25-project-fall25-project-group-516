@@ -20,6 +20,7 @@ describe('POST /create', () => {
     jest.clearAllMocks();
     setupMockAuth();
   });
+
   const addGameSpy = jest.spyOn(mockGameManager, 'addGame');
 
   describe('200 OK Requests', () => {
