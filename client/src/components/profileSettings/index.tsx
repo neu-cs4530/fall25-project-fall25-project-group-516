@@ -458,7 +458,7 @@ const ProfileSettings: React.FC = () => {
             ) : userQuestions.length > 0 ? (
               <div className='user-questions-list'>
                 {userQuestions.map(question => (
-                  <Question key={question._id} question={question} />
+                  <Question key={question._id.toString()} question={question} />
                 ))}
               </div>
             ) : (
