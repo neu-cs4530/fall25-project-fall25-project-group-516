@@ -225,9 +225,7 @@ const ProfileSettings: React.FC = () => {
                               setShowSettingsDropdown(false);
                               handleTogglePrivacy();
                             }}>
-                            <FontAwesomeIcon
-                              icon={userData?.profilePrivate ? faEye : faEyeSlash}
-                            />
+                            <FontAwesomeIcon icon={userData?.profilePrivate ? faEye : faEyeSlash} />
                             <span>
                               {userData?.profilePrivate
                                 ? 'Make Profile Public'
@@ -440,7 +438,8 @@ const ProfileSettings: React.FC = () => {
         <div className='profile-card'>
           <div className='profile-section'>
             <h2 className='section-title'>
-              Questions Posted {!userData.profilePrivate || canEditProfile ? `(${userQuestions.length})` : ''}
+              Questions Posted{' '}
+              {!userData.profilePrivate || canEditProfile ? `(${userQuestions.length})` : ''}
             </h2>
             {userData.profilePrivate && !canEditProfile ? (
               <p className='private-message'>This user account is private</p>
