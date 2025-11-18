@@ -4,9 +4,14 @@ import { getCachedUserRoles } from '../utils/cache.util';
 const permissions = (permittedRoles: string[], communityGen: (req: Request) => string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // Add null check for req.user
+      if (!req.user) {
+        res.status(401).json({ error: 'User not authorized' });
+        return;
+      }
+
       const communityId = communityGen(req);
       const cachedRoles = await getCachedUserRoles(req.user._id);
-
       const role = cachedRoles.get(communityId);
 
       if (!role) {
@@ -15,7 +20,6 @@ const permissions = (permittedRoles: string[], communityGen: (req: Request) => s
       }
 
       const hasPermission = permittedRoles.includes(role);
-
       if (!hasPermission) {
         res.status(401).json({ error: 'User not authorized' });
         return;
@@ -23,7 +27,7 @@ const permissions = (permittedRoles: string[], communityGen: (req: Request) => s
 
       next();
     } catch (err) {
-      next();
+      res.status(500).json({ error: 'Internal server error' });
     }
   };
 };

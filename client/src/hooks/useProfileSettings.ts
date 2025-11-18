@@ -12,7 +12,7 @@ import {
 import { getUserBadges, updateDisplayedBadges } from '../services/badgeService';
 import { SafeDatabaseUser, BadgeWithProgress } from '../types/types';
 import useUserContext from './useUserContext';
-import useLoginContext from './useLoginContext';
+import useHeader from './useHeader';
 
 /**
  * A custom hook to encapsulate all logic/state for the ProfileSettings component.
@@ -20,7 +20,7 @@ import useLoginContext from './useLoginContext';
 const useProfileSettings = () => {
   const { username } = useParams<{ username: string }>();
   const { user: currentUser } = useUserContext();
-  const { setUser } = useLoginContext();
+  const { handleSignOut } = useHeader();
 
   // Local state
   const [userData, setUserData] = useState<SafeDatabaseUser | null>(null);
@@ -154,21 +154,16 @@ const useProfileSettings = () => {
    */
   const handleDeleteUser = async () => {
     if (!username) return;
-    setShowConfirmation(true);
-    setPendingAction(() => async () => {
-      try {
-        await deleteUser(username);
-        setSuccessMessage(`User "${username}" deleted successfully.`);
-        setErrorMessage(null);
-        setUser(null);
-        navigate('/');
-      } catch (error) {
-        setErrorMessage('Failed to delete user.');
-        setSuccessMessage(null);
-      } finally {
-        setShowConfirmation(false);
-      }
-    });
+    try {
+      await deleteUser(username);
+      setSuccessMessage(`User "${username}" deleted successfully.`);
+      setErrorMessage(null);
+      handleSignOut();
+    } catch (error) {
+      setErrorMessage('Failed to delete user.');
+      setSuccessMessage(null);
+      throw error;
+    }
   };
 
   const handleEnteringEditMode = () => {
