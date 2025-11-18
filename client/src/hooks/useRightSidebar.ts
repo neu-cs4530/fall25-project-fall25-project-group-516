@@ -4,7 +4,7 @@ import { getQuestionsByFilter } from '../services/questionService';
 import { DatabaseCommunity, PopulatedDatabaseQuestion } from '../types/types';
 
 /**
- * Custom hook to fetch data for the right sidebar.
+ * Custom hook to fetch data for the right sidebar
  * Fetches top communities and hot questions.
  */
 const useRightSidebar = () => {
@@ -32,7 +32,7 @@ const useRightSidebar = () => {
         );
         setHotQuestions(publicQuestions.slice(0, 5));
       } catch (error) {
-        // Silent error handling - sidebar will show empty if fetch fails
+        // Silent error handling
         setTopCommunities([]);
         setHotQuestions([]);
       } finally {
