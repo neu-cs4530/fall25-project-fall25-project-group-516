@@ -163,7 +163,7 @@ export const toggleBanUser = async (communityId: string, username: string) => {
       return { error: 'Community not found' };
     }
 
-    if (community.admin === username || community.moderators?.includes(username)) {
+    if (community.admin === username) {
       return {
         error:
           'Community admins or moderators cannot be banned. Please transfer ownership or delete the community instead.',
@@ -175,13 +175,19 @@ export const toggleBanUser = async (communityId: string, username: string) => {
     }
 
     const isMember = community.participants.includes(username);
+    const isModerator = community.moderators?.includes(username);
     const isBanned = community.banned?.includes(username);
 
     const communityUpdateOp = isBanned
       ? { $pull: { banned: username } }
-      : isMember
-        ? { $addToSet: { banned: username }, $pull: { participants: username } }
-        : { $addToSet: { banned: username } };
+      : !isMember
+        ? { $addToSet: { banned: username } }
+        : !isModerator
+          ? { $addToSet: { banned: username }, $pull: { participants: username } }
+          : {
+              $addToSet: { banned: username },
+              $pull: { participants: username, moderators: username },
+            };
 
     const updatedCommunity = await CommunityModel.findByIdAndUpdate(
       communityId,
