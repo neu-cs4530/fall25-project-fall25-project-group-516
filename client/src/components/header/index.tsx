@@ -1,5 +1,7 @@
+import { FiBell } from 'react-icons/fi';
 import useHeader from '../../hooks/useHeader';
 import './index.css';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Header component that renders the main title and a search bar.
@@ -7,7 +9,7 @@ import './index.css';
  * when they press Enter.
  */
 const Header = () => {
-  const { val, handleInputChange, handleKeyDown, coins } = useHeader();
+  const { val, handleInputChange, handleKeyDown, coins, handleNotifRedirect } = useHeader();
 
   return (
     <div id='header' className='header'>
@@ -32,7 +34,11 @@ const Header = () => {
         <div id='text' text-align='center' justify-content='center'>
           {coins}
         </div>
+        <div id='text'></div>
       </div>
+      <button className='notifications-btn' onClick={() => handleNotifRedirect()}>
+        <FiBell size={20}></FiBell>
+      </button>
     </div>
   );
 };

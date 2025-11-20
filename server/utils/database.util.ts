@@ -47,6 +47,7 @@ const populateQuestion = async (questionID: string): Promise<PopulatedDatabaseQu
   return result;
 };
 
+
 /**
  * Fetches and populates an answer document with its related comments.
  *

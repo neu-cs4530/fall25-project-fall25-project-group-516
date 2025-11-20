@@ -189,7 +189,8 @@
     "username": "nodejsdev",
     "password": "N0d3Exper7!",
     "dateJoined": "2023-08-19T13:27:56Z",
-    "biography": "Node.js developer focusing on scalable backend architecture. Experienced in handling high-traffic applications and microservices."
+    "biography": "Node.js developer focusing on scalable backend architecture. Experienced in handling high-traffic applications and microservices.",
+    "notifications": ["notification1"]
   },
   "datascientist": {
     "username": "datascientist",

@@ -1,0 +1,11 @@
+{
+  "notification1": {
+    "title": "New answer on \"How to center a div?\"",
+    "msg": "Flexbox is the easiest way. Just set display: flex; justify-content: center; align-items: center;",
+    "dateTime": "2024-10-05T11:47:33Z",
+    "sender": "u/CSS_Master",
+    "contextId": "question1",
+    "read": false,
+    "type": "answer"
+  }
+}

@@ -27,6 +27,7 @@ import communityController from './controllers/community.controller';
 import badgeController from './controllers/badge.controller';
 import openAuthorizationController from './controllers/authorization.controller';
 import protect from './middleware/token.middleware';
+import notificationController from './controllers/notifications.controller';
 
 const MONGO_URL = `${process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017'}/fake_so`;
 const PORT = parseInt(process.env.PORT || '8000');
@@ -115,6 +116,7 @@ app.use('/api/collection', protect, collectionController(socket));
 app.use('/api/community', protect, communityController(socket));
 app.use('/api/badge', protect, badgeController(socket));
 app.use('/api/auth', openAuthorizationController());
+app.use('/api/notifications', protect, notificationController(socket));
 
 const openApiDocument = yaml.parse(fs.readFileSync('./openapi.yaml', 'utf8'));
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));

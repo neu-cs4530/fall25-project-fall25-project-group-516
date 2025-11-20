@@ -51,6 +51,10 @@ const useHeader = () => {
     }
   };
 
+  const handleNotifRedirect = () => {
+    navigate('/notifications');
+  };
+
   useEffect(() => {
     /**
      * Sets coin display based on user's current amount of coins.
@@ -94,6 +98,7 @@ const useHeader = () => {
     handleKeyDown,
     handleSignOut,
     coins,
+    handleNotifRedirect,
   };
 };
 

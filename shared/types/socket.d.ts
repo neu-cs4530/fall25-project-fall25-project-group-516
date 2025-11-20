@@ -7,6 +7,7 @@ import { BaseMove, GameInstance, GameInstanceID, GameMove, GameState } from './g
 import { DatabaseCommunity } from './community';
 import { PopulatedDatabaseCollection } from './collection';
 import { DatabaseBadge } from './badge';
+import { DatabaseNotification } from './notification';
 
 /**
  * Payload for an answer update event.
@@ -56,6 +57,10 @@ export interface VoteUpdatePayload {
 export interface ChatUpdatePayload {
   chat: PopulatedDatabaseChat;
   type: 'created' | 'newMessage' | 'newParticipant';
+}
+
+export interface NotificationPayload {
+  notification: DatabaseNotification;
 }
 
 /**
@@ -195,4 +200,5 @@ export interface ServerToClientEvents {
   badgeUpdate: (badge: BadgeUpdatePayload) => void;
   badgeAwarded: (awarded: BadgeAwardedPayload) => void;
   transactionEvent: (transaction: TransactionPayload) => void;
+  notificationEvent: (notification: NotificationPayload) => void;
 }

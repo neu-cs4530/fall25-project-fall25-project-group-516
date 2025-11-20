@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 /**
  * Mongoose schema for the User collection.
@@ -86,6 +86,7 @@ const userSchema: Schema = new Schema(
     email: {
       type: String,
       unique: true,
+      sparse: true,
     },
     roles: {
       type: Map,
@@ -104,6 +105,12 @@ const userSchema: Schema = new Schema(
       type: Boolean,
       default: false,
     },
+    notifications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Notification',
+      },
+    ],
   },
   { collection: 'User' },
 );
