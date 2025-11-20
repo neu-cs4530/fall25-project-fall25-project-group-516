@@ -31,6 +31,8 @@ export interface UserCredentials {
  * - `lifeUpvotes`: Lifetime upvotes to user's posts (answers & questions).
  * - `coins`: Amount of coins user currently has.
  * - `profilePrivate`: Whether the user's profile is private.
+ * - `status`: User's current status ('online', 'busy', 'away').
+ * - `customStatus`: Custom status message.
  */
 export interface User extends UserCredentials {
   dateJoined: Date;
@@ -50,6 +52,8 @@ export interface User extends UserCredentials {
   lifeUpvotes?: number;
   coins?: number;
   profilePrivate?: boolean;
+  status?: 'online' | 'busy' | 'away';
+  customStatus?: string;
 }
 
 /**
@@ -153,5 +157,19 @@ export interface TransactionRequest extends Request {
     username: string;
     cost: number;
     description?: string;
+  };
+}
+
+/**
+ * Express request for updating user's status.
+ * - `username`: The username whose status is being updated (body).
+ * - `status`: The new status to be set (body).
+ * - `customStatus`: Optional custom status message (body).
+ */
+export interface UpdateStatusRequest extends Request {
+  body: {
+    username: string;
+    status: 'online' | 'busy' | 'away';
+    customStatus?: string;
   };
 }

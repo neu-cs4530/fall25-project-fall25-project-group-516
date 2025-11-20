@@ -8,6 +8,7 @@ import {
   UpdateBiographyRequest,
   TransactionRequest,
   UpdateShowLoginStreakRequest,
+  UpdateStatusRequest,
 } from '../types/types';
 import {
   deleteUserByUsername,
@@ -17,6 +18,7 @@ import {
   makeTransaction,
   saveUser,
   updateUser,
+  updateUserStatus,
 } from '../services/user.service';
 import { upload, processProfilePicture, processBannerImage } from '../utils/upload';
 import { generateToken } from '../utils/jwt.util';
@@ -243,6 +245,35 @@ const userController = (socket: FakeSOSocket) => {
       res.status(200).json(updatedUser);
     } catch (error) {
       res.status(500).send(`Error when updating user login streak visibility: ${error}`);
+    }
+  };
+
+  /**
+   * Updates a user's status and custom status message.
+   * @param req The request containing username, status, and optional customStatus in the body.
+   * @param res The response, either confirming the update or returning an error.
+   * @returns A promise resolving to void.
+   */
+  const updateStatus = async (req: UpdateStatusRequest, res: Response): Promise<void> => {
+    try {
+      const { username, status, customStatus } = req.body;
+
+      const updatedUser = await updateUserStatus(username, status, customStatus);
+
+      if ('error' in updatedUser) {
+        throw new Error(updatedUser.error);
+      }
+
+      // Emit socket event for real-time status updates
+      socket.emit('userStatusUpdate', {
+        username,
+        status,
+        customStatus,
+      });
+
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      res.status(500).send(`Error when updating user status: ${error}`);
     }
   };
 
@@ -496,6 +527,7 @@ const userController = (socket: FakeSOSocket) => {
   router.post('/uploadBannerImage', protect, upload.single('bannerImage'), uploadBannerImage);
   router.patch('/toggleProfilePrivacy', protect, toggleProfilePrivacy);
   router.patch('/updateShowLoginStreak', protect, updateShowLoginStreak);
+  router.patch('/updateStatus', protect, updateStatus);
   router.patch('/addCoins', protect, addCoinTransaction);
   router.patch('/reduceCoins', protect, reduceCoinTransaction);
 
