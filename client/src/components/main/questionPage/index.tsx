@@ -3,7 +3,6 @@ import QuestionHeader from './header';
 import QuestionView from './question';
 import useQuestionPage from '../../../hooks/useQuestionPage';
 import TransactionWindow from '../../transactionWindow';
-// import TransactionWindow from '../../transactionWindow';
 
 /**
  * QuestionPage component renders a page displaying a list of questions

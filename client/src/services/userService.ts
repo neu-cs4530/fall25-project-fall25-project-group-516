@@ -314,6 +314,42 @@ const toggleProfilePrivacy = async (username: string): Promise<SafeDatabaseUser>
   return res.data;
 };
 
+/**
+ * Activates user's premium membership if they do not already have premium.
+ * @param username The uniwue username of the user
+ * @returns A promise resolving to the updated user
+ * @throws Error if the request fails
+ */
+const activatePremiumProfile = async (username: string): Promise<SafeDatabaseUser> => {
+  const res = await api.patch(`${USER_API_URL}/activatePremium`, { username });
+
+  if (res.status !== 200) {
+    if (res.status == 402) {
+      throw new Error('User already has premium profile.');
+    }
+    throw new Error('Error when activating premium profile');
+  }
+  return res.data;
+};
+
+/**
+ * Deactivates user's premium membership if they currently have premium.
+ * @param username The unique username of the user
+ * @returns A promise resolving to the updated user
+ * @throws Error if the request fails
+ */
+const deactivatePremiumProfile = async (username: string): Promise<SafeDatabaseUser> => {
+  const res = await api.patch(`${USER_API_URL}/deactivatePremium`, { username });
+
+  if (res.status !== 200) {
+    if (res.status == 402) {
+      throw new Error('User does not have premium profile.');
+    }
+    throw new Error('Error when deactivating premium profile');
+  }
+  return res.data;
+};
+
 export {
   getUsers,
   getUserByUsername,
@@ -329,4 +365,6 @@ export {
   addCoins,
   reduceCoins,
   toggleProfilePrivacy,
+  activatePremiumProfile,
+  deactivatePremiumProfile,
 };

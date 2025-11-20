@@ -7,6 +7,7 @@ import ImageUpload from '../imageUpload';
 import BadgeDisplay from '../badgeDisplay';
 import ResetPasswordModal from '../resetPasswordModal';
 import DeleteAccountModal from '../deleteAccountModal';
+import TransactionWindow from '../transactionWindow';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPencil,
@@ -51,6 +52,8 @@ const ProfileSettings: React.FC = () => {
     handleEnteringEditMode,
     showLoginStreak,
     handleToggleLoginStreakPreview,
+    showPurchaseWindow,
+    setShowPurchaseWindow,
   } = useProfileSettings();
 
   const navigate = useNavigate();
@@ -479,6 +482,18 @@ const ProfileSettings: React.FC = () => {
           onConfirm={handleDeleteUser}
           username={userData.username}
         />
+        <TransactionWindow
+          isOpen={showPurchaseWindow}
+          onClose={() => setShowPurchaseWindow(false)}
+          onConfirm={() => {
+            /* should include a method that gives user premium profile*/
+          }}
+          cost={50 /*this is negotiable*/}
+          title='Premium Membership Purchase'
+          description={
+            'To purchase premium membership. \nPremium members will have their questions boosted in communities and be able to turn off ads.'
+          }
+          awarded={false}></TransactionWindow>
       </div>
     </div>
   );

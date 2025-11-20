@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+import useProfileSettings from '../../hooks/useProfileSettings';
 import useHeader from '../../hooks/useHeader';
 import './index.css';
 
@@ -7,7 +9,14 @@ import './index.css';
  * when they press Enter.
  */
 const Header = () => {
-  const { val, handleInputChange, handleKeyDown, coins } = useHeader();
+  const { val, handleInputChange, handleKeyDown, coins, user } = useHeader();
+  const navigate = useNavigate();
+  const { setShowPurchaseWindow } = useProfileSettings();
+
+  const handleCoinClick = async () => {
+    navigate(`/user/${user.username}`);
+    setShowPurchaseWindow(true);
+  };
 
   return (
     <div id='header' className='header'>
@@ -21,7 +30,7 @@ const Header = () => {
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
       />
-      <div id='image' className='image-with-text'>
+      <button id='image' className='image-with-text' onClick={() => handleCoinClick()}>
         <img
           src='\coinPicture\stack-coin.PNG'
           alt='Coin emblazoned stack of pancakes'
@@ -32,7 +41,7 @@ const Header = () => {
         <div id='text' text-align='center' justify-content='center'>
           {coins}
         </div>
-      </div>
+      </button>
     </div>
   );
 };

@@ -31,6 +31,7 @@ export interface UserCredentials {
  * - `lifeUpvotes`: Lifetime upvotes to user's posts (answers & questions).
  * - `coins`: Amount of coins user currently has.
  * - `profilePrivate`: Whether the user's profile is private.
+ * - `premiumProfile`: Whether the user has a premium profile or not.
  */
 export interface User extends UserCredentials {
   dateJoined: Date;
@@ -50,6 +51,7 @@ export interface User extends UserCredentials {
   lifeUpvotes?: number;
   coins?: number;
   profilePrivate?: boolean;
+  premiumProfile?: boolean;
 }
 
 /**
