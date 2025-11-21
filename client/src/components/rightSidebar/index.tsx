@@ -49,7 +49,7 @@ const RightSidebar = () => {
       </div>
 
       {/* Ad at the bottom of right sidebar */}
-      <AdContainer zoneId='ZONE_ID_RIGHT' />
+      <AdContainer adKey='7beebaa8acee60713ef045584ce68a7b' width={300} height={250} />
     </div>
   );
 };

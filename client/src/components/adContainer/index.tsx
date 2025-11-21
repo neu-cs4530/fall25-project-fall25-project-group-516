@@ -3,17 +3,17 @@ import './index.css';
 
 interface AdContainerProps {
   /**
-   * PropellerAds zone ID
+   * AdSterra ad key
    */
-  zoneId: string;
+  adKey: string;
   /**
-   * Ad width (optional, defaults to auto)
+   * Ad width (defaults to 300)
    */
-  width?: number | string;
+  width?: number;
   /**
-   * Ad height (optional, defaults to auto)
+   * Ad height (defaults to 250)
    */
-  height?: number | string;
+  height?: number;
   /**
    * Optional className for custom styling
    */
@@ -21,46 +21,61 @@ interface AdContainerProps {
 }
 
 /**
- * PropellerAds Ad Container component
- *
- * @example
- * <AdContainer zoneId="1234567" width="300" height="250" />
+ * AdSterra Ad Container component for banner ads
  */
 const AdContainer = ({
-  zoneId,
-  width = '100%',
-  height = 'auto',
+  adKey,
+  width = 300,
+  height = 250,
   className = '',
 }: AdContainerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Create script element for PropellerAds
-    const script = document.createElement('script');
-    script.async = true;
-    script.setAttribute('data-cfasync', 'false');
-    script.src = `//thubanoa.com/${zoneId}/invoke.js`;
+    // Create atOptions configuration script
+    const configScript = document.createElement('script');
+    configScript.type = 'text/javascript';
+    configScript.text = `
+      atOptions = {
+        'key': '${adKey}',
+        'format': 'iframe',
+        'height': ${height},
+        'width': ${width},
+        'params': {}
+      };
+    `;
+
+    // Create the invoke script
+    const invokeScript = document.createElement('script');
+    invokeScript.type = 'text/javascript';
+    invokeScript.src = `//www.highperformanceformat.com/${adKey}/invoke.js`;
 
     if (containerRef.current) {
-      containerRef.current.appendChild(script);
+      containerRef.current.appendChild(configScript);
+      containerRef.current.appendChild(invokeScript);
     }
 
     return () => {
-      // Cleanup script when component unmounts
-      if (containerRef.current && script.parentNode) {
-        script.parentNode.removeChild(script);
+      // Cleanup scripts when component unmounts
+      if (containerRef.current) {
+        if (configScript.parentNode) {
+          configScript.parentNode.removeChild(configScript);
+        }
+        if (invokeScript.parentNode) {
+          invokeScript.parentNode.removeChild(invokeScript);
+        }
       }
     };
-  }, [zoneId]);
+  }, [adKey, width, height]);
 
   return (
     <div className={`ad-container ${className}`}>
       <div
         ref={containerRef}
-        id={`propeller-ad-${zoneId}`}
+        id={`adsterra-ad-${adKey}`}
         style={{
-          width: typeof width === 'number' ? `${width}px` : width,
-          height: typeof height === 'number' ? `${height}px` : height,
+          width: `${width}px`,
+          height: `${height}px`,
           minHeight: '100px',
         }}
       />

@@ -89,7 +89,7 @@ const SideBarNav = () => {
 
       {/* Ad at the bottom of left sidebar */}
       <div style={{ marginTop: 'auto', paddingTop: '16px' }}>
-        <AdContainer zoneId='ZONE_ID_LEFT' />
+        <AdContainer adKey='6ce0373035f0ee31ed487610473bcdf9' width={160} height={600} />
       </div>
     </div>
   );
