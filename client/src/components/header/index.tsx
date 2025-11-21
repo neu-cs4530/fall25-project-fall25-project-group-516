@@ -1,15 +1,17 @@
 import useHeader from '../../hooks/useHeader';
 import './index.css';
-import usePremiumTransaction from '../../hooks/usePremiumTransaction';
+
+interface HeaderProps {
+  openTransactionWindow: () => void;
+}
 
 /**
  * Header component that renders the main title and a search bar.
  * The search bar allows the user to input a query and navigate to the search results page
  * when they press Enter.
  */
-const Header = () => {
+const Header = ({ openTransactionWindow }: HeaderProps) => {
   const { val, handleInputChange, handleKeyDown, coins } = useHeader();
-  const { openTransactionWindow } = usePremiumTransaction();
 
   const handleCoinClick = async () => {
     openTransactionWindow();

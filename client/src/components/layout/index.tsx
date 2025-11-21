@@ -22,12 +22,17 @@ const Layout = () => {
   } = useTransactionWindow();
 
   // for premium
-  const { showPremiumWindow, setShowPremiumWindow, cost, handlePremiumConfirmation } =
-    usePremiumTransaction();
+  const {
+    showPremiumWindow,
+    setShowPremiumWindow,
+    cost,
+    handlePremiumConfirmation,
+    openTransactionWindow,
+  } = usePremiumTransaction();
 
   return (
     <>
-      <Header />
+      <Header openTransactionWindow={openTransactionWindow} />
       <div id='main' className='main'>
         <SideBarNav />
         <div id='right_main' className='right_main'>
@@ -53,7 +58,7 @@ const Layout = () => {
             onConfirm={handlePremiumConfirmation}
             cost={cost}
             title='Premium Membership Purchase'
-            description='To purchase premium membership. \nPremium members will have their questions boosted in communities and be able to turn off ads.'
+            description={`To purchase premium membership.\nPremium members will have their questions boosted in communities and be able to turn off ads.`}
             awarded={false}
           />
         </div>

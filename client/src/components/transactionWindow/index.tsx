@@ -78,7 +78,7 @@ const TransactionWindow = ({
             </div>
           </div>
         )}
-        <div className='modal-description'>
+        <div className='transaction-description'>
           {awarded ? <h2>{`You have been awarded...`}</h2> : <h2>{`You will spend...`}</h2>}
           <div className='container-container'>
             <div className='coin-container'>
