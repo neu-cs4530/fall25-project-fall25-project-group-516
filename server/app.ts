@@ -54,11 +54,55 @@ function startServer() {
   });
 }
 
+// Track user-to-socket mapping for status management
+const userSocketMap = new Map<string, string>(); // username -> socket.id
+
 socket.on('connection', socket => {
   console.log('A user connected ->', socket.id);
 
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
+  // Handle user connection event
+  socket.on('userConnected', async ({ username }) => {
+    console.log(`User ${username} connected with socket ${socket.id}`);
+    userSocketMap.set(username, socket.id);
+
+    // Import updateUserStatus dynamically to avoid circular dependency
+    const { updateUserStatus } = await import('./services/user.service');
+    await updateUserStatus(username, 'online');
+
+    // Emit status update to all clients
+    socket.broadcast.emit('userStatusUpdate', {
+      username,
+      status: 'online',
+    });
+  });
+
+  socket.on('disconnect', async () => {
+    console.log('User disconnected ->', socket.id);
+
+    // Find the username associated with this socket
+    let disconnectedUsername: string | undefined;
+    for (const [username, socketId] of userSocketMap.entries()) {
+      if (socketId === socket.id) {
+        disconnectedUsername = username;
+        break;
+      }
+    }
+
+    if (disconnectedUsername) {
+      console.log(`Setting ${disconnectedUsername} status to 'away'`);
+      // Import updateUserStatus dynamically to avoid circular dependency
+      const { updateUserStatus } = await import('./services/user.service');
+      await updateUserStatus(disconnectedUsername, 'away');
+
+      // Remove from map
+      userSocketMap.delete(disconnectedUsername);
+
+      // Emit status update to all clients
+      socket.broadcast.emit('userStatusUpdate', {
+        username: disconnectedUsername,
+        status: 'away',
+      });
+    }
   });
 });
 

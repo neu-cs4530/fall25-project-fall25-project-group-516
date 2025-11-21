@@ -14,6 +14,7 @@ import { Schema } from 'mongoose';
  * - `upVotes`: An array of usernames that have upvoted the question.
  * - `downVotes`: An array of usernames that have downvoted the question.
  * - `comments`: Comments that have been added to the question by users.
+ * - `isAnonymous`: Whether the question was posted anonymously.
  */
 const questionSchema: Schema = new Schema(
   {
@@ -38,6 +39,10 @@ const questionSchema: Schema = new Schema(
     community: {
       type: Schema.Types.ObjectId,
       ref: 'Community',
+    },
+    isAnonymous: {
+      type: Boolean,
+      default: false,
     },
   },
   { collection: 'Question' },

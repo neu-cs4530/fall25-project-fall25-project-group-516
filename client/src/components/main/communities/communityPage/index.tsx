@@ -22,7 +22,12 @@ const CommunityPage = () => {
         <main className='questions-section'>
           <h3 className='section-heading'>Questions</h3>
           {communityQuestions.map(q => (
-            <QuestionView question={q} key={q._id.toString()} />
+            <QuestionView
+              question={q}
+              key={q._id.toString()}
+              collectionEditMode={false}
+              onCollectionClick={() => {}}
+            />
           ))}
         </main>
 
