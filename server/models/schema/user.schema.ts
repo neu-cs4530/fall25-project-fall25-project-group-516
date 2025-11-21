@@ -21,6 +21,7 @@ import { Schema } from 'mongoose';
  * - `lifeUpvotes`: total number of upvotes to questions & answers over all time.
  * - `coins`: User's coin count.
  * - `premiumProfile`: Whether the user has a premium profile.
+ * - `streakPass`: How many chances user has to recover streak.
  */
 const userSchema: Schema = new Schema(
   {
@@ -108,6 +109,14 @@ const userSchema: Schema = new Schema(
       default: false,
     },
     premiumProfile: {
+      type: Boolean,
+      default: false,
+    },
+    streakPass: {
+      type: Number,
+      default: 0,
+    },
+    streakHold: {
       type: Boolean,
       default: false,
     },

@@ -32,6 +32,8 @@ export interface UserCredentials {
  * - `coins`: Amount of coins user currently has.
  * - `profilePrivate`: Whether the user's profile is private.
  * - `premiumProfile`: Whether the user has a premium profile or not.
+ * - `streakPass`: Number of passes user has to miss streak.
+ * - `streakHold`: Whether streak is currently on hold to be recovered.
  */
 export interface User extends UserCredentials {
   dateJoined: Date;
@@ -52,6 +54,8 @@ export interface User extends UserCredentials {
   coins?: number;
   profilePrivate?: boolean;
   premiumProfile?: boolean;
+  streakPass?: number;
+  streakHold?: boolean;
 }
 
 /**

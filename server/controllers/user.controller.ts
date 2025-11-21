@@ -466,7 +466,7 @@ const userController = (socket: FakeSOSocket) => {
       let updatedUser;
 
       if (status == 'activate') {
-        updatedUser = await updateUser(username, { premiumProfile: true });
+        updatedUser = await updateUser(username, { premiumProfile: true, streakPass: 3 });
       } else {
         updatedUser = await updateUser(username, { premiumProfile: false });
       }
@@ -479,6 +479,7 @@ const userController = (socket: FakeSOSocket) => {
       socket.emit('premiumUpdate', {
         username: username,
         premiumStatus: updatedUser.premiumProfile,
+        streakPass: updatedUser.streakPass,
       });
 
       res.status(200).json(updatedUser);
