@@ -63,7 +63,11 @@ const QuestionView = ({ question, collectionEditMode, onCollectionClick }: Quest
       </div>
       <div className='lastActivity'>
         <div className='question_author'>
-          {question.isAnonymous ? 'Anonymous' : question.askedBy}
+          {question.isAnonymous
+            ? 'Anonymous'
+            : question.premiumStatus
+              ? `${question.askedBy}\u{1F31F}`
+              : question.askedBy}
         </div>
         <div>&nbsp;</div>
         <div className='question_meta'>asked {getMetaData(new Date(question.askDateTime))}</div>

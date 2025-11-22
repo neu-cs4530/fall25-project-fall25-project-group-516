@@ -146,6 +146,11 @@ export interface TransactionEventPayload {
   amount: number;
 }
 
+export interface PremiumUpdatePayload {
+  username: string;
+  premiumMembership: boolean;
+}
+
 /**
  * Payload for a user connection event.
  * - `username`: The username of the user who connected.
@@ -200,6 +205,8 @@ export interface ClientToServerEvents {
  * - `collectionUpdate`: Server sends updated collection.
  * - `badgeUpdate`: Server sends updated badge.
  * - `badgeAwarded`: Server notifies when badges are awarded to a user.
+ * - `transactionEvent`: Server notifies when transaction goes through.
+ * - `premiumUpdate`: Server notifies when user's premium membership status changes.
  */
 export interface ServerToClientEvents {
   questionUpdate: (question: PopulatedDatabaseQuestion) => void;
@@ -218,4 +225,5 @@ export interface ServerToClientEvents {
   badgeUpdate: (badge: BadgeUpdatePayload) => void;
   badgeAwarded: (awarded: BadgeAwardedPayload) => void;
   transactionEvent: (transaction: TransactionPayload) => void;
+  premiumUpdate: (status: PremiumUpdatePayload) => void;
 }

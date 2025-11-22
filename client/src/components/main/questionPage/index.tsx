@@ -3,7 +3,6 @@ import { useState } from 'react';
 import QuestionHeader from './header';
 import QuestionView from './question';
 import useQuestionPage from '../../../hooks/useQuestionPage';
-import TransactionWindow from '../../transactionWindow';
 import SaveToCollectionModal from '../collections/saveToCollectionModal';
 import { PopulatedDatabaseQuestion } from '../../../types/types';
 
@@ -13,16 +12,7 @@ import { PopulatedDatabaseQuestion } from '../../../types/types';
  * It includes a header with order buttons and a button to ask a new question.
  */
 const QuestionPage = () => {
-  const {
-    titleText,
-    qlist,
-    setQuestionOrder,
-    showLoginReward,
-    setShowLoginReward,
-    loginReward,
-    loginStreak,
-    loginClaimed,
-  } = useQuestionPage();
+  const { titleText, qlist, setQuestionOrder } = useQuestionPage();
 
   const [collectionEditMode, setCollectionEditMode] = useState(false);
   const [isCollectionModalOpen, setCollectionModalOpen] = useState(false);
@@ -68,20 +58,6 @@ const QuestionPage = () => {
       {isCollectionModalOpen && selectedQuestion && (
         <SaveToCollectionModal question={selectedQuestion} onClose={closeCollectionModal} />
       )}
-
-      {/* Modal for daily log-in reward*/}
-      <TransactionWindow
-        isOpen={showLoginReward}
-        onClose={() => setShowLoginReward(false)}
-        onConfirm={() => loginClaimed()}
-        cost={loginReward}
-        title='Login Reward'
-        description={
-          loginStreak > 0
-            ? `For logging in for ${loginStreak} days! Log back in tomorrow for ${loginReward + 1 == 7 ? 10 : loginReward + 1} coins!`
-            : 'For your first time logging in!'
-        }
-        awarded={true}></TransactionWindow>
     </>
   );
 };
