@@ -93,9 +93,7 @@ const toggleSaveQuestion = async (collectionId: string, questionId: string, user
  * @throws An error if the API response status is not 200
  */
 const deleteCollection = async (collectionId: string, username: string) => {
-  const res = await api.delete(
-    `${COLLECTION_API_URL}/delete/${collectionId}?username=${username}`,
-  );
+  const res = await api.delete(`${COLLECTION_API_URL}/delete/${collectionId}?username=${username}`);
 
   if (res.status !== 200) {
     throw new Error('Error while deleting collection');
