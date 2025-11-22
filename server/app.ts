@@ -26,6 +26,7 @@ import gameController from './controllers/game.controller';
 import collectionController from './controllers/collection.controller';
 import communityController from './controllers/community.controller';
 import badgeController from './controllers/badge.controller';
+import reportController from './controllers/report.controller';
 import openAuthorizationController from './controllers/authorization.controller';
 import protect from './middleware/token.middleware';
 
@@ -159,6 +160,7 @@ app.use('/api/games', protect, gameController(socket));
 app.use('/api/collection', protect, collectionController(socket));
 app.use('/api/community', protect, communityController(socket));
 app.use('/api/badge', protect, badgeController(socket));
+app.use('/api/report', protect, reportController(socket));
 app.use('/api/auth', openAuthorizationController());
 
 const openApiDocument = yaml.parse(fs.readFileSync('./openapi.yaml', 'utf8'));

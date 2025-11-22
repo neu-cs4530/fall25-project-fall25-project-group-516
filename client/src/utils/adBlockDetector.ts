@@ -41,14 +41,11 @@ export const detectAdBlock = async (): Promise<boolean> => {
 export const detectAdBlockFetch = async (): Promise<boolean> => {
   try {
     // Try to fetch a common ad-related resource
-    const response = await fetch(
-      'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
-      {
-        method: 'HEAD',
-        mode: 'no-cors',
-        cache: 'no-store',
-      },
-    );
+    await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
+      method: 'HEAD',
+      mode: 'no-cors',
+      cache: 'no-store',
+    });
     return false;
   } catch {
     return true;
