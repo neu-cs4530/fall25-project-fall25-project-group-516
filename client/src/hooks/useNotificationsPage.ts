@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import useUserContext from './useUserContext';
 import { useNavigate } from 'react-router-dom';
 import { readAllNotifications, readNotification } from '../services/userService';
+import { toggleCommunityNotifs, toggleMessageNotifs } from '../services/userService';
 
 const useNotificationsPage = () => {
   const { user } = useUserContext();
@@ -14,6 +15,61 @@ const useNotificationsPage = () => {
   );
 
   const [isTabOpen, setisTabOpen] = useState<boolean>(false);
+
+  const [communityNotif, setCommunityNotif] = useState<boolean>(true);
+  const [messageNotif, setMessageNotif] = useState<boolean>(true);
+
+  /**
+   * Toggles community notification settings when button is clicked
+   */
+  const handleToggleCommunityNotifs = async (): Promise<void> => {
+    try {
+      console.log(user.communityNotifs);
+      const updatedUser = await toggleCommunityNotifs(user.username);
+
+      if (!updatedUser) {
+        throw new Error();
+      }
+
+      if (updatedUser.communityNotifs !== undefined) {
+        console.log(updatedUser.communityNotifs);
+        setCommunityNotif(updatedUser.communityNotifs);
+      }
+    } catch (error) {
+      //
+    }
+  };
+
+  /**
+   * Toggles message notification settings when button is clicked
+   */
+  const handleToggleMessageNotifs = async (): Promise<void> => {
+    try {
+      const updatedUser = await toggleMessageNotifs(user.username);
+
+      if (!updatedUser) {
+        throw new Error();
+      }
+
+      if (updatedUser.messageNotifs !== undefined) {
+        setMessageNotif(updatedUser.messageNotifs);
+      }
+    } catch (error) {
+      // nothing to be done
+    }
+  };
+
+  /**
+   * Sets states relevant to settings dropdown.
+   */
+  const onOpenSettings = (): void => {
+    if (user.communityNotifs !== undefined) {
+      setCommunityNotif(user.communityNotifs);
+    }
+    if (user.messageNotifs !== undefined) {
+      setMessageNotif(user.messageNotifs);
+    }
+  };
 
   const handleNotificationRedirect = (notif: DatabaseNotification): void => {
     switch (notif.type) {
@@ -62,6 +118,11 @@ const useNotificationsPage = () => {
     handleNotificationRedirect,
     handleReadNotification,
     handleReadAllNotifications,
+    handleToggleCommunityNotifs,
+    handleToggleMessageNotifs,
+    communityNotif,
+    messageNotif,
+    onOpenSettings,
   };
 };
 

@@ -793,9 +793,12 @@ const userController = (socket: FakeSOSocket) => {
         throw new Error(currentUser.error);
       }
 
+      const newCommNotif =
+        typeof currentUser.communityNotifs == 'boolean' ? !currentUser.communityNotifs : false;
+
       // Toggle the communityNotifs field
       const updatedUser = await updateUser(username, {
-        communityNotifs: !currentUser.communityNotifs,
+        communityNotifs: newCommNotif,
       });
 
       if ('error' in updatedUser) {
@@ -835,9 +838,12 @@ const userController = (socket: FakeSOSocket) => {
         throw new Error(currentUser.error);
       }
 
+      const newMsgNotif =
+        typeof currentUser.messageNotifs == 'boolean' ? !currentUser.messageNotifs : false;
+
       // Toggle the messageNotifs field
       const updatedUser = await updateUser(username, {
-        messageNotifs: !currentUser.messageNotifs,
+        messageNotifs: newMsgNotif,
       });
 
       if ('error' in updatedUser) {
