@@ -1,10 +1,17 @@
 import { DatabaseNotification } from '@fake-stack-overflow/shared/types/notification';
-import { PopulatedUserNotificationStatus } from '@fake-stack-overflow/shared';
+import {
+  PopulatedUserNotificationStatus,
+  PopulatedSafeDatabaseUser,
+} from '@fake-stack-overflow/shared';
 import { useEffect, useState } from 'react';
 import useUserContext from './useUserContext';
 import { useNavigate } from 'react-router-dom';
 import { readAllNotifications, readNotification } from '../services/userService';
-import { toggleCommunityNotifs, toggleMessageNotifs } from '../services/userService';
+import {
+  getUserByUsername,
+  toggleCommunityNotifs,
+  toggleMessageNotifs,
+} from '../services/userService';
 
 const useNotificationsPage = () => {
   const { user } = useUserContext();
@@ -16,14 +23,14 @@ const useNotificationsPage = () => {
 
   const [isTabOpen, setisTabOpen] = useState<boolean>(false);
 
-  const [communityNotif, setCommunityNotif] = useState<boolean>(true);
-  const [messageNotif, setMessageNotif] = useState<boolean>(true);
+  const [userData, setUserData] = useState<PopulatedSafeDatabaseUser | null>(null);
 
   /**
    * Toggles community notification settings when button is clicked
    */
   const handleToggleCommunityNotifs = async (): Promise<void> => {
     try {
+      if (!user.username) return;
       console.log(user.communityNotifs);
       const updatedUser = await toggleCommunityNotifs(user.username);
 
@@ -31,12 +38,9 @@ const useNotificationsPage = () => {
         throw new Error();
       }
 
-      if (updatedUser.communityNotifs !== undefined) {
-        console.log(updatedUser.communityNotifs);
-        setCommunityNotif(updatedUser.communityNotifs);
-      }
+      setUserData(updatedUser);
     } catch (error) {
-      //
+      // nothing
     }
   };
 
@@ -45,29 +49,16 @@ const useNotificationsPage = () => {
    */
   const handleToggleMessageNotifs = async (): Promise<void> => {
     try {
+      if (!user.username) return;
       const updatedUser = await toggleMessageNotifs(user.username);
 
       if (!updatedUser) {
         throw new Error();
       }
 
-      if (updatedUser.messageNotifs !== undefined) {
-        setMessageNotif(updatedUser.messageNotifs);
-      }
+      setUserData(updatedUser);
     } catch (error) {
       // nothing to be done
-    }
-  };
-
-  /**
-   * Sets states relevant to settings dropdown.
-   */
-  const onOpenSettings = (): void => {
-    if (user.communityNotifs !== undefined) {
-      setCommunityNotif(user.communityNotifs);
-    }
-    if (user.messageNotifs !== undefined) {
-      setMessageNotif(user.messageNotifs);
     }
   };
 
@@ -111,6 +102,21 @@ const useNotificationsPage = () => {
     sortNotifications();
   }, [notificationsList]);
 
+  useEffect(() => {
+    if (!user.username) return;
+
+    const fetchUserData = async () => {
+      try {
+        const data = await getUserByUsername(user.username);
+        setUserData(data);
+      } catch (error) {
+        // nothing
+      }
+    };
+
+    fetchUserData();
+  }, [user.username]);
+
   return {
     notificationsList,
     isTabOpen,
@@ -120,9 +126,7 @@ const useNotificationsPage = () => {
     handleReadAllNotifications,
     handleToggleCommunityNotifs,
     handleToggleMessageNotifs,
-    communityNotif,
-    messageNotif,
-    onOpenSettings,
+    userData,
   };
 };
 

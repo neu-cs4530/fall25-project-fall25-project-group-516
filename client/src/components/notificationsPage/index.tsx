@@ -13,9 +13,10 @@ const Notifications = () => {
     handleReadAllNotifications,
     handleToggleCommunityNotifs,
     handleToggleMessageNotifs,
-    communityNotif,
-    messageNotif,
-    onOpenSettings,
+    // communityNotif,
+    // messageNotif,
+    // onOpenSettings,
+    userData,
   } = useNotificationsPage();
 
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
@@ -62,7 +63,6 @@ const Notifications = () => {
                 title='Settings'
                 onClick={() => {
                   setShowSettingsDropdown(!showSettingsDropdown);
-                  onOpenSettings();
                 }}>
                 <FiSettings size={20} />
               </button>
@@ -115,7 +115,23 @@ const Notifications = () => {
                     </g>
                   </svg>
                   <div className='dropdown-contents'>
-                    <button
+                    <label className='dropdown-item'>
+                      <input
+                        type='checkbox'
+                        checked={userData?.communityNotifs}
+                        onChange={handleToggleCommunityNotifs}
+                      />
+                      Get Notifications for Community PSAs
+                    </label>
+                    <label className='dropdown-item'>
+                      <input
+                        type='checkbox'
+                        checked={userData?.messageNotifs}
+                        onChange={handleToggleMessageNotifs}
+                      />
+                      Get Notifications for Direct Messages
+                    </label>
+                    {/* <button
                       className='dropdown-item'
                       onClick={() => {
                         setShowSettingsDropdown(!showSettingsDropdown);
@@ -138,7 +154,7 @@ const Notifications = () => {
                           ? 'Direct Message Notifications Enabled'
                           : 'Direct Message Notifications Disabled'}
                       </span>
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               )}
