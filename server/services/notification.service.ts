@@ -115,3 +115,39 @@ export const readAllNotifications = async (
     await session.endSession();
   }
 };
+
+/**
+ * Encapsulates the process of saving a notification and adding it to the users.
+ * Manages the transaction lifecycle internally.
+ *
+ * @param notification - The notification object to send.
+ * @returns The saved notification object or an error object.
+ */
+export const sendNotification = async (
+  notification: Notification,
+): Promise<NotificationResponse> => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const savedNotification = await saveNotification(notification, session);
+
+    if ('error' in savedNotification) {
+      throw new Error(savedNotification.error);
+    }
+
+    const addStatus = await addNotificationToUsers(savedNotification, session);
+
+    if (addStatus && 'error' in addStatus) {
+      throw new Error(addStatus.error);
+    }
+
+    await session.commitTransaction();
+    return savedNotification;
+  } catch (error) {
+    await session.abortTransaction();
+    return { error: (error as Error).message };
+  } finally {
+    await session.endSession();
+  }
+};
