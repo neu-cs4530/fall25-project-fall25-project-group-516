@@ -2,17 +2,14 @@ import { FiCheckSquare, FiMessageSquare, FiSettings } from 'react-icons/fi';
 import useNotificationsPage from '../../hooks/useNotificationsPage';
 import './index.css';
 import NotificationItem from '../notificationItem';
-import useUserContext from '../../hooks/useUserContext';
 
 const Notifications = () => {
-  const { user } = useUserContext();
   const {
     notificationsList,
     handleNotificationRedirect,
     handleReadNotification,
     handleReadAllNotifications,
   } = useNotificationsPage();
-
 
   return (
     <div className='page-container'>

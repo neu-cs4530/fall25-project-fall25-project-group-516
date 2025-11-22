@@ -1,38 +1,35 @@
 import express, { Router, Response } from 'express';
 import { FakeSOSocket } from '../types/types';
-import { addNotificationToUsers, saveNotification } from '../services/notification.service';
+import { sendNotification } from '../services/notification.service';
 import { SendNotificationRequest } from '@fake-stack-overflow/shared/types/notification';
 
 const notificationController = (socket: FakeSOSocket) => {
   const router: Router = express.Router();
 
-  const sendNotification = async (req: SendNotificationRequest, res: Response): Promise<void> => {
+  const sendNotificationRoute = async (
+    req: SendNotificationRequest,
+    res: Response,
+  ): Promise<void> => {
     try {
       const { recipients, notification } = req.body;
 
-      const savedNotif = await saveNotification(notification);
+      const result = await sendNotification(recipients, notification);
 
-      if (savedNotif && 'error' in savedNotif) {
-        throw new Error(savedNotif.error as string);
-      }
-
-      const status = await addNotificationToUsers(recipients, savedNotif);
-
-      if (status && 'error' in status) {
-        throw new Error(status.error as string);
+      if ('error' in result) {
+        throw new Error(result.error);
       }
 
       socket.emit('notificationUpdate', {
-        notification: savedNotif,
+        notification: result,
       });
 
-      res.json(savedNotif);
+      res.json(result);
     } catch (error) {
       res.status(500).send(`Error when sending notification: ${(error as Error).message}`);
     }
   };
 
-  router.post('/sendNotification', sendNotification);
+  router.post('/sendNotification', sendNotificationRoute);
 
   return router;
 };
