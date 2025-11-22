@@ -17,16 +17,8 @@ const notificationSchema: Schema = new Schema(
       type: String,
       required: true,
     },
-    receivers: {
-      type: [String],
-      required: true,
-    },
     contextId: {
       type: Schema.Types.ObjectId,
-    },
-    read: {
-      type: Boolean,
-      default: false,
     },
     type: {
       type: String,

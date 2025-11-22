@@ -13,10 +13,10 @@ import mongoose, { ClientSession } from 'mongoose';
  */
 export const saveNotification = async (
   notificationData: Notification,
-  session?: ClientSession, // Added optional session
+  session?: ClientSession,
 ): Promise<NotificationResponse> => {
   try {
-    const result = await NotificationModel.create([{ ...notificationData, read: false }], {
+    const result = await NotificationModel.create([{ ...notificationData }], {
       session,
     });
     return result[0];
@@ -26,16 +26,16 @@ export const saveNotification = async (
 };
 
 /**
- * Adds a notification reference to the receivers' user documents.
+ * Adds a notification reference to the recipients user documents.
  * If a session is provided, it uses it without closing it.
  * If no session is provided, it creates a new transaction and manages its lifecycle.
  */
 export const addNotificationToUsers = async (
+  recipients: string[],
   notif: DatabaseNotification,
-  externalSession?: ClientSession, // Added optional session
+  externalSession?: ClientSession,
 ): Promise<void | { error: string }> => {
   const session = externalSession || (await mongoose.startSession());
-
   const isInternalSession = !externalSession;
 
   if (isInternalSession) {
@@ -43,30 +43,24 @@ export const addNotificationToUsers = async (
   }
 
   try {
-    if (
-      !notif ||
-      !notif.msg ||
-      !notif.sender ||
-      !notif.dateTime ||
-      !notif.receivers ||
-      notif.receivers.length === 0 ||
-      !notif.title
-    ) {
+    // Validate fields
+    if (!notif || !notif.msg || !notif.sender || !notif.dateTime || !notif.title) {
       throw new Error('Invalid Notification');
     }
 
-    const result = await UserModel.updateMany(
+    await UserModel.updateMany(
       {
-        username: { $in: notif.receivers },
+        username: { $in: recipients },
       },
-      { $push: { notifications: { $each: [notif._id], $position: 0 } } },
+      {
+        $push: {
+          notifications: {
+            $each: [{ notification: notif._id, read: false }], // Correct structure
+            $position: 0,
+          },
+        },
+      },
     ).session(session);
-
-    if (result.modifiedCount !== notif.receivers.length) {
-      console.warn(
-        `Expected to update ${notif.receivers.length} users, but only updated ${result.modifiedCount}`,
-      );
-    }
 
     if (isInternalSession) {
       await session.commitTransaction();
@@ -83,39 +77,6 @@ export const addNotificationToUsers = async (
   }
 };
 
-export const readAllNotifications = async (
-  username: string,
-): Promise<DatabaseNotification[] | { error: string }> => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  try {
-    const notificationsToUpdate = await NotificationModel.find({
-      receiver: username,
-      read: false,
-    }).session(session);
-
-    if (notificationsToUpdate.length > 0) {
-      await NotificationModel.updateMany(
-        { receiver: username, read: false },
-        { $set: { read: true } },
-      ).session(session);
-    }
-
-    await session.commitTransaction();
-
-    const updatedNotifications = notificationsToUpdate.map(notif => {
-      notif.read = true;
-      return notif;
-    });
-    return updatedNotifications;
-  } catch (error) {
-    await session.abortTransaction();
-    return { error: (error as Error).message };
-  } finally {
-    await session.endSession();
-  }
-};
-
 /**
  * Encapsulates the process of saving a notification and adding it to the users.
  * Manages the transaction lifecycle internally.
@@ -124,6 +85,7 @@ export const readAllNotifications = async (
  * @returns The saved notification object or an error object.
  */
 export const sendNotification = async (
+  recipients: string[],
   notification: Notification,
 ): Promise<NotificationResponse> => {
   const session = await mongoose.startSession();
@@ -136,7 +98,7 @@ export const sendNotification = async (
       throw new Error(savedNotification.error);
     }
 
-    const addStatus = await addNotificationToUsers(savedNotification, session);
+    const addStatus = await addNotificationToUsers(recipients, savedNotification, session);
 
     if (addStatus && 'error' in addStatus) {
       throw new Error(addStatus.error);

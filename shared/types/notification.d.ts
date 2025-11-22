@@ -25,9 +25,7 @@ export interface Notification {
   msg: string;
   dateTime: Date;
   sender: string;
-  receivers: string[];
   contextId: ObjectId | null;
-  read: boolean;
   type: NotificationType;
 }
 
@@ -55,19 +53,8 @@ export type NotificationResponse = DatabaseNotification | { error: string };
  */
 export interface SendNotificationRequest extends Request {
   body: {
+    recipients: string[];
     notification: Notification;
-  };
-}
-
-/**
- * Express request interface for marking a notification as read.
- * Extends the base Express Request with a body containing the notification ID to mark as read.
- *
- * @extends {Request}
- */
-export interface ReadNotificationRequest extends Request {
-  body: {
-    notificationId: string;
   };
 }
 

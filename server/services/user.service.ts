@@ -9,7 +9,8 @@ import {
   OAuthUserProfile,
   UserRolesResponse,
 } from '../types/types';
-import { populateDocument, populateUser } from '../utils/database.util';
+import { populateUser } from '../utils/database.util';
+import mongoose from 'mongoose';
 
 /**
  * Saves a new user to the database.
@@ -351,5 +352,46 @@ export const makeTransaction = async (
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return { error: message };
+  }
+};
+
+export const readNotifications = async (
+  username: string,
+  notificationIds: string[],
+): Promise<UserResponse> => {
+  try {
+    const objectIds = notificationIds.map(id => new mongoose.Types.ObjectId(id));
+
+    const updateResult = await UserModel.updateOne(
+      { username },
+      {
+        $set: {
+          'notifications.$[elem].read': true,
+        },
+      },
+      {
+        arrayFilters: [{ 'elem.notification': { $in: objectIds } }],
+      },
+    );
+
+    if (updateResult.matchedCount === 0) {
+      throw new Error('User not found');
+    }
+
+    const user = await UserModel.findOne({ username });
+
+    if (!user) {
+      throw new Error('User found during update but failed to fetch');
+    }
+
+    const safeUser = await populateUser(user._id.toString());
+
+    if (!safeUser) {
+      throw new Error('Failed to format user response');
+    }
+
+    return safeUser;
+  } catch (error) {
+    return { error: (error as Error).message };
   }
 };

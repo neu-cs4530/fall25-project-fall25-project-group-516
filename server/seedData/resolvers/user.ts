@@ -5,7 +5,7 @@ import { resolveRefs } from './helpers';
 const userResolver: ReferenceResolver<User, Omit<DatabaseUser, '_id'>> = (doc, insertedDocs) => ({
   ...doc,
   notifications: resolveRefs(
-    doc.notifications as unknown as string[] || [],
+    (doc.notifications as unknown as string[]) || [],
     insertedDocs.notification,
     'Notification',
   ),

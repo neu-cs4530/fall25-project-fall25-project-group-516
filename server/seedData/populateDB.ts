@@ -21,9 +21,6 @@ import { computeImportOrder, loadJSON, processCollection } from './utils';
 import CommunityModel from '../models/community.model';
 import CollectionModel from '../models/collection.model';
 import collectionsResolver from './resolvers/collection';
-import NotificationModel from '../models/notifications.model';
-import notificationResolver from './resolvers/notifications';
-import userResolver from './resolvers/user';
 
 // Compute the import order based on dependencies
 const IMPORT_ORDER = computeImportOrder(collectionDependencies);
@@ -31,7 +28,7 @@ const IMPORT_ORDER = computeImportOrder(collectionDependencies);
 const collectionMapping = {
   user: {
     model: UserModel,
-    resolver: userResolver,
+    resolver: identityResolver,
   },
   comment: {
     model: CommentModel,
@@ -64,10 +61,6 @@ const collectionMapping = {
   badge: {
     model: BadgeModel,
     resolver: identityResolver,
-  },
-  notification: {
-    model: NotificationModel,
-    resolver: notificationResolver,
   },
 };
 

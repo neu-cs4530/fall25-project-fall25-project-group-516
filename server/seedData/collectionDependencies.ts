@@ -1,6 +1,5 @@
 import { AnswerImport, CollectionImport, QuestionImport } from '../types/populate';
 import { User, Comment, Tag, Message, Community, Badge } from '../types/types';
-import { Notification } from '@fake-stack-overflow/shared/types/notification';
 
 /**
  * Maps collections to their dependencies to ensure proper reference resolution.
@@ -9,7 +8,7 @@ import { Notification } from '@fake-stack-overflow/shared/types/notification';
  */
 export const collectionDependencies = {
   tag: [],
-  user: ['notification'],
+  user: [],
   message: [],
   comment: [],
   badge: [],
@@ -17,7 +16,6 @@ export const collectionDependencies = {
   question: ['tag', 'comment', 'answer', 'community'],
   community: [],
   collection: ['question'],
-  notification: ['question'],
 } as const;
 
 export type CollectionName = keyof typeof collectionDependencies;
@@ -32,5 +30,4 @@ export type CollectionDocTypes = {
   community: Community;
   collection: CollectionImport;
   badge: Badge;
-  notification: Notification;
 };

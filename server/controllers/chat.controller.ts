@@ -105,13 +105,11 @@ const chatController = (socket: FakeSOSocket) => {
         msg: message.msg,
         dateTime: message.msgDateTime,
         sender: message.msgFrom,
-        receivers: otherParticipants,
         contextId: updatedChat._id,
-        read: false,
         type: 'message',
       };
 
-      const notification = await sendNotification(notificationData);
+      const notification = await sendNotification(otherParticipants, notificationData);
 
       if ('error' in notification) {
         throw new Error(notification.error);

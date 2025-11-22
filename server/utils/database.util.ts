@@ -22,10 +22,7 @@ import CollectionModel from '../models/collection.model';
 import { ObjectId } from 'mongodb';
 import CommunityModel from '../models/community.model';
 import NotificationModel from '../models/notifications.model';
-import {
-  DatabaseNotification,
-  PopulatedDatabaseUserNotifications,
-} from '@fake-stack-overflow/shared/types/notification';
+import { DatabaseNotification } from '@fake-stack-overflow/shared/types/notification';
 
 /**
  * Fetches and populates a question document with its related tags, answers, and comments.
@@ -166,14 +163,14 @@ export const populateUser = async (userId: string): Promise<PopulatedSafeDatabas
   }
 
   const populatedNotifications = await Promise.all(
-    user.notifications?.map(async (notificationId: ObjectId) => {
+    user.notifications?.map(async ({ notification: notificationId, read }) => {
       const notification = await populateNotification(notificationId.toString());
 
       if (!notification) {
         throw new Error('Notification not found');
       }
 
-      return notification;
+      return { notification, read };
     }) ?? [],
   );
 
@@ -185,7 +182,6 @@ export const populateUser = async (userId: string): Promise<PopulatedSafeDatabas
   return populatedUser;
 };
 
-
 /**
  * Fetches and populates a question, answer, or chat document based on the provided ID and type.
  *
@@ -194,7 +190,7 @@ export const populateUser = async (userId: string): Promise<PopulatedSafeDatabas
  * @returns {Promise<QuestionResponse | AnswerResponse | ChatResponse>} - A promise resolving to the populated document or an error message if the operation fails.
  */
 // eslint-disable is for testing purposes only, so that Jest spy functions can be used.
-// eslint-disable-next-line import/prefer-default-export
+
 export const populateDocument = async (
   id: string,
   type: 'question' | 'answer' | 'chat' | 'collection',

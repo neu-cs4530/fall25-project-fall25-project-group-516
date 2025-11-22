@@ -13,7 +13,6 @@ const Notifications = () => {
     handleReadAllNotifications,
   } = useNotificationsPage();
 
-  console.log(user);
 
   return (
     <div className='page-container'>
@@ -43,17 +42,17 @@ const Notifications = () => {
           </div>
         ) : (
           <ul className='notifications-list'>
-            {notificationsList.map((notif, index) => (
+            {notificationsList.map(({ notification, read }, index) => (
               <NotificationItem
-                key={notif._id?.toString() || index}
-                notification={notif}
+                key={notification._id?.toString() || index}
+                notificationStatus={{ notification, read }}
                 onClick={() => {
                   // 1. Mark as read if it isn't already
-                  if (!notif.read) {
-                    handleReadNotification(notif._id.toString());
+                  if (!read) {
+                    handleReadNotification(notification._id.toString());
                   }
                   // 2. Proceed with the redirect
-                  handleNotificationRedirect(notif);
+                  handleNotificationRedirect(notification);
                 }}
               />
             ))}

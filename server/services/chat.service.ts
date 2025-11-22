@@ -55,8 +55,6 @@ export const addMessageToChat = async (
       throw new Error('Chat not found');
     }
 
-
-
     return updatedChat;
   } catch (error) {
     return { error: `Error adding message to chat: ${error}` };

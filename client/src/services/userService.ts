@@ -317,6 +317,37 @@ const toggleProfilePrivacy = async (username: string): Promise<PopulatedSafeData
   return res.data;
 };
 
+const readNotification = async (
+  username: string,
+  notificationId: string,
+): Promise<PopulatedSafeDatabaseUser> => {
+  const res = await api.patch(`${USER_API_URL}/readNotifications`, {
+    username,
+    notificationIds: [notificationId],
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Error when marking notification as read');
+  }
+
+  return res.data;
+};
+
+const readAllNotifications = async (
+  username: string,
+  notificationIds: string[],
+): Promise<PopulatedSafeDatabaseUser> => {
+  const res = await api.patch(`${USER_API_URL}/readAllNotifications`, {
+    username,
+    notificationIds,
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Error when marking all notifications as read');
+  }
+  return res.data;
+};
+
 export {
   getUsers,
   getUserByUsername,
@@ -332,4 +363,6 @@ export {
   addCoins,
   reduceCoins,
   toggleProfilePrivacy,
+  readNotification,
+  readAllNotifications,
 };

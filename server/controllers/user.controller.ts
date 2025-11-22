@@ -8,6 +8,7 @@ import {
   UpdateBiographyRequest,
   TransactionRequest,
   UpdateShowLoginStreakRequest,
+  ReadNotificationRequest,
 } from '../types/types';
 import {
   deleteUserByUsername,
@@ -15,13 +16,13 @@ import {
   getUsersList,
   loginUser,
   makeTransaction,
+  readNotifications,
   saveUser,
   updateUser,
 } from '../services/user.service';
 import { upload, processProfilePicture, processBannerImage } from '../utils/upload';
 import { generateToken } from '../utils/jwt.util';
 import protect from '../middleware/token.middleware';
-import { getCachedUser } from '../utils/cache.util';
 import { checkAndAwardBadges } from '../services/badge.service';
 import { populateUser } from '../utils/database.util';
 
@@ -401,7 +402,6 @@ const userController = (socket: FakeSOSocket) => {
       // Get user data from database using the decoded username
       const user = await populateUser(userId);
 
-      console.log(user);
       if (!user) {
         res.status(404).json({ error: 'User not found' });
         return;
@@ -480,6 +480,30 @@ const userController = (socket: FakeSOSocket) => {
     }
   };
 
+  const readNotificationsRoute = async (
+    req: ReadNotificationRequest,
+    res: Response,
+  ): Promise<void> => {
+    try {
+      const { username, notificationIds } = req.body;
+
+      const updatedUser = await readNotifications(username, notificationIds);
+
+      if ('error' in updatedUser) {
+        throw new Error(updatedUser.error);
+      }
+
+      socket.emit('userUpdate', {
+        user: updatedUser,
+        type: 'update',
+      });
+
+      res.json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ error: (error as Error).message });
+    }
+  };
+
   // Define routes for the user-related operations.
   router.post('/signup', createUser);
   router.post('/login', userLogin);
@@ -500,6 +524,7 @@ const userController = (socket: FakeSOSocket) => {
   router.patch('/updateShowLoginStreak', protect, updateShowLoginStreak);
   router.patch('/addCoins', protect, addCoinTransaction);
   router.patch('/reduceCoins', protect, reduceCoinTransaction);
+  router.patch('/readNotifications', readNotificationsRoute);
 
   return router;
 };

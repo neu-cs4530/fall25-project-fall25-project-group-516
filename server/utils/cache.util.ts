@@ -1,6 +1,5 @@
 import { RedisClientType } from '@redis/client';
 import { createClient } from 'redis';
-import UserModel from '../models/users.model';
 import { PopulatedSafeDatabaseUser, UserResponse } from '@fake-stack-overflow/shared';
 import { getUserRolesById } from '../services/user.service';
 import { populateUser } from './database.util';

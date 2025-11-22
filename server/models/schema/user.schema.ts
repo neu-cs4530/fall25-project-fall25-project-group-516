@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import { Schema } from 'mongoose';
 
 /**
  * Mongoose schema for the User collection.
@@ -107,8 +107,9 @@ const userSchema: Schema = new Schema(
     },
     notifications: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Notification',
+        notification: { type: Schema.Types.ObjectId, ref: 'Notification' },
+        read: { type: Boolean, default: false },
+        _id: false,
       },
     ],
   },

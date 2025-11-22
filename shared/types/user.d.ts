@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { ObjectId } from 'mongodb';
-import { Notification } from './notification';
+import { DatabaseNotification, Notification } from './notification';
 
 /**
  * Represents user credentials for authentication.
@@ -51,7 +51,7 @@ export interface User extends UserCredentials {
   lifeUpvotes?: number;
   coins?: number;
   profilePrivate?: boolean;
-  notifications?: Notification[];
+  notifications?: UserNotificationStatus[];
 }
 
 /**
@@ -64,7 +64,22 @@ export interface User extends UserCredentials {
  */
 export interface DatabaseUser extends Omit<User, 'notifications'> {
   _id: ObjectId;
-  notifications?: ObjectId[];
+  notifications?: DatabaseUserNotificationStatus[];
+}
+
+export interface UserNotificationStatus {
+  notificiation: Notification;
+  read: boolean;
+}
+
+export interface DatabaseUserNotificationStatus {
+  notification: ObjectId;
+  read: boolean;
+}
+
+export interface PopulatedUserNotificationStatus {
+  notification: DatabaseNotification;
+  read: boolean;
 }
 
 /**
@@ -95,7 +110,7 @@ export interface UserByUsernameRequest extends Request {
  * Represents a "safe" user object that excludes sensitive information like the password.
  */
 export interface PopulatedSafeDatabaseUser extends Omit<DatabaseUser, 'password notifications'> {
-  notifications?: DatabaseNotification[];
+  notifications?: PopulatedUserNotificationStatus[];
 }
 
 /**
@@ -158,5 +173,18 @@ export interface TransactionRequest extends Request {
     username: string;
     cost: number;
     description?: string;
+  };
+}
+
+/**
+ * Express request interface for marking a notification as read.
+ * Extends the base Express Request with a body containing the notification ID to mark as read.
+ *
+ * @extends {Request}
+ */
+export interface ReadNotificationRequest extends Request {
+  body: {
+    username: string;
+    notificationIds: string[];
   };
 }

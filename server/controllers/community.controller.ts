@@ -257,7 +257,6 @@ const communityController = (socket: FakeSOSocket) => {
     res: Response,
   ) => {
     const { communityId, managerUsername, announcement } = req.body;
-    console.log('hit');
     try {
       const communityAnnouncement = await sendCommunityAnnouncement(
         communityId,
@@ -275,8 +274,6 @@ const communityController = (socket: FakeSOSocket) => {
         }
         return;
       }
-
-      socket.emit('notificationUpdate', { notification: communityAnnouncement });
 
       res.json(communityAnnouncement);
     } catch (error) {

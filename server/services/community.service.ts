@@ -301,12 +301,9 @@ export const sendCommunityAnnouncement = async (
       throw new Error('Unauthorized: User does not have proper permissions');
     }
 
-    const receivers = community.participants;
-
     const notificationData: Notification = {
       ...announcement,
-      receivers: receivers, // Ensure the list is populated here
-      type: 'community', // Ensure type is set correctly
+      type: 'community',
     };
 
     const savedNotification = await saveNotification(notificationData, session);
@@ -315,7 +312,7 @@ export const sendCommunityAnnouncement = async (
       throw new Error(savedNotification.error);
     }
 
-    const result = await addNotificationToUsers(savedNotification, session);
+    const result = await addNotificationToUsers(community.participants, savedNotification, session);
 
     if (result && 'error' in result) {
       throw new Error(result.error);

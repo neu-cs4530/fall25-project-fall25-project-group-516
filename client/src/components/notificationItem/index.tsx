@@ -1,21 +1,23 @@
 import { DatabaseNotification } from '@fake-stack-overflow/shared/types/notification';
 import { getNotificationIcon, getTypeBackground, getTypeColor } from '../../utils/notif';
 import getRelativeTime from '../../utils/time';
+import { PopulatedUserNotificationStatus } from '@fake-stack-overflow/shared';
 
 const NotificationItem = ({
-  notification,
+  notificationStatus,
   onClick,
 }: {
-  notification: DatabaseNotification;
+  notificationStatus: PopulatedUserNotificationStatus;
   onClick: (n: DatabaseNotification) => void;
 }) => {
+  const { notification, read } = notificationStatus;
   const TypeIcon = getNotificationIcon(notification.type);
   const iconColor = getTypeColor(notification.type);
   const bgColor = getTypeBackground(notification.type);
 
   return (
     <li
-      className={`notification-item ${!notification.read ? 'notification-unread' : ''}`}
+      className={`notification-item ${!read ? 'notification-unread' : ''}`}
       onClick={() => onClick(notification)}
       style={{ cursor: 'pointer' }}>
       <div className='notification-content'>
@@ -24,7 +26,7 @@ const NotificationItem = ({
           <div className='notification-icon' style={{ backgroundColor: bgColor }}>
             <TypeIcon size={20} color={iconColor} />
           </div>
-          {!notification.read && <div className='notification-unread-dot' />}
+          {!read && <div className='notification-unread-dot' />}
         </div>
 
         {/* Right: Content */}

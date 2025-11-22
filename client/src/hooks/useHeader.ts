@@ -4,7 +4,6 @@ import useLoginContext from './useLoginContext';
 import { removeAuthToken } from '../services/userService';
 import useUserContext from './useUserContext';
 import { TransactionEventPayload } from '@fake-stack-overflow/shared';
-import { DatabaseNotification } from '@fake-stack-overflow/shared/types/notification';
 
 /**
  * Custom hook to manage the state and logic for a header input field.
@@ -71,7 +70,7 @@ const useHeader = () => {
 
     const fetchUnreadNotifications = () => {
       if (user.notifications) {
-        const unread = user.notifications.filter((n: DatabaseNotification) => !n.read);
+        const unread = user.notifications.filter(({ read }) => !read);
         setUnreadNotifications(unread.length);
       } else {
         setUnreadNotifications(0);
@@ -92,7 +91,7 @@ const useHeader = () => {
     return () => {
       socket.off('transactionEvent', handleCoinUpdate);
     };
-  }, [socket, user.coins, user.username]);
+  }, [socket, user.coins, user.username, user.notifications]);
 
   /**
    * Signs the user out by clearing the user context, removing the auth token, and navigating to the landing page.

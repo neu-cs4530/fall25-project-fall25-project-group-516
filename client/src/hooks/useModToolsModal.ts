@@ -1,6 +1,6 @@
 import { ChangeEvent, useMemo, useState } from 'react';
 import useUsersListPage from './useUsersListPage';
-import { DatabaseCommunity } from '../types/types';
+import { DatabaseCommunity, ModToolConfirmation, ModToolSections } from '../types/types';
 import { useNavigate } from 'react-router-dom';
 import useUserContext from './useUserContext';
 import {
@@ -9,7 +9,6 @@ import {
   toggleModerator,
   sendAnnouncement,
 } from '../services/communityService';
-import { ModToolConfirmation, ModToolSections } from '../types/types';
 import { Notification } from '@fake-stack-overflow/shared/types/notification';
 
 const useModToolsModal = (community: DatabaseCommunity) => {
@@ -77,9 +76,7 @@ const useModToolsModal = (community: DatabaseCommunity) => {
       msg: announcementMsg,
       dateTime: new Date(),
       sender: user.username,
-      receivers: [...community.participants],
       contextId: community._id,
-      read: false,
       type: 'community',
     };
 

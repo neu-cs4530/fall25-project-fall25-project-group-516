@@ -1,24 +1,14 @@
-import express, { Router, Request, Response } from 'express';
+import express, { Router, Response } from 'express';
 import { FakeSOSocket } from '../types/types';
-import protect from '../middleware/token.middleware';
-import {
-  addNotificationToUsers,
-  readAllNotifications,
-  saveNotification,
-} from '../services/notification.service';
-import {
-  SendNotificationRequest,
-  ReadNotificationRequest,
-  DatabaseNotification,
-} from '@fake-stack-overflow/shared/types/notification';
-import NotificationModel from '../models/notifications.model';
+import { addNotificationToUsers, saveNotification } from '../services/notification.service';
+import { SendNotificationRequest } from '@fake-stack-overflow/shared/types/notification';
 
 const notificationController = (socket: FakeSOSocket) => {
   const router: Router = express.Router();
 
   const sendNotification = async (req: SendNotificationRequest, res: Response): Promise<void> => {
     try {
-      const { notification } = req.body;
+      const { recipients, notification } = req.body;
 
       const savedNotif = await saveNotification(notification);
 
@@ -26,7 +16,7 @@ const notificationController = (socket: FakeSOSocket) => {
         throw new Error(savedNotif.error as string);
       }
 
-      const status = await addNotificationToUsers(savedNotif);
+      const status = await addNotificationToUsers(recipients, savedNotif);
 
       if (status && 'error' in status) {
         throw new Error(status.error as string);
@@ -42,54 +32,7 @@ const notificationController = (socket: FakeSOSocket) => {
     }
   };
 
-  const readNotification = async (req: ReadNotificationRequest, res: Response): Promise<void> => {
-    try {
-      const { notificationId } = req.body;
-
-      const readNotif = await NotificationModel.findByIdAndUpdate(
-        notificationId,
-        {
-          $set: { read: true },
-        },
-        { new: true },
-      );
-
-      if (!readNotif) {
-        throw new Error('Error reading notification');
-      }
-
-      socket.emit('readUpdate', { notification: readNotif as DatabaseNotification });
-      res.json(readNotif);
-    } catch (error) {
-      res.status(500).json({ error: (error as Error).message });
-    }
-  };
-
-  const readAllNotificationsRoute = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const username = req.user?.username;
-
-      if (!username) {
-        throw new Error('Username is required');
-      }
-
-      const updatedNotifications = await readAllNotifications(username);
-
-      if (updatedNotifications && 'error' in updatedNotifications) {
-        throw new Error(updatedNotifications.error as string);
-      }
-
-      socket.emit('readAllUpdate', { notifications: updatedNotifications });
-
-      res.json(updatedNotifications);
-    } catch (error) {
-      res.status(500).json({ error: (error as Error).message });
-    }
-  };
-
   router.post('/sendNotification', sendNotification);
-  router.patch('/readNotification', readNotification);
-  router.patch('/readAllNotifications', protect, readAllNotificationsRoute);
 
   return router;
 };
