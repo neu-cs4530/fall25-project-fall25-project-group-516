@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import useUserContext from './useUserContext';
-import { decrementStreakPasses, reduceCoins, toggleStreakHold } from '../services/userService';
+import {
+  decrementStreakPasses,
+  reduceCoins,
+  resetLoginStreak,
+  toggleStreakHold,
+} from '../services/userService';
 
 /**
  * Custom hook that encapsulates all logic/state for StreakRecoveryWindow Component.
@@ -72,7 +77,7 @@ const useStreakRecoveryWindow = () => {
   const handleOnClose = async () => {
     try {
       if (cancelStreak) {
-        //se login streak era
+        await resetLoginStreak(user.username);
       }
       await toggleStreakHold(user.username);
       setShowRecoveryWindow(false);

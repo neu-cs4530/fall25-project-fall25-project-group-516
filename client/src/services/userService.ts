@@ -385,6 +385,22 @@ const decrementStreakPasses = async (username: string): Promise<SafeDatabaseUser
   return res.data;
 };
 
+/**
+ * Resets user's login streak to 1.
+ * @param username The unique username of the user
+ * @returns A promise resolving to the updated user
+ * @throws Error if the request fails
+ */
+const resetLoginStreak = async (username: string): Promise<SafeDatabaseUser> => {
+  const res = await api.patch(`${USER_API_URL}/resetLoginStreak`, {
+    username,
+  });
+  if (res.status !== 200) {
+    throw new Error("Error when reseting user's login streak");
+  }
+  return res.data;
+};
+
 export {
   getUsers,
   getUserByUsername,
@@ -404,4 +420,5 @@ export {
   activatePremiumProfile,
   deactivatePremiumProfile,
   decrementStreakPasses,
+  resetLoginStreak,
 };

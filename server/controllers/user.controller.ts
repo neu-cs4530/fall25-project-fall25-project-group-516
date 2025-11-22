@@ -681,6 +681,39 @@ const userController = (socket: FakeSOSocket) => {
     }
   };
 
+  /**
+   * Resets user's login streak to 1.
+   * @param req The request containing the username of the user.
+   * @param res The response, either confirming the update or returning an error.
+   * @returns a promise resolving to void.
+   */
+  const resetLoginStreak = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { username } = req.body;
+
+      if (!username) {
+        res.status(400).send('Username must be provided');
+      }
+
+      const updatedUser = await updateUser(username, {
+        loginStreak: 1,
+      });
+
+      if ('error' in updatedUser) {
+        throw new Error(updatedUser.error);
+      }
+
+      socket.emit('userUpdate', {
+        user: updatedUser,
+        type: 'updated',
+      });
+
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      res.status(500).send(`Error reseting user's login strak: ${error}`);
+    }
+  };
+
   // Define routes for the user-related operations.
   router.post('/signup', createUser);
   router.post('/login', userLogin);
@@ -705,6 +738,7 @@ const userController = (socket: FakeSOSocket) => {
   router.patch('/updateShowLoginStreak', protect, updateShowLoginStreak);
   router.patch('/addCoins', protect, addCoinTransaction);
   router.patch('/reduceCoins', protect, reduceCoinTransaction);
+  router.patch('/resetLoginStreak', protect, resetLoginStreak);
 
   return router;
 };

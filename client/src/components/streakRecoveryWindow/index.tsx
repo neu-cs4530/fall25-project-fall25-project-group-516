@@ -43,21 +43,6 @@ const StreakRecoveryWindow = () => {
         )}
         <div className='transaction-description'>
           <h2>{`You can recover your ${loginStreak} login streak for:`}</h2>
-          {/* {<div className='container-container'>
-            <div className='coin-container'>
-              <img
-                className='coin-image'
-                src='\coinPicture\stack-coin.PNG'
-                alt='Coin emblazoned stack of pancakes'
-                background-color='transparent'
-              />
-              <div className='text-block'>
-                <h2>{`x${cost}`}</h2>
-              </div>
-            </div>
-            <div className='streakpass-container'>{/**whip up an image for this? }</div>
-          </div>
-          {description && <h3>{description}</h3>} */}
         </div>
         <div>
           <div className='modal-actions'>
