@@ -117,6 +117,10 @@ const userSchema: Schema = new Schema(
       type: Number,
       default: 0,
     },
+    missedDays: {
+      type: Number,
+      default: 0,
+    },
     streakHold: {
       type: Boolean,
       default: false,

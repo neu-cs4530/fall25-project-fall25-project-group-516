@@ -33,6 +33,7 @@ export interface UserCredentials {
  * - `profilePrivate`: Whether the user's profile is private.
  * - `premiumProfile`: Whether the user has a premium profile or not.
  * - `streakPass`: Number of passes user has to miss streak.
+ * - `missedDays`: Number of days user has not logged in for.
  * - `streakHold`: Whether streak is currently on hold to be recovered.
  * - `status`: User's current status ('online', 'busy', 'away').
  * - `customStatus`: Custom status message.
@@ -57,6 +58,7 @@ export interface User extends UserCredentials {
   profilePrivate?: boolean;
   premiumProfile?: boolean;
   streakPass?: number;
+  missedDays?: number;
   streakHold?: boolean;
   status?: 'online' | 'busy' | 'away';
   customStatus?: string;

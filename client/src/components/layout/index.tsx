@@ -10,6 +10,7 @@ import { detectAdBlockCombined } from '../../utils/adBlockDetector';
 import TransactionWindow from '../transactionWindow';
 import useTransactionWindow from '../../hooks/useTransactionWindow';
 import usePremiumTransaction from '../../hooks/usePremiumTransaction';
+import StreakRecoveryWindow from '../streakRecoveryWindow';
 import useUserContext from '../../hooks/useUserContext';
 
 /**
@@ -67,6 +68,8 @@ const Layout = () => {
         <SideBarNav />
         <div id='right_main' className='right_main'>
           <Outlet />
+          {/* Recover streak */}
+          <StreakRecoveryWindow />
           {/* Login reward */}
           <TransactionWindow
             isOpen={showRewardWindow}
