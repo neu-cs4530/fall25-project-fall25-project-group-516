@@ -279,23 +279,22 @@ const userController = (socket: FakeSOSocket) => {
       const updatedUser = await updateUser(username, {
         streakHold: !currentUser.streakHold,
       });
-      
+
       if ('error' in updatedUser) {
         throw new Error(updatedUser.error);
       }
-      
+
       socket.emit('userUpdate', {
         user: updatedUser,
         type: 'updated',
       });
-      
+
       res.status(200).json(updatedUser);
     } catch (error) {
       res.status(500).send(`Error toggling streak hold: ${error}`);
     }
   };
-  
-      
+
   /*
    * Updates a user's status and custom status message.
    * @param req The request containing username, status, and optional customStatus in the body.

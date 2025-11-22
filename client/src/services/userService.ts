@@ -397,7 +397,7 @@ const resetLoginStreak = async (username: string): Promise<SafeDatabaseUser> => 
   });
   if (res.status !== 200) {
     throw new Error("Error when reseting user's login streak");
-   }
+  }
   return res.data;
 };
 
