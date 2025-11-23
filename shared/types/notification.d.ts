@@ -1,8 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { Request } from 'express';
 
-import { User } from './user';
-
 /**
  * Enumeration of all possible notification types in the system.
  * Each type represents a different category of notification that can be sent to users.

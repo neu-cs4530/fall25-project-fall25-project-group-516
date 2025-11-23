@@ -2,12 +2,11 @@ import { PopulatedDatabaseAnswer } from './answer';
 import { PopulatedDatabaseChat } from './chat';
 import { DatabaseMessage } from './message';
 import { PopulatedDatabaseQuestion } from './question';
-import { DatabaseUserNotificationStatus, PopulatedSafeDatabaseUser } from './user';
+import { PopulatedSafeDatabaseUser } from './user';
 import { BaseMove, GameInstance, GameInstanceID, GameMove, GameState } from './game';
 import { DatabaseCommunity } from './community';
 import { PopulatedDatabaseCollection } from './collection';
 import { DatabaseBadge } from './badge';
-import { DatabaseNotification } from './notification';
 
 /**
  * Payload for an answer update event.
