@@ -12,7 +12,7 @@ import { getQuestionsByFilter } from '../services/questionService';
  * @returns setQuestionOrder - Function to set the sorting order of questions (e.g., newest, oldest).
  */
 const useQuestionPage = () => {
-  const { socket } = useUserContext();
+  const { socket, user } = useUserContext();
 
   const [searchParams] = useSearchParams();
   const [titleText, setTitleText] = useState<string>('All Questions');
@@ -59,6 +59,11 @@ const useQuestionPage = () => {
      * @param question - the updated question object.
      */
     const handleQuestionUpdate = (question: PopulatedDatabaseQuestion) => {
+      // Don't add/update questions from users in blocking relationships
+      if (user?.blockedUsers && user.blockedUsers.includes(question.askedBy)) {
+        return;
+      }
+
       setQlist(prevQlist => {
         const questionExists = prevQlist.some(q => q._id === question._id);
 
@@ -103,7 +108,7 @@ const useQuestionPage = () => {
       socket.off('answerUpdate', handleAnswerUpdate);
       socket.off('viewsUpdate', handleViewsUpdate);
     };
-  }, [questionOrder, search, socket]);
+  }, [questionOrder, search, socket, user?.blockedUsers]);
 
   return {
     titleText,

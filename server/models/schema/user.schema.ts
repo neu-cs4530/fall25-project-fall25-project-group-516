@@ -135,6 +135,10 @@ const userSchema: Schema = new Schema(
       default: '',
       maxlength: 100,
     },
+    blockedUsers: {
+      type: [String],
+      default: [],
+    },
   },
   { collection: 'User' },
 );

@@ -97,13 +97,13 @@ export type VoteResponse = VoteInterface | { error: string };
  * Interface for the request query to find questions using a search string.
  * - `order`: The order in which to sort the questions.
  * - `search`: The search string used to find questions.
- * - `askedBy`: The username of the user who asked the question.
+ * - `askedBy`: The username of the user who asked the question (optional).
  */
 export interface FindQuestionRequest extends Request {
   query: {
     order: OrderType;
     search: string;
-    askedBy: string;
+    askedBy?: string;
   };
 }
 

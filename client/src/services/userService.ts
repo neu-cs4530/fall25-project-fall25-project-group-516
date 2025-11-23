@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { UserCredentials, SafeDatabaseUser } from '../types/types';
 import api from './config';
 import { setAuthToken, getAuthToken, removeAuthToken } from '../utils/auth';
@@ -141,16 +141,16 @@ const addCoins = async (
   cost: number,
   description?: string,
 ): Promise<SafeDatabaseUser> => {
-  const res = await api.patch(`${USER_API_URL}/addCoins`, {
-    username,
-    cost,
-    description,
-  });
-
-  if (res.status !== 200) {
-    throw new Error('Error when adding coins');
+  try {
+    const res = await api.patch(`${USER_API_URL}/addCoins`, {
+      username,
+      cost,
+      description,
+    });
+    return res.data;
+  } catch (error) {
+    throw new Error('Unable to add coins. Please try again.');
   }
-  return res.data;
 };
 
 /**
@@ -166,18 +166,19 @@ const reduceCoins = async (
   cost: number,
   description?: string,
 ): Promise<SafeDatabaseUser> => {
-  const res = await api.patch(`${USER_API_URL}/reduceCoins`, {
-    username,
-    cost,
-    description,
-  });
-
-  if (res.status == 402) {
-    throw new Error('Not enough coins to perform transaction');
-  } else if (res.status !== 200) {
-    throw new Error('Error when reducing coins');
+  try {
+    const res = await api.patch(`${USER_API_URL}/reduceCoins`, {
+      username,
+      cost,
+      description,
+    });
+    return res.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response?.status === 402) {
+      throw new Error('Not enough coins to perform transaction');
+    }
+    throw new Error('Transaction failed. Please try again.');
   }
-  return res.data;
 };
 
 /**
@@ -340,15 +341,15 @@ const toggleStreakHold = async (username: string): Promise<SafeDatabaseUser> => 
  * @throws Error if the request fails
  */
 const activatePremiumProfile = async (username: string): Promise<SafeDatabaseUser> => {
-  const res = await api.patch(`${USER_API_URL}/activatePremium`, { username });
-
-  if (res.status !== 200) {
-    if (res.status == 402) {
-      throw new Error('User already has premium profile.');
+  try {
+    const res = await api.patch(`${USER_API_URL}/activatePremium`, { username });
+    return res.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response?.status === 402) {
+      throw new Error('Not enough coins to activate premium membership.');
     }
-    throw new Error('Error when activating premium profile');
+    throw new Error('Unable to activate premium membership. Please try again.');
   }
-  return res.data;
 };
 
 /**
@@ -358,15 +359,15 @@ const activatePremiumProfile = async (username: string): Promise<SafeDatabaseUse
  * @throws Error if the request fails
  */
 const deactivatePremiumProfile = async (username: string): Promise<SafeDatabaseUser> => {
-  const res = await api.patch(`${USER_API_URL}/deactivatePremium`, { username });
-
-  if (res.status !== 200) {
-    if (res.status == 402) {
+  try {
+    const res = await api.patch(`${USER_API_URL}/deactivatePremium`, { username });
+    return res.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response?.status === 402) {
       throw new Error('User does not have premium profile.');
     }
-    throw new Error('Error when deactivating premium profile');
+    throw new Error('Unable to cancel premium membership. Please try again.');
   }
-  return res.data;
 };
 
 /**
@@ -376,13 +377,14 @@ const deactivatePremiumProfile = async (username: string): Promise<SafeDatabaseU
  * @throws Error if the request fails
  */
 const decrementStreakPasses = async (username: string): Promise<SafeDatabaseUser> => {
-  const res = await api.patch(`${USER_API_URL}/decrementStreakPasses`, {
-    username,
-  });
-  if (res.status !== 200) {
-    throw new Error("Error when decrementing user's streak passes.");
+  try {
+    const res = await api.patch(`${USER_API_URL}/decrementStreakPasses`, {
+      username,
+    });
+    return res.data;
+  } catch (error) {
+    throw new Error('Unable to use streak pass. Please try again.');
   }
-  return res.data;
 };
 
 /**
@@ -425,6 +427,76 @@ const updateStatus = async (
   return res.data;
 };
 
+/**
+ * Blocks a user by adding them to the current user's blocked list.
+ * @param username The unique username of the user doing the blocking
+ * @param targetUsername The username of the user to block
+ * @returns A promise resolving to the updated user
+ * @throws Error if the request fails
+ */
+const blockUser = async (username: string, targetUsername: string): Promise<SafeDatabaseUser> => {
+  try {
+    const res = await api.patch(`${USER_API_URL}/blockUser`, {
+      username,
+      targetUsername,
+    });
+    return res.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response?.data?.error) {
+      const serverMessage = error.response.data.error;
+      if (serverMessage.includes('cannot block yourself')) {
+        throw new Error('You cannot block yourself.');
+      } else if (serverMessage.includes('not found')) {
+        throw new Error('User not found.');
+      } else if (serverMessage.includes('already blocked')) {
+        throw new Error('You have already blocked this user.');
+      }
+      throw new Error(serverMessage);
+    }
+    throw new Error('Unable to block user. Please try again.');
+  }
+};
+
+/**
+ * Unblocks a user by removing them from the current user's blocked list.
+ * @param username The unique username of the user doing the unblocking
+ * @param targetUsername The username of the user to unblock
+ * @returns A promise resolving to the updated user
+ * @throws Error if the request fails
+ */
+const unblockUser = async (username: string, targetUsername: string): Promise<SafeDatabaseUser> => {
+  try {
+    const res = await api.patch(`${USER_API_URL}/unblockUser`, {
+      username,
+      targetUsername,
+    });
+    return res.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
+    throw new Error('Unable to unblock user. Please try again.');
+  }
+};
+
+/**
+ * Gets the list of blocked users for a given user.
+ * @param username The unique username of the user
+ * @returns A promise resolving to the user object containing blockedUsers
+ * @throws Error if the request fails
+ */
+const getBlockedUsers = async (username: string): Promise<SafeDatabaseUser> => {
+  try {
+    const res = await api.get(`${USER_API_URL}/blockedUsers/${username}`);
+    return res.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
+    throw new Error('Unable to fetch blocked users. Please try again.');
+  }
+};
+
 export {
   getUsers,
   getUserByUsername,
@@ -446,4 +518,7 @@ export {
   decrementStreakPasses,
   resetLoginStreak,
   updateStatus,
+  blockUser,
+  unblockUser,
+  getBlockedUsers,
 };

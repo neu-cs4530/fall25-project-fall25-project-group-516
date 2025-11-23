@@ -55,7 +55,11 @@ const TransactionWindow = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleCancelButton} title={title}>
+    <Modal
+      isOpen={isOpen}
+      onClose={handleCancelButton}
+      title={title}
+      className='transaction-modal-container'>
       <div className='transaction-modal'>
         {error.length > 0 && (
           <div className='transaction-error'>
@@ -86,7 +90,6 @@ const TransactionWindow = ({
                 className='coin-image'
                 src='\coinPicture\stack-coin.PNG'
                 alt='Coin emblazoned stack of pancakes'
-                background-color='transparent'
               />
               <div className='text-block'>
                 <h2>{`x${cost}`}</h2>

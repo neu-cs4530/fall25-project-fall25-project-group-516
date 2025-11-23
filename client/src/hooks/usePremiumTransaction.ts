@@ -35,14 +35,10 @@ const usePremiumTransaction = () => {
   const handleActivatePremium = async () => {
     if (!user.username) return;
 
-    try {
-      await activatePremiumProfile(user.username);
-      // Refresh page to activate ad-free browsing experience
-      // is this supposed to log you out? Will revisit at later date
-      // window.location.reload();
-    } catch (error) {
-      throw Error('Activating premium profile failed');
-    }
+    await activatePremiumProfile(user.username);
+    // Refresh page to activate ad-free browsing experience
+    // is this supposed to log you out? Will revisit at later date
+    // window.location.reload();
   };
 
   return {

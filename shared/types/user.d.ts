@@ -37,6 +37,7 @@ export interface UserCredentials {
  * - `streakHold`: Whether streak is currently on hold to be recovered.
  * - `status`: User's current status ('online', 'busy', 'away').
  * - `customStatus`: Custom status message.
+ * - `blockedUsers`: Array of usernames that this user has blocked.
  */
 export interface User extends UserCredentials {
   dateJoined: Date;
@@ -62,6 +63,7 @@ export interface User extends UserCredentials {
   streakHold?: boolean;
   status?: 'online' | 'busy' | 'away';
   customStatus?: string;
+  blockedUsers?: string[];
 }
 
 /**

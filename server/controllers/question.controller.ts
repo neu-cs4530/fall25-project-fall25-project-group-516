@@ -14,6 +14,7 @@ import {
   addVoteToQuestion,
   fetchAndIncrementQuestionViewsById,
   filterQuestionsByAskedBy,
+  filterQuestionsByBlocking,
   filterQuestionsBySearch,
   getCommunityQuestions,
   getQuestionsByOrder,
@@ -50,7 +51,13 @@ const questionController = (socket: FakeSOSocket) => {
       }
 
       // Filter by search keyword and tags
-      const resqlist: PopulatedDatabaseQuestion[] = filterQuestionsBySearch(qlist, search);
+      let resqlist: PopulatedDatabaseQuestion[] = filterQuestionsBySearch(qlist, search);
+
+      // Apply blocking filter using authenticated user
+      if (req.user?.username) {
+        resqlist = await filterQuestionsByBlocking(resqlist, req.user.username);
+      }
+
       res.json(resqlist);
     } catch (err: unknown) {
       if (err instanceof Error) {
