@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 import QuestionModel from '../../models/questions.model';
 import { saveComment, addComment } from '../../services/comment.service';
-import { DatabaseComment, DatabaseQuestion, DatabaseAnswer } from '../../types/types';
+import { DatabaseComment, DatabaseQuestion, DatabaseAnswer, DatabaseUser } from '../../types/types';
 import AnswerModel from '../../models/answers.model';
-import { QUESTIONS, ans1, com1 } from '../mockData.models';
+import { QUESTIONS, ans1, com1, user } from '../mockData.models';
 import CommentModel from '../../models/comments.model';
+import UserModel from '../../models/users.model';
 
 describe('Comment model', () => {
   beforeEach(() => {
@@ -12,6 +13,11 @@ describe('Comment model', () => {
   });
   describe('saveComment', () => {
     test('saveComment should return the saved comment', async () => {
+      jest.spyOn(UserModel, 'aggregate').mockResolvedValue([{ averageValue: 5 }]);
+      const mockUser: DatabaseUser | null = { ...user, _id: new mongoose.Types.ObjectId() };
+      jest
+        .spyOn(UserModel, 'find')
+        .mockResolvedValue(mockUser as unknown as ReturnType<typeof UserModel.find>);
       jest
         .spyOn(CommentModel, 'create')
         .mockResolvedValue(com1 as unknown as ReturnType<typeof CommentModel.create>);
@@ -23,6 +29,11 @@ describe('Comment model', () => {
     });
 
     test('saveComment should return an object with error if create throws an error', async () => {
+      jest.spyOn(UserModel, 'aggregate').mockResolvedValue([{ averageValue: 5 }]);
+      const mockUser: DatabaseUser | null = { ...user, _id: new mongoose.Types.ObjectId() };
+      jest
+        .spyOn(UserModel, 'find')
+        .mockResolvedValue(mockUser as unknown as ReturnType<typeof UserModel.find>);
       jest.spyOn(CommentModel, 'create').mockRejectedValue(new Error('Error from db query'));
       const result = await saveComment(com1);
       expect(result).toEqual({ error: 'Error when saving a comment' });
