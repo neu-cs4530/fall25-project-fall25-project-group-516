@@ -342,7 +342,7 @@ const readAllNotifications = async (
   username: string,
   notificationIds: string[],
 ): Promise<PopulatedSafeDatabaseUser> => {
-  const res = await api.patch(`${USER_API_URL}/readAllNotifications`, {
+  const res = await api.patch(`${USER_API_URL}/readNotifications`, {
     username,
     notificationIds,
   });
