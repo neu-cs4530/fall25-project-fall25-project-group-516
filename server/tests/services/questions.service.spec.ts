@@ -19,7 +19,9 @@ import {
   ans3,
   ans4,
   POPULATED_QUESTIONS,
+  user,
 } from '../mockData.models';
+import UserModel from '../../models/users.model';
 
 describe('Question model', () => {
   beforeEach(() => {
@@ -375,9 +377,14 @@ describe('Question model', () => {
         downVotes: [],
       };
 
+      jest.spyOn(QuestionModel, 'findById').mockResolvedValue(mockQuestion);
       jest
         .spyOn(QuestionModel, 'findOneAndUpdate')
         .mockResolvedValue({ ...mockQuestion, upVotes: ['testUser'], downVotes: [] });
+
+      const mockUser = { ...user, lifetimeUpvotes: 1 };
+
+      jest.spyOn(UserModel, 'findOneAndUpdate').mockResolvedValue(mockUser);
 
       const result = await addVoteToQuestion('someQuestionId', 'testUser', 'upvote');
 
@@ -395,9 +402,14 @@ describe('Question model', () => {
         downVotes: [],
       };
 
+      jest.spyOn(QuestionModel, 'findById').mockResolvedValue(mockQuestion);
       jest
         .spyOn(QuestionModel, 'findOneAndUpdate')
         .mockResolvedValue({ ...mockQuestion, upVotes: [], downVotes: ['testUser'] });
+
+      const mockUser = { ...user, lifetimeUpvotes: -1 };
+
+      jest.spyOn(UserModel, 'findOneAndUpdate').mockResolvedValue(mockUser);
 
       const result = await addVoteToQuestion('someQuestionId', 'testUser', 'downvote');
 
@@ -415,9 +427,13 @@ describe('Question model', () => {
         downVotes: ['testUser'],
       };
 
+      jest.spyOn(QuestionModel, 'findById').mockResolvedValue(mockQuestion);
       jest
         .spyOn(QuestionModel, 'findOneAndUpdate')
         .mockResolvedValue({ ...mockQuestion, upVotes: ['testUser'], downVotes: [] });
+      const mockUser = { ...user, lifetimeUpvotes: 0 };
+
+      jest.spyOn(UserModel, 'findOneAndUpdate').mockResolvedValue(mockUser);
 
       const result = await addVoteToQuestion('someQuestionId', 'testUser', 'upvote');
 
@@ -435,10 +451,13 @@ describe('Question model', () => {
         downVotes: [],
       };
 
+      jest.spyOn(QuestionModel, 'findById').mockResolvedValue(mockQuestion);
       jest
         .spyOn(QuestionModel, 'findOneAndUpdate')
         .mockResolvedValue({ ...mockQuestion, upVotes: [], downVotes: [] });
+      const mockUser = { ...user, lifetimeUpvotes: 0 };
 
+      jest.spyOn(UserModel, 'findOneAndUpdate').mockResolvedValue(mockUser);
       const result = await addVoteToQuestion('someQuestionId', 'testUser', 'upvote');
 
       expect(result).toEqual({
@@ -455,10 +474,14 @@ describe('Question model', () => {
         downVotes: ['testUser'],
       };
 
+      jest.spyOn(QuestionModel, 'findById').mockResolvedValue(mockQuestion);
       jest
         .spyOn(QuestionModel, 'findOneAndUpdate')
         .mockResolvedValue({ ...mockQuestion, upVotes: [], downVotes: [] });
 
+      const mockUser = { ...user, lifetimeUpvotes: 0 };
+
+      jest.spyOn(UserModel, 'findOneAndUpdate').mockResolvedValue(mockUser);
       const result = await addVoteToQuestion('someQuestionId', 'testUser', 'downvote');
 
       expect(result).toEqual({
@@ -469,6 +492,12 @@ describe('Question model', () => {
     });
 
     test('addVoteToQuestion should return an error if the question is not found', async () => {
+      const mockQuestion = {
+        _id: 'someQuestionId',
+        upVotes: [],
+        downVotes: ['testUser'],
+      };
+      jest.spyOn(QuestionModel, 'findById').mockResolvedValue(mockQuestion);
       jest.spyOn(QuestionModel, 'findOneAndUpdate').mockResolvedValue(null);
 
       const result = await addVoteToQuestion('nonExistentId', 'testUser', 'upvote');
@@ -476,6 +505,12 @@ describe('Question model', () => {
     });
 
     test('addVoteToQuestion should return an error when there is an issue with adding an upvote', async () => {
+      const mockQuestion = {
+        _id: 'someQuestionId',
+        upVotes: [],
+        downVotes: ['testUser'],
+      };
+      jest.spyOn(QuestionModel, 'findById').mockResolvedValue(mockQuestion);
       jest.spyOn(QuestionModel, 'findOneAndUpdate').mockRejectedValue(new Error('Database error'));
       const result = await addVoteToQuestion('someQuestionId', 'testUser', 'upvote');
 
@@ -488,7 +523,7 @@ describe('Question model', () => {
         upVotes: [],
         downVotes: [],
       };
-
+      jest.spyOn(QuestionModel, 'findById').mockResolvedValue(mockQuestion);
       jest
         .spyOn(QuestionModel, 'findOneAndUpdate')
         .mockResolvedValue({ ...mockQuestion, upVotes: [], downVotes: ['testUser'] });
@@ -508,7 +543,7 @@ describe('Question model', () => {
         upVotes: ['testUser'],
         downVotes: [],
       };
-
+      jest.spyOn(QuestionModel, 'findById').mockResolvedValue(mockQuestion);
       jest.spyOn(QuestionModel, 'findOneAndUpdate').mockResolvedValue({
         ...mockQuestion,
         upVotes: [],
@@ -530,7 +565,7 @@ describe('Question model', () => {
         upVotes: [],
         downVotes: ['testUser'],
       };
-
+      jest.spyOn(QuestionModel, 'findById').mockResolvedValue(mockQuestion);
       jest
         .spyOn(QuestionModel, 'findOneAndUpdate')
         .mockResolvedValue({ ...mockQuestion, upVotes: [], downVotes: [] });
@@ -545,6 +580,12 @@ describe('Question model', () => {
     });
 
     test('addVoteToQuestion should return an error if the question is not found', async () => {
+      const mockQuestion = {
+        _id: 'someQuestionId',
+        upVotes: [],
+        downVotes: ['testUser'],
+      };
+      jest.spyOn(QuestionModel, 'findById').mockResolvedValue(mockQuestion);
       jest.spyOn(QuestionModel, 'findOneAndUpdate').mockResolvedValue(null);
 
       const result = await addVoteToQuestion('nonExistentId', 'testUser', 'downvote');
@@ -553,6 +594,12 @@ describe('Question model', () => {
     });
 
     test('addVoteToQuestion should return an error when there is an issue with adding a downvote', async () => {
+      const mockQuestion = {
+        _id: 'someQuestionId',
+        upVotes: [],
+        downVotes: ['testUser'],
+      };
+      jest.spyOn(QuestionModel, 'findById').mockResolvedValue(mockQuestion);
       jest.spyOn(QuestionModel, 'findOneAndUpdate').mockRejectedValue(new Error('Database error'));
       const result = await addVoteToQuestion('someQuestionId', 'testUser', 'downvote');
 
