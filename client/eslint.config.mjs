@@ -1,5 +1,7 @@
 /* eslint import/no-extraneous-dependencies: "off" */
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import js from '@eslint/js';
@@ -8,6 +10,9 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import eslintPluginImport from 'eslint-plugin-import';
 import eslintReactHooks from 'eslint-plugin-react-hooks';
 import eslintReactRefresh from 'eslint-plugin-react-refresh';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default defineConfig([
   globalIgnores(['build/*', 'dist/*', '.stryker-tmp/*', 'coverage/*']),
@@ -51,7 +56,7 @@ export default defineConfig([
     languageOptions: {
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: '.',
+        tsconfigRootDir: __dirname,
         globals: globals.browser,
       },
     },
