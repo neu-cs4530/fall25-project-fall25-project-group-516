@@ -487,7 +487,7 @@ export const blockUser = async (
     }
 
     // Add to blocked list
-    const updatedUser: SafeDatabaseUser | null = await UserModel.findOneAndUpdate(
+    const updatedUser: PopulatedSafeDatabaseUser | null = await UserModel.findOneAndUpdate(
       { username },
       { $addToSet: { blockedUsers: targetUsername } },
       { new: true },
@@ -516,7 +516,7 @@ export const unblockUser = async (
 ): Promise<UserResponse> => {
   try {
     // Remove from blocked list
-    const updatedUser: SafeDatabaseUser | null = await UserModel.findOneAndUpdate(
+    const updatedUser: PopulatedSafeDatabaseUser | null = await UserModel.findOneAndUpdate(
       { username },
       { $pull: { blockedUsers: targetUsername } },
       { new: true },
@@ -540,7 +540,9 @@ export const unblockUser = async (
  */
 export const getBlockedUsers = async (username: string): Promise<UserResponse> => {
   try {
-    const user: SafeDatabaseUser | null = await UserModel.findOne({ username }).select('-password');
+    const user: PopulatedSafeDatabaseUser | null = await UserModel.findOne({ username }).select(
+      '-password',
+    );
 
     if (!user) {
       throw Error('User not found');
