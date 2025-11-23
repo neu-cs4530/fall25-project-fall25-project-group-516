@@ -20,6 +20,8 @@ import { saveMessage } from '../services/message.service';
 import { sendNotification } from '../services/notification.service';
 import { Notification } from '@fake-stack-overflow/shared/types/notification';
 import MessageModel from '../models/messages.model';
+import UserModel from '../models/users.model';
+import userSocketMap from '../utils/socketMap.util';
 
 /*
  * This controller handles chat-related routes.
@@ -121,6 +123,24 @@ const chatController = (socket: FakeSOSocket) => {
       socket
         .to(chatId)
         .emit('chatUpdate', { chat: populatedChat as PopulatedDatabaseChat, type: 'newMessage' });
+
+      const recipients = await UserModel.find({
+        username: { $in: otherParticipants },
+        messageNotifs: true,
+      });
+
+      const socketIds = recipients
+        .map(rec => userSocketMap.get(rec.username))
+        .filter((id): id is string => id !== undefined);
+
+      // 2. Iterate and emit to specific sockets
+      socketIds.forEach(socketId => {
+        socket
+          .to(socketId) // Targets the specific client
+          .emit('notificationUpdate', {
+            notificationStatus: { notification, read: false },
+          });
+      });
       res.json(populatedChat);
     } catch (err: unknown) {
       res.status(500).send(`Error adding a message to chat: ${(err as Error).message}`);
