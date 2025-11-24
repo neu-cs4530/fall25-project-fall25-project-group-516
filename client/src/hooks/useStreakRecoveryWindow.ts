@@ -57,7 +57,14 @@ const useStreakRecoveryWindow = () => {
         handleOnClose();
       }
     }
-  }, [user.streakHold, user.loginStreak, user.streakPass, user.missedDays, user.coins, handleOnClose]);
+  }, [
+    user.streakHold,
+    user.loginStreak,
+    user.streakPass,
+    user.missedDays,
+    user.coins,
+    handleOnClose,
+  ]);
 
   /**
    * If user chooses to recover their streak, pays using their chosen currency, then releases hold on streak.
