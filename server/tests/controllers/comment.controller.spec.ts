@@ -53,6 +53,7 @@ describe('POST /addComment', () => {
       comments: [mockComment._id],
       community: null,
       premiumStatus: false,
+      interestedUsers: ['65e9b716ff0e892116b2de01'],
     });
 
     jest.spyOn(badgeUtil, 'checkAndAwardBadges').mockResolvedValueOnce([]);
@@ -71,6 +72,7 @@ describe('POST /addComment', () => {
       comments: [mockComment],
       community: null,
       premiumStatus: false,
+      interestedUsers: ['65e9b716ff0e892116b2de01'],
     });
 
     const response = await supertest(app).post('/api/comment/addComment').send(mockReqBody);
@@ -368,6 +370,7 @@ describe('POST /addComment', () => {
       comments: [mockComment._id],
       community: null,
       premiumStatus: false,
+      interestedUsers: ['65e9b716ff0e892116b2de01'],
     };
 
     saveCommentSpy.mockResolvedValueOnce(mockComment);
