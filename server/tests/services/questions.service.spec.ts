@@ -384,6 +384,7 @@ describe('Question model', () => {
         comments: [],
         community: new ObjectId('65e9b58910afe6e94fc6e6dc'),
         premiumStatus: false,
+        interestedUsers: ['user1'],
       };
 
       jest.spyOn(CommunityModel, 'findOne').mockResolvedValue(null);
@@ -406,6 +407,7 @@ describe('Question model', () => {
         comments: [],
         community: new ObjectId('65e9b58910afe6e94fc6e6dc'),
         premiumStatus: false,
+        interestedUsers: ['user1'],
       };
 
       jest.spyOn(CommunityModel, 'findOne').mockResolvedValue(community1);

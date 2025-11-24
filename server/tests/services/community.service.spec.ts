@@ -57,7 +57,9 @@ describe('Community Service', () => {
     });
 
     test('should return error when database throws error', async () => {
-      jest.spyOn(CommunityModel, 'findById').mockRejectedValueOnce(new Error('Database error'));
+      jest.spyOn(CommunityModel, 'findById').mockReturnValue({
+        lean: jest.fn().mockRejectedValue(new Error('Database error')),
+      } as any);
 
       const result = await getCommunity('65e9b58910afe6e94fc6e6dc');
 
@@ -85,7 +87,9 @@ describe('Community Service', () => {
     });
 
     test('should return error when database throws error', async () => {
-      jest.spyOn(CommunityModel, 'find').mockRejectedValueOnce(new Error('Database error'));
+      jest.spyOn(CommunityModel, 'find').mockReturnValue({
+        lean: jest.fn().mockRejectedValue(new Error('Database error')),
+      } as any);
 
       const result = await getAllCommunities();
 
