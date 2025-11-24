@@ -156,7 +156,7 @@ const populateNotification = async (
 };
 
 export const populateUser = async (userId: string): Promise<PopulatedSafeDatabaseUser> => {
-  const user = await UserModel.findById(userId).select('-password');
+  const user = await UserModel.findById(userId).select('-password').lean();
 
   if (!user) {
     throw new Error('User not found');
@@ -177,8 +177,9 @@ export const populateUser = async (userId: string): Promise<PopulatedSafeDatabas
   const populatedUser: PopulatedSafeDatabaseUser = {
     ...user,
     notifications: populatedNotifications,
-  };
+  } as PopulatedSafeDatabaseUser;
 
+  console.log(populatedUser);
   return populatedUser;
 };
 

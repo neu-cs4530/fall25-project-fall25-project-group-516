@@ -61,6 +61,12 @@ export const addAnswerToQuestion = async (
       throw new Error('Invalid answer');
     }
 
+    const isAllowed = await isAllowedToPostOnQuestion(qid, ans.ansBy);
+
+    if (!isAllowed) {
+      throw new Error('Unauthorized: User is not allowed to answer');
+    }
+
     const result: DatabaseQuestion | null = await QuestionModel.findOneAndUpdate(
       { _id: qid },
       { $push: { answers: { $each: [ans._id], $position: 0 } } },
@@ -72,7 +78,7 @@ export const addAnswerToQuestion = async (
     }
     return result;
   } catch (error) {
-    return { error: 'Error when adding answer to question' };
+    return { error: (error as Error).message };
   }
 };
 

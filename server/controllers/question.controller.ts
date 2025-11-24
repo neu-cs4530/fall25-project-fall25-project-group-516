@@ -108,7 +108,7 @@ const questionController = (socket: FakeSOSocket) => {
    */
   const addQuestion = async (req: AddQuestionRequest, res: Response): Promise<void> => {
     const question: Question = req.body;
-
+  
     try {
       const questionswithtags = {
         ...question,
@@ -122,7 +122,12 @@ const questionController = (socket: FakeSOSocket) => {
       const result = await saveQuestion(questionswithtags);
 
       if ('error' in result) {
-        throw new Error(result.error);
+        if (result.error.includes('Unauthorized')) {
+          res.status(403).json({ error: result.error });
+        } else {
+          res.status(500).json({ error: result.error });
+        }
+        return;
       }
 
       // Check and award badges to the user

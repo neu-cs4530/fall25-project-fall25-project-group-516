@@ -6,7 +6,7 @@ import {
   toggleCommunityMembership,
   createCommunity,
   deleteCommunity,
-  muteCommunityUser,
+  toggleMuteCommunityUser,
 } from '../../services/community.service';
 import { Community, DatabaseCommunity } from '../../types/types';
 
@@ -301,7 +301,11 @@ describe('Community Service', () => {
       jest.spyOn(CommunityModel, 'findById').mockResolvedValueOnce(mockCommunity);
       jest.spyOn(CommunityModel, 'findByIdAndUpdate').mockResolvedValue(updatedCommunity);
 
-      const result = await muteCommunityUser('65e9b58910afe6e94fc6e6dc', 'admin_user', 'user1');
+      const result = await toggleMuteCommunityUser(
+        '65e9b58910afe6e94fc6e6dc',
+        'admin_user',
+        'user1',
+      );
 
       expect(result).toBe(updatedCommunity);
     });
@@ -312,7 +316,7 @@ describe('Community Service', () => {
       jest.spyOn(CommunityModel, 'findById').mockResolvedValueOnce(newMockCommunity);
       jest.spyOn(CommunityModel, 'findByIdAndUpdate').mockResolvedValue(updatedCommunity);
 
-      const result = await muteCommunityUser('65e9b58910afe6e94fc6e6dc', 'user2', 'user1');
+      const result = await toggleMuteCommunityUser('65e9b58910afe6e94fc6e6dc', 'user2', 'user1');
 
       expect(result).toBe(updatedCommunity);
     });
@@ -320,7 +324,7 @@ describe('Community Service', () => {
     test('Mute fails if community does not exist', async () => {
       jest.spyOn(CommunityModel, 'findById').mockResolvedValueOnce(null);
 
-      const result = await muteCommunityUser('65e9b58910afe6e94fc6e6dc', 'user2', 'user1');
+      const result = await toggleMuteCommunityUser('65e9b58910afe6e94fc6e6dc', 'user2', 'user1');
 
       expect('error' in result).toBe(true);
     });
@@ -328,7 +332,7 @@ describe('Community Service', () => {
     test('Mute fails if user does not have permissions', async () => {
       jest.spyOn(CommunityModel, 'findById').mockResolvedValueOnce(mockCommunity);
 
-      const result = await muteCommunityUser('65e9b58910afe6e94fc6e6dc', 'user2', 'user1');
+      const result = await toggleMuteCommunityUser('65e9b58910afe6e94fc6e6dc', 'user2', 'user1');
 
       expect('error' in result).toBe(true);
     });
@@ -337,7 +341,11 @@ describe('Community Service', () => {
       jest.spyOn(CommunityModel, 'findById').mockResolvedValueOnce(mockCommunity);
       jest.spyOn(CommunityModel, 'findByIdAndUpdate').mockResolvedValue(null);
 
-      const result = await muteCommunityUser('65e9b58910afe6e94fc6e6dc', 'admin_user', 'user1');
+      const result = await toggleMuteCommunityUser(
+        '65e9b58910afe6e94fc6e6dc',
+        'admin_user',
+        'user1',
+      );
 
       expect('error' in result).toBe(true);
     });

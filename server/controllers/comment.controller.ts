@@ -43,9 +43,13 @@ const commentController = (socket: FakeSOSocket) => {
       const status = await addComment(id, type, comFromDb);
 
       if (status && 'error' in status) {
-        throw new Error(status.error);
+        if (status.error.includes('Unauthorized')) {
+          res.status(403).json({ error: status.error });
+        } else {
+          res.status(500).json({ error: status.error });
+        }
+        return;
       }
-
       // Check and award badges to the user
       await checkAndAwardBadges(comment.commentBy);
 

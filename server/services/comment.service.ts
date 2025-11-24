@@ -59,9 +59,9 @@ export const addComment = async (
     let result: DatabaseQuestion | DatabaseAnswer | null;
 
     if (type === 'question') {
-      const isAllowed = isAllowedToPostOnQuestion(id, comment.commentBy);
+      const isAllowed = await isAllowedToPostOnQuestion(id, comment.commentBy);
       if (!isAllowed) {
-        throw new Error('User not allowed to comment');
+        throw new Error('Unauthorized: User not allowed to comment');
       }
       result = await QuestionModel.findOneAndUpdate(
         { _id: id },
@@ -69,7 +69,7 @@ export const addComment = async (
         { new: true },
       );
     } else {
-      const isAllowed = isAllowedToPostOnAnswer(id, comment.commentBy);
+      const isAllowed = await isAllowedToPostOnAnswer(id, comment.commentBy);
       if (!isAllowed) {
         throw new Error('User not allowed to comment');
       }
