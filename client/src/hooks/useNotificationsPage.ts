@@ -64,8 +64,12 @@ const useNotificationsPage = () => {
         navigate(`/question/${notif.contextId}`);
         break;
       case 'report':
-      case 'unban':
+      case 'appeal':
         navigate(`/manage/${notif.contextId}`);
+        break;
+      case 'ban':
+      case 'mute':
+        navigate(`/communities/appeals/${notif.contextId}`);
         break;
       case 'message':
         navigate(`/messaging/direct-message`);

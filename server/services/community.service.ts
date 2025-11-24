@@ -8,11 +8,12 @@ import {
   Community,
   CommunityResponse,
   CommunityRole,
+  DatabaseAppeal,
   DatabaseCommunity,
   FakeSOSocket,
 } from '../types/types';
-import mongoose from 'mongoose';
-import { addNotificationToUsers, saveNotification } from './notification.service';
+import mongoose, { ClientSession } from 'mongoose';
+import { addNotificationToUsers, saveNotification, sendNotification } from './notification.service';
 import UserModel from '../models/users.model';
 import userSocketMap from '../utils/socketMap.util';
 
@@ -174,6 +175,7 @@ export const toggleBanUser = async (
   communityId: string,
   managerUsername: string,
   username: string,
+  socket: FakeSOSocket,
 ) => {
   try {
     const community = await CommunityModel.findById(communityId);
@@ -225,6 +227,28 @@ export const toggleBanUser = async (
 
     if (!updatedCommunity) {
       return { error: 'Failed to update community document' };
+    }
+
+    // Notify user if they were banned (not unbanned)
+    if (!isBanned) {
+      const notification: Notification = {
+        title: `Banned from ${updatedCommunity.name}`,
+        msg: `You have been banned from the community ${updatedCommunity.name}.`,
+        dateTime: new Date(),
+        sender: managerUsername,
+        contextId: updatedCommunity._id,
+        type: 'ban',
+      };
+      const savedNotification = await sendNotification([username], notification);
+
+      if (!('error' in savedNotification)) {
+        const socketId = userSocketMap.get(username);
+        if (socketId) {
+          socket.to(socketId).emit('notificationUpdate', {
+            notificationStatus: { notification: savedNotification, read: false },
+          });
+        }
+      }
     }
 
     return updatedCommunity;
@@ -391,6 +415,7 @@ export const toggleMuteCommunityUser = async (
   communityId: string,
   managerUsername: string,
   username: string,
+  socket: FakeSOSocket,
 ): Promise<CommunityResponse> => {
   try {
     const community = await CommunityModel.findById(communityId);
@@ -416,6 +441,28 @@ export const toggleMuteCommunityUser = async (
 
     if (!updatedCommunity) {
       throw new Error('Count not update muted users');
+    }
+
+    // Notify user if they were muted (not unmuted)
+    if (!isMuted) {
+      const notification: Notification = {
+        title: `Muted in ${updatedCommunity.name}`,
+        msg: `You have been muted in the community ${updatedCommunity.name}.`,
+        dateTime: new Date(),
+        sender: managerUsername,
+        contextId: updatedCommunity._id,
+        type: 'mute',
+      };
+      const savedNotification = await sendNotification([username], notification);
+
+      if (!('error' in savedNotification)) {
+        const socketId = userSocketMap.get(username);
+        if (socketId) {
+          socket.to(socketId).emit('notificationUpdate', {
+            notificationStatus: { notification: savedNotification, read: false },
+          });
+        }
+      }
     }
 
     return updatedCommunity;
@@ -453,5 +500,59 @@ export const isAllowedToPostInCommunity = async (
     return true;
   } catch {
     return false;
+  }
+};
+
+export const addAppealToCommunity = async (
+  appeal: DatabaseAppeal,
+  session: ClientSession,
+  socket: FakeSOSocket,
+): Promise<CommunityResponse> => {
+  try {
+    const community = await CommunityModel.findOneAndUpdate(
+      { _id: appeal.community.toString() },
+      {
+        $addToSet: { appeals: appeal },
+      },
+      { new: true },
+    ).session(session);
+
+    if (!community) {
+      throw new Error('Failed to add appeal to community');
+    }
+
+    // Notify moderators and admin
+    const recipients = [community.admin, ...(community.moderators || [])];
+    const uniqueRecipients = [...new Set(recipients)]; // Ensure no duplicates
+
+    const notification: Notification = {
+      title: `New Appeal in ${community.name}`,
+      msg: `User ${appeal.username} has submitted an appeal request.`,
+      dateTime: new Date(),
+      sender: appeal.username,
+      contextId: community._id,
+      type: 'appeal',
+    };
+
+    const savedNotification = await saveNotification(notification, session);
+    if ('error' in savedNotification) {
+      throw new Error(savedNotification.error);
+    }
+
+    await addNotificationToUsers(uniqueRecipients, savedNotification, session);
+
+    // Emit via socket for all recipients
+    uniqueRecipients.forEach(recipient => {
+      const socketId = userSocketMap.get(recipient);
+      if (socketId) {
+        socket.to(socketId).emit('notificationUpdate', {
+          notificationStatus: { notification: savedNotification, read: false },
+        });
+      }
+    });
+
+    return community;
+  } catch (error) {
+    return { error: (error as Error).message };
   }
 };

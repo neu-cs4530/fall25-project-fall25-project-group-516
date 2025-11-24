@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { Request } from 'express';
 import { Notification } from './notification';
+import { Appeal, DatabaseAppeal } from './appeal';
 
 /**
  * Represents a Community (unpopulated).
@@ -20,6 +21,7 @@ export interface Community {
   moderators?: string[];
   banned?: string[];
   muted?: string[];
+  appeals?: Appeal[];
 }
 
 /**
@@ -28,10 +30,15 @@ export interface Community {
  * createdAt - created at date timestamp
  * updatedAt - updated at date timestamp
  */
-export interface DatabaseCommunity extends Community {
+export interface DatabaseCommunity extends Omit<Community, 'appeals'> {
   _id: ObjectId;
   createdAt: Date;
   updatedAt: Date;
+  appeals: ObjectId[];
+}
+
+export interface PopulatedDatabaseCommunity extends Omit<DatabaseCommunity, 'appeals'> {
+  appeals: DatabaseAppeal[];
 }
 
 /**
@@ -40,6 +47,15 @@ export interface DatabaseCommunity extends Community {
 export interface CommunityIdRequest extends Request {
   params: {
     communityId: string;
+  };
+}
+
+export interface CommunityDashboardRequest extends Request {
+  params: {
+    communityId: string;
+  };
+  query: {
+    managerUsername: string;
   };
 }
 
@@ -72,6 +88,10 @@ export interface ToggleRequest extends Request {
     managerUsername: string;
     username: string;
   };
+}
+
+export interface AppealRequest extends Request {
+  body: Appeal;
 }
 
 /**

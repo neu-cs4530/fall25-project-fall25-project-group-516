@@ -1,6 +1,12 @@
 import { ObjectId } from 'mongodb';
 import api from './config';
-import { Community, DatabaseCommunity } from '../types/types';
+import {
+  Appeal,
+  Community,
+  DatabaseAppeal,
+  DatabaseCommunity,
+  PopulatedDatabaseCommunity,
+} from '../types/types';
 import { DatabaseNotification, Notification } from '@fake-stack-overflow/shared/types/notification';
 
 const COMMUNITIES_API_URL = `/api/community`;
@@ -160,6 +166,30 @@ const sendAnnouncement = async (
   return res.data;
 };
 
+const sendAppeal = async (appeal: Appeal): Promise<DatabaseCommunity> => {
+  const res = await api.post(`${COMMUNITIES_API_URL}/sendAppeal`, appeal);
+  if (res.status !== 200) {
+    throw new Error('Error when sending PSA');
+  }
+
+  return res.data;
+};
+
+const getCommunityAppeals = async (
+  communityId: string,
+  managerUsername: string,
+): Promise<DatabaseAppeal[]> => {
+  const res = await api.get(`${COMMUNITIES_API_URL}/getAppeals/${communityId}`, {
+    params: { managerUsername },
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Error fetching community dashboard');
+  }
+
+  return res.data;
+};
+
 export {
   changeCommunityMembership,
   getCommunities,
@@ -170,4 +200,6 @@ export {
   toggleBan,
   toggleMute,
   sendAnnouncement,
+  sendAppeal,
+  getCommunityAppeals,
 };
