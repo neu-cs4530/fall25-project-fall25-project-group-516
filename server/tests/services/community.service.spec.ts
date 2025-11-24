@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import CommunityModel from '../../models/community.model';
+import UserModel from '../../models/users.model';
 import {
   getCommunity,
   getAllCommunities,
@@ -40,16 +41,25 @@ describe('Community Service', () => {
 
   describe('getCommunity', () => {
     test('should return the community when found', async () => {
-      jest.spyOn(CommunityModel, 'findById').mockResolvedValueOnce(mockCommunity);
+      jest.spyOn(CommunityModel, 'findById').mockReturnValue({
+        lean: jest.fn().mockResolvedValue(mockCommunity),
+      } as any);
+      jest.spyOn(UserModel, 'countDocuments').mockResolvedValue(1);
 
       const result = await getCommunity('65e9b58910afe6e94fc6e6dc');
 
-      expect(result).toEqual(mockCommunity);
+      expect(result).toEqual({
+        ...mockCommunity,
+        premiumCount: 1,
+        nonPremiumCount: 2,
+      });
       expect(CommunityModel.findById).toHaveBeenCalledWith('65e9b58910afe6e94fc6e6dc');
     });
 
     test('should return error when community not found', async () => {
-      jest.spyOn(CommunityModel, 'findById').mockResolvedValueOnce(null);
+      jest.spyOn(CommunityModel, 'findById').mockReturnValue({
+        lean: jest.fn().mockResolvedValue(null),
+      } as any);
 
       const result = await getCommunity('65e9b58910afe6e94fc6e6dc');
 
@@ -57,7 +67,9 @@ describe('Community Service', () => {
     });
 
     test('should return error when database throws error', async () => {
-      jest.spyOn(CommunityModel, 'findById').mockRejectedValueOnce(new Error('Database error'));
+      jest.spyOn(CommunityModel, 'findById').mockReturnValue({
+        lean: jest.fn().mockRejectedValue(new Error('Database error')),
+      } as any);
 
       const result = await getCommunity('65e9b58910afe6e94fc6e6dc');
 
@@ -68,16 +80,27 @@ describe('Community Service', () => {
   describe('getAllCommunities', () => {
     test('should return all communities', async () => {
       const mockCommunities = [mockCommunity, { ...mockCommunity, name: 'Community 2' }];
-      jest.spyOn(CommunityModel, 'find').mockResolvedValueOnce(mockCommunities);
+      jest.spyOn(CommunityModel, 'find').mockReturnValue({
+        lean: jest.fn().mockResolvedValue(mockCommunities),
+      } as any);
+      jest.spyOn(UserModel, 'countDocuments').mockResolvedValue(1);
 
       const result = await getAllCommunities();
 
-      expect(result).toEqual(mockCommunities);
+      const expectedResult = mockCommunities.map(community => ({
+        ...community,
+        premiumCount: 1,
+        nonPremiumCount: community.participants.length - 1,
+      }));
+
+      expect(result).toEqual(expectedResult);
       expect(CommunityModel.find).toHaveBeenCalledWith({});
     });
 
     test('should return empty array when no communities found', async () => {
-      jest.spyOn(CommunityModel, 'find').mockResolvedValueOnce([]);
+      jest.spyOn(CommunityModel, 'find').mockReturnValue({
+        lean: jest.fn().mockResolvedValue([]),
+      } as any);
 
       const result = await getAllCommunities();
 
@@ -85,7 +108,9 @@ describe('Community Service', () => {
     });
 
     test('should return error when database throws error', async () => {
-      jest.spyOn(CommunityModel, 'find').mockRejectedValueOnce(new Error('Database error'));
+      jest.spyOn(CommunityModel, 'find').mockReturnValue({
+        lean: jest.fn().mockRejectedValue(new Error('Database error')),
+      } as any);
 
       const result = await getAllCommunities();
 
