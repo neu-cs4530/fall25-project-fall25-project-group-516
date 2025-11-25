@@ -159,7 +159,7 @@ app.use('/api/user', userController(socket));
 app.use('/api/chat', protect, chatController(socket));
 app.use('/api/games', protect, gameController(socket));
 app.use('/api/collection', protect, collectionController(socket));
-app.use('/api/community', communityController(socket));
+app.use('/api/community', protect, communityController(socket));
 app.use('/api/badge', protect, badgeController(socket));
 app.use('/api/report', protect, reportController(socket));
 app.use('/api/auth', openAuthorizationController());
