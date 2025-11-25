@@ -7,7 +7,7 @@ import './index.css';
  * The community sidebar is now rendered in the Layout component.
  */
 const CommunityPage = () => {
-  const { communityQuestions } = useCommunityPage();
+  const { community, communityQuestions } = useCommunityPage();
 
   if (!community) {
     return <div className='loading'>Loading...</div>;
