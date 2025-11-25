@@ -204,7 +204,7 @@ export const toggleBanUser = async (
   managerUsername: string,
   username: string,
   socket: FakeSOSocket,
-) => {
+): Promise<CommunityResponse> => {
   try {
     const community = await CommunityModel.findById(communityId);
 
@@ -512,7 +512,7 @@ export const isAllowedToPostInCommunity = async (
       _id: communityId,
       participants: { $in: [username] },
       muted: { $nin: [username] },
-      banned: { $nin: [username]}
+      banned: { $nin: [username] },
     });
 
     if (!isAllowed) {
