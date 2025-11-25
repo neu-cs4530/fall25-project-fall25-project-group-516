@@ -37,6 +37,8 @@ export interface DatabaseCommunity extends Omit<Community, 'appeals'> {
   createdAt: Date;
   updatedAt: Date;
   appeals?: ObjectId[];
+  premiumCount?: number;
+  nonPremiumCount?: number;
 }
 
 export interface PopulatedDatabaseCommunity extends Omit<DatabaseCommunity, 'appeals'> {

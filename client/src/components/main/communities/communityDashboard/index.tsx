@@ -267,18 +267,20 @@ const CommunityDashboard = () => {
                   const isBanned = community.banned?.includes(u.username);
                   const isMuted = community.muted?.includes(u.username);
                   const isModerator = community.moderators?.includes(u.username);
+                  const isMember = community.participants.includes(u.username);
 
                   return (
                     <div key={u.username} className='user-row'>
                       <div className='user-info'>
                         <span className='username'>{u.username}</span>
+                        {isMember && !isModerator && <span className='status-tag member'>MEMBER</span>}
                         {isModerator && <span className='status-tag moderator'>MOD</span>}
                         {isBanned && <span className='status-tag banned'>BANNED</span>}
                         {isMuted && <span className='status-tag muted'>MUTED</span>}
                       </div>
                       <div className='user-actions'>
                         {/* Only Admin can toggle moderators */}
-                        {isAdmin && community.admin !== u.username && (
+                        {isAdmin && isMember && community.admin !== u.username && (
                           <button
                             onClick={() => handleToggleModerator(u.username)}
                             className={`action-btn ${isModerator ? 'active' : ''}`}
@@ -286,12 +288,14 @@ const CommunityDashboard = () => {
                             {isModerator ? 'Remove Mod' : 'Make Mod'}
                           </button>
                         )}
-                        <button
-                          onClick={() => handleToggleMute(u.username)}
-                          className={`action-btn ${isMuted ? 'active' : ''}`}
-                          title={isMuted ? 'Unmute User' : 'Mute User'}>
-                          {isMuted ? 'Unmute' : 'Mute'}
-                        </button>
+                        {!isBanned && isMember && (
+                          <button
+                            onClick={() => handleToggleMute(u.username)}
+                            className={`action-btn ${isMuted ? 'active' : ''}`}
+                            title={isMuted ? 'Unmute User' : 'Mute User'}>
+                            {isMuted ? 'Unmute' : 'Mute'}
+                          </button>
+                        )}
                         <button
                           onClick={() => handleToggleBan(u.username)}
                           className='action-btn danger'
