@@ -28,6 +28,7 @@ describe('Community Service', () => {
     visibility: 'PUBLIC',
     createdAt: new Date('2024-03-01'),
     updatedAt: new Date('2024-03-01'),
+    appeals: [],
   };
 
   const mockCommunityInput: Community = {

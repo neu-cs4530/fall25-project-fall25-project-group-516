@@ -56,7 +56,6 @@ const useAppealsPage = (): UseAppealsPageReturn => {
         username,
         description,
         appealDateTime: new Date(),
-        reviewed: false,
       });
 
       // Handle both direct appeal object or { message, appeal } structure

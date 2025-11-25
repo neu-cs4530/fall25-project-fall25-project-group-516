@@ -34,7 +34,7 @@ export interface DatabaseCommunity extends Omit<Community, 'appeals'> {
   _id: ObjectId;
   createdAt: Date;
   updatedAt: Date;
-  appeals: ObjectId[];
+  appeals?: ObjectId[];
 }
 
 export interface PopulatedDatabaseCommunity extends Omit<DatabaseCommunity, 'appeals'> {
@@ -55,6 +55,15 @@ export interface CommunityDashboardRequest extends Request {
     communityId: string;
   };
   query: {
+    managerUsername: string;
+  };
+}
+
+interface AppealUpdateRequest extends Request {
+  body: {
+    communityId: string;
+    appealId: string;
+    status: 'deny' | 'approve';
     managerUsername: string;
   };
 }

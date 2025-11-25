@@ -184,7 +184,27 @@ const getCommunityAppeals = async (
   });
 
   if (res.status !== 200) {
-    throw new Error('Error fetching community dashboard');
+    throw new Error('Error fetching appeals');
+  }
+
+  return res.data;
+};
+
+const updateAppealStatus = async (
+  communityId: string,
+  appealId: string,
+  status: 'deny' | 'approve',
+  managerUsername: string,
+): Promise<PopulatedDatabaseCommunity> => {
+  const res = await api.patch(`${COMMUNITIES_API_URL}/updateAppeal`, {
+    communityId,
+    appealId,
+    status,
+    managerUsername,
+  });
+
+  if (res.status !== 200) {
+    throw new Error('Error updating appeal status');
   }
 
   return res.data;
@@ -202,4 +222,5 @@ export {
   sendAnnouncement,
   sendAppeal,
   getCommunityAppeals,
+  updateAppealStatus,
 };

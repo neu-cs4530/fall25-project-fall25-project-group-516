@@ -11,7 +11,6 @@ export interface Appeal {
   username: string;
   description: string;
   appealDateTime: Date;
-  reviewed: boolean;
 }
 
 export interface DatabaseAppeal extends Appeal {

@@ -30,6 +30,7 @@ const CommunityDashboard = () => {
     handleToggleBan,
     handleToggleMute,
     handleToggleModerator,
+    handleUpdateAppealStatus,
     refreshDashboard,
   } = useCommunityDashboard();
 
@@ -345,19 +346,13 @@ const CommunityDashboard = () => {
                     <div className='appeal-actions'>
                       <button
                         className='appeal-btn approve'
-                        onClick={() => {
-                          // Lift ban using the dashboard hook
-                          handleToggleBan(appeal.username);
-                        }}
+                        onClick={() => handleUpdateAppealStatus(appeal._id.toString(), 'approve')}
                         title='Approve appeal and lift ban'>
                         Approve (Lift Ban)
                       </button>
                       <button
                         className='appeal-btn deny'
-                        onClick={() => {
-                          // Refresh to sync state (mock functionality for deny)
-                          refreshDashboard();
-                        }}
+                        onClick={() => handleUpdateAppealStatus(appeal._id.toString(), 'deny')}
                         title='Deny appeal and dismiss'>
                         Deny & Dismiss
                       </button>

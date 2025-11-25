@@ -12,6 +12,7 @@ import {
   CommunityDashboardRequest,
   PopulatedDatabaseCommunity,
   DatabaseAppeal,
+  AppealUpdateRequest,
 } from '../types/types';
 import {
   getCommunity,
@@ -25,6 +26,7 @@ import {
   sendNotificationUpdates,
   toggleMuteCommunityUser,
   addAppealToCommunity,
+  respondToAppeal,
 } from '../services/community.service';
 import saveAppeal from '../services/appeal.service';
 import mongoose from 'mongoose';
@@ -372,7 +374,7 @@ const communityController = (socket: FakeSOSocket) => {
     try {
       const { communityId } = req.params;
       const { managerUsername } = req.query;
-      console.log('hit')
+      console.log('hit');
 
       const community = await CommunityModel.findOne({ _id: communityId });
 
@@ -388,7 +390,7 @@ const communityController = (socket: FakeSOSocket) => {
       }
 
       const populatedAppeals: DatabaseAppeal[] = await Promise.all(
-        community?.appeals.map(async a => {
+        community?.appeals?.map(async a => {
           const appeal = await AppealModel.findOne({ _id: a.toString() });
 
           if (!appeal) {
@@ -399,11 +401,50 @@ const communityController = (socket: FakeSOSocket) => {
         }) ?? [],
       );
 
-      console.log(populatedAppeals)
+      console.log(populatedAppeals);
 
       res.json(populatedAppeals);
     } catch (error) {
       res.status(500).json({ error: `Error while getting appeals: ${(error as Error).message}` });
+    }
+  };
+
+  const updateAppealRoute = async (req: AppealUpdateRequest, res: Response) => {
+    const { communityId, appealId, status, managerUsername } = req.body;
+
+    try {
+      const result = await respondToAppeal(communityId, appealId, status, managerUsername, socket);
+
+      if ('error' in result) {
+        if (result.error.includes('Unauthorized')) {
+          res.status(403).json({ error: result.error });
+        } else if (result.error.includes('not found')) {
+          res.status(404).json({ error: result.error });
+        } else {
+          res.status(500).json({ error: result.error });
+        }
+        return;
+      }
+
+      const populatedAppeals: DatabaseAppeal[] = await Promise.all(
+        result?.appeals?.map(async a => {
+          const appeal = await AppealModel.findOne({ _id: a.toString() });
+
+          if (!appeal) {
+            throw new Error('Notification not found');
+          }
+
+          return appeal;
+        }) ?? [],
+      );
+
+      socket.emit('communityUpdate', {
+        type: 'updated',
+        community: result,
+      });
+      res.json({ ...result, appeals: populatedAppeals });
+    } catch (err) {
+      res.status(500).json({ error: `Error updating appeal: ${(err as Error).message}` });
     }
   };
 
@@ -417,6 +458,7 @@ const communityController = (socket: FakeSOSocket) => {
   router.post('/announcement', sendCommunityAnnouncementRoute);
   router.post('/toggleMute', toggleMuteCommunityUserRoute);
   router.post('/sendAppeal', sendAppealRequestRoute);
+  router.patch('/updateAppeal', updateAppealRoute);
   router.delete('/delete/:communityId', deleteCommunityRoute);
 
   return router;

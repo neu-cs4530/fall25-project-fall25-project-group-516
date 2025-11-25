@@ -9,6 +9,7 @@ import {
   toggleBan,
   toggleMute,
   toggleModerator,
+  updateAppealStatus,
 } from '../services/communityService';
 
 const useCommunityDashboard = () => {
@@ -32,7 +33,7 @@ const useCommunityDashboard = () => {
     try {
       const appealsData = await getCommunityAppeals(communityId, user.username);
       setAppeals(appealsData);
-      console.log(appeals)
+      console.log(appeals);
     } catch (err) {
       setError((err as Error).message);
     }
@@ -101,6 +102,18 @@ const useCommunityDashboard = () => {
     }
   };
 
+  const handleUpdateAppealStatus = async (appealId: string, status: 'deny' | 'approve') => {
+    if (!communityID || !user.username) return;
+    setActionError(null);
+
+    try {
+      await updateAppealStatus(communityID, appealId, status, user.username);
+      refreshDashboard();
+    } catch (e: unknown) {
+      setActionError((e as Error).message || 'Failed to update appeal status');
+    }
+  };
+
   const handleToggleModerator = async (usernameToMod: string) => {
     if (!communityID || !user.username) return;
     if (community?.admin !== user.username) {
@@ -157,6 +170,7 @@ const useCommunityDashboard = () => {
     handleToggleBan,
     handleToggleMute,
     handleToggleModerator,
+    handleUpdateAppealStatus,
     refreshDashboard,
   };
 };

@@ -27,10 +27,6 @@ const appealSchema: Schema = new Schema({
     type: Date,
     required: true,
   },
-  reviewed: {
-    type: Boolean,
-    default: false,
-  },
 });
 
 export default appealSchema;
