@@ -430,39 +430,32 @@ export const toggleUserInterest = async (
   username: string,
 ): Promise<PopulatedDatabaseQuestion | { error: string }> => {
   try {
-    const q: PopulatedDatabaseQuestion | null = await QuestionModel.findOneAndUpdate(
-      { _id: new ObjectId(qid) },
-      [
-        {
-          $set: {
-            interestedUsers: {
-              $cond: [
-                { $ne: ['$interestedUsers', undefined] },
-                {
-                  $cond: {
-                    if: { $in: [username, '$interestedUsers'] },
-                    then: {
-                      $setDifference: ['$interestedUsers', [username]],
-                    },
-                    else: { $concatArrays: ['$interestedUsers', [username]] },
-                  },
-                },
-                [username],
-              ],
-            },
-          },
-        },
-      ],
-      { new: true },
-    );
+    const currentQ: PopulatedDatabaseQuestion | null = await QuestionModel.findOne({ _id: qid });
+    if (!currentQ) {
+      throw new Error('Question not found');
+    }
+    let q: PopulatedDatabaseQuestion | null;
+    if (currentQ.interestedUsers.includes(username)) {
+      q = await QuestionModel.findOneAndUpdate(
+        { _id: qid },
+        { $pull: { interestedUsers: username } },
+        { new: true },
+      );
+    } else {
+      q = await QuestionModel.findOneAndUpdate(
+        { _id: qid },
+        { $addToSet: { interestedUsers: username } },
+        { new: true },
+      );
+    }
 
     if (!q) {
-      throw new Error('Question not found');
+      throw new Error('Error updating question');
     }
 
     return q;
   } catch (error) {
-    return { error: 'Error when fetching and updating interested users' };
+    return { error: `Error when fetching and updating interested users: ${error}` };
   }
 };
 
