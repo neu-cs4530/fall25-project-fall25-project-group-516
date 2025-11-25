@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import mongoose from 'mongoose';
+import mongoose, { Query } from 'mongoose';
 import { app } from '../../app';
 import * as util from '../../services/user.service';
 import * as badgeUtil from '../../services/badge.service';
@@ -977,7 +977,13 @@ describe('Test userController', () => {
         username: mockSafeUser.username,
         targetUsername: targetUser.username,
       };
-      blockUserSpy.mockRejectedValueOnce({ error: 'some other error' });
+      jest.spyOn(UserModel, 'findOne').mockResolvedValueOnce(targetUser);
+      jest
+        .spyOn(UserModel, 'findOne')
+        .mockResolvedValueOnce({ ...blockingUser, blockedUsers: [targetUser.username] });
+      jest.spyOn(UserModel, 'findOneAndUpdate').mockReturnValue({
+        select: jest.fn().mockRejectedValueOnce(null),
+      } as unknown as Query<PopulatedSafeDatabaseUser, typeof UserModel>);
       const res = await supertest(app).patch('/api/user/blockUser').send(mockReqBody);
 
       expect(res.status).toBe(500);
@@ -1021,7 +1027,7 @@ describe('Test userController', () => {
       expect(res.status).toBe(400);
     });
 
-    it('should return 500 when unblockError throws error', async () => {
+    it('should return 500 when unblockError returns error', async () => {
       const mockReqBody = { username: blockingUser.username, targetUsername: targetUser.username };
       unblockUserSpy.mockResolvedValueOnce({ error: 'Error unblocking user' });
       const res = await supertest(app).patch('/api/user/unblockUser').send(mockReqBody);
@@ -1029,4 +1035,16 @@ describe('Test userController', () => {
       expect(res.status).toBe(500);
     });
   });
+
+  describe('PATCH /updateStatus', () => {
+    it('should return updated user when username & status are given');
+  });
+
+  describe('PATCH /toggleProfilePrivacy', () => {});
+
+  describe('PATCH /readNotifications', () => {});
+
+  describe('PATCH /toggleCommunityNotifs', () => {});
+
+  describe('PATCH /toggleMessageNotifs', () => {});
 });
