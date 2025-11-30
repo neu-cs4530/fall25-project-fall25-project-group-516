@@ -1,28 +1,15 @@
-/* CSS Variables - Pancake Theme Color Palette */
-:root {
-  --pancake-brown-dark: #6b4423;
-  --pancake-brown-medium: #8b5a3c;
-  --pancake-brown-light: #c4886b;
-  --pancake-cream: #f5e6d3;
-  --pancake-white: #ffffff;
-  --pancake-text-dark: #3d2817;
-  --pancake-text-medium: #6b4423;
-  --pancake-accent: #d4a574;
-  --pancake-border: #e8d4c0;
-  --pancake-shadow: rgba(107, 68, 35, 0.12);
-}
-
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  height: 80px;
+  justify-content: space-between;
+  height: fit-content;
   width: 100%;
   background: var(--pancake-white);
-  border-bottom: 3px solid var(--pancake-brown-light);
-  box-shadow: 0 2px 8px var(--pancake-shadow);
-  padding: 0 3rem;
+  border-bottom: 1px solid var(--pancake-border);
+  padding: 0.5rem 3rem 0.5rem 1.5rem;
   position: relative;
+  gap: 1rem;
+  transition: padding 0.3s ease-in-out, gap 0.3s ease-in-out;
 }
 
 .title-with-logo {
@@ -35,13 +22,7 @@
   width: 50px;
   height: 50px;
   object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px var(--pancake-shadow);
   transition: transform 0.3s ease;
-}
-
-.header-logo:hover {
-  transform: scale(1.05);
 }
 
 .title {
@@ -55,6 +36,26 @@
     system-ui,
     -apple-system,
     sans-serif;
+  transition: font-size 0.3s ease-in-out;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+
+button,
+.logout-button,
+.view-profile-button,
+.notifications-btn,
+.image-with-text {
+  cursor: pointer;
+  border: none;
+  transition:
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease;
 }
 
 .logout-button {
@@ -63,59 +64,77 @@
   font-weight: 600;
   background-color: #e53e3e;
   color: #fff;
-  border: none;
   border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: 
+    background-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    padding 0.3s ease-in-out;
 }
 
 .logout-button:hover {
   background-color: #c53030;
-  transform: translateY(-2px);
+  transform: translateY(-2px); 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
+
 
 .view-profile-button {
   background-color: #667eea;
   color: white;
-  border: none;
   padding: 12px 24px;
   border-radius: 8px;
-  cursor: pointer;
   margin-left: 10px;
   font-size: 16px;
   font-weight: 600;
-  transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: 
+    background-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    padding 0.3s ease-in-out,
+    margin 0.3s ease-in-out;
 }
+
+.view-profile-button:hover {
+  background-color: #5568d3;
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.view-profile-button:active {
+  background-color: #4c51bf;
+}
+
 
 .image-with-text {
   display: flex;
-  width: 120px;
   justify-content: center;
   align-items: center;
+  color: var(--pancake-brown-dark);
   background: var(--pancake-white);
-  padding: 8px 16px;
-  border-radius: 6px;
-  gap: 8px;
-  border: 2px solid var(--pancake-border);
-  transition: all 0.2s ease;
-  position: relative;
-  z-index: 1;
+  border-radius: var(--radius-pill);
+  gap: 4px;
+  padding: 0 0 0 var(--spacing-md);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  transition: 
+    background-color 0.25s ease,
+    padding 0.3s ease-in-out;
 }
 
 .image-with-text:hover {
-  border-color: var(--pancake-brown-light);
-  box-shadow: 0 2px 6px var(--pancake-shadow);
+  background-color: var(--pancake-cream);
 }
 
 .image-with-text img {
-  display: block;
-  background-color: transparent;
-  width: 36px;
-  height: 36px;
+  margin: 0;
+  width: 50px;
+  height: 50px;
   transition: transform 0.3s ease;
+  display: block;
 }
 
 .image-with-text:hover img {
@@ -128,28 +147,25 @@
   font-weight: 700;
 }
 
-.view-profile-button:hover {
-  background-color: #5568d3;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.view-profile-button:active {
-  background-color: #4c51bf;
-}
 
 #searchBar {
   padding: 10px 20px;
   font-size: 15px;
-  border: 2px solid var(--pancake-border);
-  border-radius: 6px;
+  border: 1.5px solid var(--pancake-border);
+  border-radius: var(--radius-pill);
   background: var(--pancake-white);
-  min-width: 400px;
-  transition: all 0.2s ease;
-  position: relative;
-  z-index: 1;
+  min-width: 300px;
+  max-width: 600px;
+  flex: 1;
   color: var(--pancake-text-dark);
   font-weight: 400;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    max-width 0.3s ease-in-out,
+    min-width 0.3s ease-in-out,
+    flex 0.3s ease-in-out,
+    margin 0.3s ease-in-out;
 }
 
 #searchBar::placeholder {
@@ -166,37 +182,44 @@
   border-color: var(--pancake-brown-medium);
   box-shadow: 0 0 0 3px rgba(196, 136, 107, 0.15);
 }
+
+
 .notifications-btn {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-sm) var(--spacing-md);
+  margin: 0;
   background: transparent;
-  border: 2px solid var(--pancake-border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   color: var(--pancake-text-medium);
   font-size: 14px;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-sm);
+  transition: 
+    background-color 0.25s ease,
+    color 0.25s ease,
+    padding 0.3s ease-in-out;
 }
 
 .notifications-btn:hover {
-  border-color: var(--pancake-brown-light);
+  background-color: var(--pancake-cream);
   color: var(--pancake-brown-dark);
-  box-shadow: var(--shadow-md);
 }
 
-/* Bell icon animation on hover */
 .notifications-btn:hover svg {
   animation: bell-ring 0.6s ease-in-out;
 }
 
+.notifications-btn:focus-visible {
+  outline: 2px solid var(--pancake-brown-medium);
+  outline-offset: 2px;
+}
+
 @keyframes bell-ring {
-  0% {
+  0%,
+  90%,
+  100% {
     transform: rotate(0deg);
   }
   10% {
@@ -223,44 +246,21 @@
   80% {
     transform: rotate(5deg);
   }
-  90% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
 }
 
-/* Focus state for accessibility */
-.notifications-btn:focus-visible {
-  outline: 2px solid var(--pancake-brown-medium);
-  outline-offset: 2px;
-}
 
-/* Responsive - hide text on mobile */
-@media (max-width: 640px) {
-  .notifications-btn-text {
+@media (max-width: 1000px) {
+  #searchBar {
+    max-width: 350px;
+    min-width: 250px;
+    flex: 1;
+    margin: 0;
+  }
+
+  .title {
     display: none;
   }
-
-  .notifications-btn {
-    padding: var(--spacing-sm);
+  .header {
+    padding: 0.5rem 1rem 0.5rem 0.5rem; 
   }
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.user-avatar-container {
-  padding: 4px;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-}
-
-.user-avatar-container:hover {
-  background: var(--pancake-bg-light, #f8f9fa);
-  transform: scale(1.05);
 }

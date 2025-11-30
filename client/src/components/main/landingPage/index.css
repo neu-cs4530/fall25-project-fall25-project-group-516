@@ -1,12 +1,12 @@
 :root {
   /* Colors */
-  --pancake-brown-dark: #6b4423;
+  --pancake-brown-dark: #854d0e; /* Soft Brown */
   --pancake-brown-medium: #8b5a3c;
   --pancake-brown-light: #c4886b;
   --pancake-cream: #f5e6d3;
   --pancake-cream-light: #fff8f0;
-  --pancake-white: #ffffff;
-  --pancake-bg-light: #f8f9fa;
+  --pancake-white: #fdfbf7;
+  --pancake-bg-light: #f7f5f0; /* Off-White */
 
   --pancake-text-dark: #3d2817;
   --pancake-text-medium: #6b4423;
@@ -21,10 +21,10 @@
   --spacing-lg: 24px;
   --spacing-xl: 32px;
 
-  /* Radius */
+  /* Radius *
   --radius-sm: 4px;
   --radius-md: 6px;
-  --radius-lg: 999px;
+  --radius-pill: 999px;
 
   /* Shadows */
   --shadow-sm: 0 1px 3px var(--pancake-shadow);
@@ -42,8 +42,7 @@ body {
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: var(--pancake-text-dark);
   background-color: var(--pancake-white);
   -webkit-font-smoothing: antialiased;
@@ -134,7 +133,7 @@ body {
 .btn-outline,
 .btn-primary {
   padding: 12px 28px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-pill);
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -172,7 +171,8 @@ body {
   box-shadow: var(--shadow-lg);
 }
 
-.btn-primary:active, .btn-outline:active {
+.btn-primary:active,
+.btn-outline:active {
   transform: translateY(0);
 }
 

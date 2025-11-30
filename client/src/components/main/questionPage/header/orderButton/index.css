@@ -1,19 +1,19 @@
 .btn {
   background: var(--pancake-white);
-  border: 1px solid var(--pancake-border);
-  color: var(--pancake-text-dark);
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--pancake-border);
+  color: var(--pancake-text-medium);
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
   font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: var(--shadow-sm);
 }
 
 .btn:hover {
   background-color: var(--pancake-cream);
   border-color: var(--pancake-brown-light);
-  box-shadow: var(--shadow-md);
+  color: var(--pancake-brown-dark);
 }
 
 .btn:active {

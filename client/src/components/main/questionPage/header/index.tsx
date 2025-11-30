@@ -40,8 +40,8 @@ const QuestionHeader = ({
   setCollectionEditMode,
 }: QuestionHeaderProps) => (
   <div>
-    <div className='space_between right_padding'>
-      <div className='bold_title'>{titleText}</div>
+    <div className='space_between right_padding flex_center'>
+      <div className='title'>{titleText}</div>
       <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
         <button
           className={`collection-edit-toggle ${collectionEditMode ? 'active' : ''}`}
@@ -56,8 +56,8 @@ const QuestionHeader = ({
         <AskQuestionButton />
       </div>
     </div>
-    <div className='space_between right_padding'>
-      <div id='question_count'>{qcnt} questions</div>
+    <div className='space_between right_padding flex_center'>
+      <div id='question_count'>{qcnt} Questions</div>
       <div className='btns'>
         {Object.keys(orderTypeDisplayName).map(order => (
           <OrderButton

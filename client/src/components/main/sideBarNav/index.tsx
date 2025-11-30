@@ -2,6 +2,16 @@ import { useState } from 'react';
 import './index.css';
 import { NavLink, useLocation } from 'react-router-dom';
 import useUserContext from '../../../hooks/useUserContext';
+import {
+  MessageCircleQuestionMark,
+  MessagesSquare,
+  Tag,
+  User,
+  Gamepad,
+  Users,
+  LibraryBig,
+  UserPen,
+} from 'lucide-react';
 
 /**
  * The SideBarNav component has a sidebar navigation menu for all the main pages.
@@ -26,12 +36,14 @@ const SideBarNav = () => {
         to='/home'
         id='menu_questions'
         className={({ isActive }) => `menu_button ${isActive ? 'menu_selected' : ''}`}>
+        <MessageCircleQuestionMark />
         Questions
       </NavLink>
       <NavLink
         to='/tags'
         id='menu_tag'
         className={({ isActive }) => `menu_button ${isActive ? 'menu_selected' : ''}`}>
+        <Tag />
         Tags
       </NavLink>
       <NavLink
@@ -39,6 +51,7 @@ const SideBarNav = () => {
         id='menu_messaging'
         className={({ isActive }) => `menu_button ${isActive ? 'menu_selected' : ''}`}
         onClick={toggleOptions}>
+        <MessagesSquare />
         Messaging
       </NavLink>
       {showOptions && (
@@ -59,30 +72,35 @@ const SideBarNav = () => {
         to='/users'
         id='menu_users'
         className={({ isActive }) => `menu_button ${isActive ? 'menu_selected' : ''}`}>
+        <User />
         Users
       </NavLink>
       <NavLink
         to='/games'
         id='menu_games'
         className={({ isActive }) => `menu_button ${isActive ? 'menu_selected' : ''}`}>
+        <Gamepad />
         Games
       </NavLink>
       <NavLink
         to='/communities'
         id='menu_communities'
         className={({ isActive }) => `menu_button ${isActive ? 'menu_selected' : ''}`}>
+        <Users />
         Communities
       </NavLink>
       <NavLink
         to={`/collections/${user.username}`}
         id='menu_collections'
         className={({ isActive }) => `menu_button ${isActive ? 'menu_selected' : ''}`}>
+        <LibraryBig />
         My Collections
       </NavLink>
       <NavLink
         to={`/user/${user.username}`}
         id='menu_profile'
         className={({ isActive }) => `menu_button ${isActive ? 'menu_selected' : ''}`}>
+        <UserPen />
         View Profile
       </NavLink>
     </div>

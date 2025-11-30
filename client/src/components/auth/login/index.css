@@ -157,7 +157,7 @@ form {
   );
   color: var(--pancake-white);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(107, 68, 35, 0.2);
@@ -206,7 +206,7 @@ form {
   background-color: #24292e;
   color: #ffffff;
   border: 2px solid transparent;
-  border-radius: 8px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -239,7 +239,7 @@ form {
   background-color: var(--pancake-white);
   color: #3c4043;
   border: 2px solid var(--pancake-border);
-  border-radius: 8px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all 0.2s ease;
 }

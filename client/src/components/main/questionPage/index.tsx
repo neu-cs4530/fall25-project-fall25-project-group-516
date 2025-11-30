@@ -31,7 +31,7 @@ const QuestionPage = () => {
   };
 
   return (
-    <>
+    <div className='question-page-container'>
       <QuestionHeader
         titleText={titleText}
         qcnt={qlist.length}
@@ -51,14 +51,18 @@ const QuestionPage = () => {
       </div>
 
       {titleText === 'Search Results' && !qlist.length && (
-        <div className='bold_title right_padding'>No Questions Found</div>
+        <div
+          className='bold_title right_padding'
+          style={{ textAlign: 'center', marginTop: '40px', color: 'var(--pancake-text-medium)' }}>
+          No Questions Found
+        </div>
       )}
 
       {/* Collection Modal */}
       {isCollectionModalOpen && selectedQuestion && (
         <SaveToCollectionModal question={selectedQuestion} onClose={closeCollectionModal} />
       )}
-    </>
+    </div>
   );
 };
 

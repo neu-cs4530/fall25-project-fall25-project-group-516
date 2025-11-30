@@ -10,8 +10,6 @@
   --pancake-accent: #d4a574;
   --pancake-border: #e8d4c0;
   --pancake-shadow: rgba(107, 68, 35, 0.12);
-
-  --radius-lg: 999px;
 }
 
 /* Container styles */
@@ -160,7 +158,7 @@ form {
   );
   color: var(--pancake-white);
   border: none;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(107, 68, 35, 0.2);
@@ -211,7 +209,7 @@ form {
   margin: 0px 16px;
   color: #ffffff;
   border: 2px solid transparent;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -244,7 +242,7 @@ form {
   background-color: var(--pancake-white);
   color: #3c4043;
   border: 2px solid var(--pancake-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all 0.2s ease;
 }
