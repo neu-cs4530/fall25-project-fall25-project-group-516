@@ -7,6 +7,7 @@ import { PopulatedSafeDatabaseUser, User } from '../../types/types';
 import { setupMockAuth } from '../../utils/mocks.util';
 import UserModel from '../../models/users.model';
 import * as uploadUtil from '../../utils/upload';
+import * as databaseUtil from '../../utils/database.util';
 
 jest.mock('../../middleware/token.middleware');
 
@@ -1357,7 +1358,9 @@ describe('Test userController', () => {
     });
 
     it('should return 400 if no file is uploaded', async () => {
-      const res = await supertest(app).post('/api/user/uploadBannerImage').field('username', 'user1');
+      const res = await supertest(app)
+        .post('/api/user/uploadBannerImage')
+        .field('username', 'user1');
 
       expect(res.status).toBe(400);
       expect(res.text).toContain('No file uploaded');
@@ -1424,7 +1427,7 @@ describe('Test userController', () => {
     });
 
     it('should return 404 if user not found in database', async () => {
-      jest.spyOn(require('../../utils/database.util'), 'populateUser').mockResolvedValueOnce(null);
+      jest.spyOn(databaseUtil, 'populateUser').mockResolvedValueOnce(null);
 
       const res = await supertest(app).get('/api/user/verify-token');
 
@@ -1433,9 +1436,7 @@ describe('Test userController', () => {
     });
 
     it('should return user data if token is valid', async () => {
-      jest
-        .spyOn(require('../../utils/database.util'), 'populateUser')
-        .mockResolvedValueOnce(mockSafeUser);
+      jest.spyOn(databaseUtil, 'populateUser').mockResolvedValueOnce(mockSafeUser);
 
       const res = await supertest(app).get('/api/user/verify-token');
 
@@ -1444,9 +1445,7 @@ describe('Test userController', () => {
     });
 
     it('should return 500 if populateUser throws error', async () => {
-      jest
-        .spyOn(require('../../utils/database.util'), 'populateUser')
-        .mockRejectedValueOnce(new Error('Database error'));
+      jest.spyOn(databaseUtil, 'populateUser').mockRejectedValueOnce(new Error('Database error'));
 
       const res = await supertest(app).get('/api/user/verify-token');
 

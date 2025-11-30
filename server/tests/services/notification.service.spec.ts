@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb';
 import NotificationModel from '../../models/notifications.model';
 import mongoose from 'mongoose';
 import { saveNotification } from '../../services/notification.service';
+import { Notification } from '@fake-stack-overflow/shared/types/notification';
 
 describe('Notification Model', () => {
   const communityNotification: Notification = {
@@ -23,7 +24,7 @@ describe('Notification Model', () => {
         ...communityNotification,
         _id: new mongoose.Types.ObjectId(),
       } as unknown as ReturnType<typeof NotificationModel.create<Notification>>);
-      const response = await saveNotification(communityNotification);
+      await saveNotification(communityNotification);
     });
   });
 });

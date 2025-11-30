@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
-import pancakeImage from '/logo/pancake_overflow.PNG';
 import './index.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -47,7 +46,6 @@ const LandingPage = () => {
 
     const dpr = window.devicePixelRatio || 1;
 
-    // Set canvas size
     canvas.width = 600 * dpr;
     canvas.height = 600 * dpr;
     canvas.style.width = '600px';
@@ -58,8 +56,8 @@ const LandingPage = () => {
     const stackBaseY = 350;
 
     const pancakes: PancakeData[] = [
-      { width: 225 * 1.5, color: '#FFFFFF' }, // Bottom Plate
-      { width: 190 * 1.5, color: '#CD853F' }, // Bottom Pancake
+      { width: 225 * 1.5, color: '#FFFFFF' },
+      { width: 190 * 1.5, color: '#CD853F' },
       { width: 185 * 1.5, color: '#CD853F' },
       { width: 180 * 1.5, color: '#CD853F' },
       { width: 175 * 1.5, color: '#CD853F' },
@@ -93,7 +91,6 @@ const LandingPage = () => {
       ctx.translate(centerX, centerY);
       ctx.rotate(rotation);
 
-      // -- The Side (Crust) --
       ctx.beginPath();
       ctx.ellipse(0, 0, r, height / 2, 0, 0, Math.PI);
       ctx.lineTo(r, -thickness);
@@ -104,9 +101,8 @@ const LandingPage = () => {
       ctx.fillStyle = adjustColor(color, -40);
       ctx.fill();
 
-      // Side texture
       ctx.fillStyle = 'rgba(100, 50, 20, 0.1)';
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 5; i += 1) {
         ctx.beginPath();
         const randX = (Math.random() - 0.5) * r * 1.5;
         const randY = (Math.random() - 0.5) * thickness - thickness / 2;
@@ -114,7 +110,6 @@ const LandingPage = () => {
         ctx.fill();
       }
 
-      // -- The Top Face --
       ctx.beginPath();
       ctx.ellipse(0, -thickness, r, height / 2, 0, 0, Math.PI * 2);
 
@@ -124,7 +119,6 @@ const LandingPage = () => {
       ctx.fillStyle = grad;
       ctx.fill();
 
-      // Top rim highlight
       ctx.strokeStyle = 'rgba(255,255,255,0.3)';
       ctx.lineWidth = 2;
       ctx.stroke();
@@ -170,7 +164,6 @@ const LandingPage = () => {
       const mx = currentMousePos.current.x;
       const my = currentMousePos.current.y;
 
-      // Shadow
       ctx.beginPath();
       ctx.ellipse(300 + mx * 20, stackBaseY + 20, 100, 30, 0, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(0,0,0,0.1)';
@@ -217,7 +210,7 @@ const LandingPage = () => {
       <nav className='nav-glass'>
         <div className='nav-container'>
           <div className='nav-brand'>
-            <img src={pancakeImage} width={64} />
+            <img src='../../../../logo/pancake_overflow.PNG' width={64} />
             <span className='brand-text'>PancakeOverflow</span>
           </div>
           <div className='nav-actions'>
@@ -261,37 +254,6 @@ const LandingPage = () => {
               <canvas ref={canvasRef} className='pancake-canvas' />
             </div>
           </div>
-        </div>
-      </div>
-      <div className='section-spacing'>
-        <div className='container-wide'>
-          <h1>User Story 1: Personalization & Identity</h1>
-          <p>
-            [cite_start]Users can now fully personalize their experience on FakeStackOverflow[cite:
-            47]. [cite_start]This includes connecting third-party accounts (Google, Github)[cite:
-            48], [cite_start]customizing profiles with crop-able profile pictures and banners[cite:
-            49, 54], [cite_start]and showcasing achievements through a selectable badge system[cite:
-            58]. [cite_start]Privacy is prioritized with options to toggle public/private profiles
-            [cite: 70, 77] [cite_start]and the ability to block unwanted interactions[cite: 80].
-          </p>
-          <h1>User Story 2: Notifications & Moderation</h1>
-          <p>
-            A comprehensive notification center allows users to track alerts, filter by type,
-            [cite_start]and stay updated on platform activity[cite: 91]. For communities, a robust
-            [cite_start]moderation system introduces role-based permissions[cite: 169], enabling
-            [cite_start]admins to mute or ban users and review appeal requests[cite: 205, 206].
-            [cite_start]Separation of powers ensures no single moderator has unchecked
-            authority[cite: 163, 172].
-          </p>
-          <h1>User Story 3: Gamification & Monetization</h1>
-          <p>
-            To enhance engagement and sustainability, the platform introduces gamification
-            [cite_start]features like daily login streaks, rewards, and "Top Contributor" tags[cite:
-            94, 95, 139]. A monetization model offers Premium memberships that remove ads, boost
-            question visibility, [cite_start]and provide streak repair passes[cite: 200, 294].
-            Safety is maintained via an [cite_start]automated ban system that triggers after a
-            threshold of unique user reports[cite: 177, 180].
-          </p>
         </div>
       </div>
     </div>
