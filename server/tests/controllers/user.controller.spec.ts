@@ -1427,7 +1427,7 @@ describe('Test userController', () => {
     });
 
     it('should return 404 if user not found in database', async () => {
-      jest.spyOn(databaseUtil, 'populateUser').mockResolvedValueOnce(null);
+      jest.spyOn(databaseUtil, 'populateUser').mockResolvedValueOnce(null as any);
 
       const res = await supertest(app).get('/api/user/verify-token');
 

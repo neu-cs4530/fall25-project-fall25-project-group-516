@@ -76,7 +76,13 @@ describe('openAuthorization Controller', () => {
       mockedAxios.get.mockImplementation((url: string) => {
         if (url === 'https://api.github.com/user') {
           return Promise.resolve({
-            data: { id: 123, login: 'testuser', name: 'Test User', avatar_url: 'http://avatar.com', bio: 'bio' },
+            data: {
+              id: 123,
+              login: 'testuser',
+              name: 'Test User',
+              avatar_url: 'http://avatar.com',
+              bio: 'bio',
+            },
           });
         }
         if (url === 'https://api.github.com/user/emails') {
@@ -89,7 +95,9 @@ describe('openAuthorization Controller', () => {
       mockedFindOrCreate.mockResolvedValue({ _id: 'uuid-123', username: 'testuser' });
       mockedGenerateToken.mockReturnValue('fake_jwt_token');
 
-      const response = await supertest(app).get('/api/auth/github/callback?code=good-code').redirects(0);
+      const response = await supertest(app)
+        .get('/api/auth/github/callback?code=good-code')
+        .redirects(0);
 
       expect(response.status).toBe(302);
       expect(response.header.location).toBe('http://localhost:4530/auth/callback/fake_jwt_token');
@@ -113,7 +121,9 @@ describe('openAuthorization Controller', () => {
     it('should redirect without token if token exchange fails', async () => {
       mockedAxios.post.mockRejectedValue(new Error('Token exchange failed'));
 
-      const response = await supertest(app).get('/api/auth/github/callback?code=bad-code').redirects(0);
+      const response = await supertest(app)
+        .get('/api/auth/github/callback?code=bad-code')
+        .redirects(0);
 
       expect(response.status).toBe(302);
       expect(response.header.location).toBe('http://localhost:4530/auth/callback/');
@@ -149,7 +159,9 @@ describe('openAuthorization Controller', () => {
         if (url === 'https://api.github.com/user') {
           return Promise.resolve({ data: { id: 123, login: 'user' } });
         }
-        return Promise.resolve({ data: [{ email: 'test@test.com', primary: true, verified: true }] });
+        return Promise.resolve({
+          data: [{ email: 'test@test.com', primary: true, verified: true }],
+        });
       });
       mockedFindOrCreate.mockResolvedValue({ error: 'User creation failed' });
 
@@ -165,7 +177,9 @@ describe('openAuthorization Controller', () => {
       const response = await supertest(app).get('/api/auth/google').redirects(0);
 
       expect(response.status).toBe(302);
-      expect(response.header.location).toMatch(/^https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth/);
+      expect(response.header.location).toMatch(
+        /^https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth/,
+      );
     });
 
     it('should return 500 if Google client ID is missing', async () => {
@@ -200,7 +214,9 @@ describe('openAuthorization Controller', () => {
       mockedFindOrCreate.mockResolvedValue({ _id: 'uuid-456', username: 'googleuser' });
       mockedGenerateToken.mockReturnValue('fake_google_jwt');
 
-      const response = await supertest(app).get('/api/auth/google/callback?code=google-code').redirects(0);
+      const response = await supertest(app)
+        .get('/api/auth/google/callback?code=google-code')
+        .redirects(0);
 
       expect(response.status).toBe(302);
       expect(response.header.location).toBe('http://localhost:4530/auth/callback/fake_google_jwt');

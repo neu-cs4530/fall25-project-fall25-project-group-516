@@ -218,7 +218,8 @@ describe('populateDocument', () => {
     const result = await populateDocument('invalidId', 'collection');
 
     expect(result).toEqual({
-      error: 'Error when fetching and populating a document: Failed to fetch and populate collection with ID: invalidId',
+      error:
+        'Error when fetching and populating a document: Failed to fetch and populate collection with ID: invalidId',
     });
   });
 });

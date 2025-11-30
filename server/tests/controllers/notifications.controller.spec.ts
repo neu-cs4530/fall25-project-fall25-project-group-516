@@ -40,7 +40,9 @@ describe('POST /sendNotification', () => {
 
     sendNotificationSpy.mockResolvedValue(mockNotification);
 
-    const response = await supertest(app).post('/api/notifications/sendNotification').send(requestBody);
+    const response = await supertest(app)
+      .post('/api/notifications/sendNotification')
+      .send(requestBody);
 
     expect(response.status).toBe(200);
     expect(sendNotificationSpy).toHaveBeenCalledWith(
@@ -69,7 +71,9 @@ describe('POST /sendNotification', () => {
 
     sendNotificationSpy.mockResolvedValue({ error: 'Failed to send notification' });
 
-    const response = await supertest(app).post('/api/notifications/sendNotification').send(requestBody);
+    const response = await supertest(app)
+      .post('/api/notifications/sendNotification')
+      .send(requestBody);
 
     expect(response.status).toBe(500);
     expect(response.text).toContain('Error when sending notification');
@@ -90,7 +94,9 @@ describe('POST /sendNotification', () => {
 
     sendNotificationSpy.mockRejectedValue(new Error('Database error'));
 
-    const response = await supertest(app).post('/api/notifications/sendNotification').send(requestBody);
+    const response = await supertest(app)
+      .post('/api/notifications/sendNotification')
+      .send(requestBody);
 
     expect(response.status).toBe(500);
     expect(response.text).toContain('Error when sending notification');

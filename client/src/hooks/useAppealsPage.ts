@@ -121,7 +121,7 @@ const useAppealsPage = (): UseAppealsPageReturn => {
     return () => {
       socket.off('communityUpdate', handleCommunityUpdate);
     };
-  }, [username]);
+  }, [username, communityID, fetchIsBannedOrMuted, socket]);
 
   return {
     username,

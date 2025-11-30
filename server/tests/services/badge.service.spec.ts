@@ -179,7 +179,10 @@ describe('badge.service', () => {
     });
 
     it('should calculate progress for answer_count type', async () => {
-      const badge: DatabaseBadge = { ...mockBadge, requirement: { type: 'answer_count' as const, threshold: 5 } };
+      const badge: DatabaseBadge = {
+        ...mockBadge,
+        requirement: { type: 'answer_count' as const, threshold: 5 },
+      };
       (UserModel.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
       (AnswerModel.countDocuments as jest.Mock).mockResolvedValueOnce(7);
 
@@ -190,7 +193,10 @@ describe('badge.service', () => {
     });
 
     it('should calculate progress for comment_count type', async () => {
-      const badge: DatabaseBadge = { ...mockBadge, requirement: { type: 'comment_count' as const, threshold: 10 } };
+      const badge: DatabaseBadge = {
+        ...mockBadge,
+        requirement: { type: 'comment_count' as const, threshold: 10 },
+      };
       (UserModel.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
       (CommentModel.countDocuments as jest.Mock).mockResolvedValueOnce(12);
 
@@ -201,7 +207,10 @@ describe('badge.service', () => {
     });
 
     it('should calculate progress for login_streak type', async () => {
-      const badge: DatabaseBadge = { ...mockBadge, requirement: { type: 'login_streak' as const, threshold: 3 } };
+      const badge: DatabaseBadge = {
+        ...mockBadge,
+        requirement: { type: 'login_streak' as const, threshold: 3 },
+      };
       (UserModel.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
 
       const result = await calculateBadgeProgress('testuser', badge);
@@ -210,8 +219,14 @@ describe('badge.service', () => {
     });
 
     it('should return 0 for login_streak if maxLoginStreak is undefined', async () => {
-      const badge: DatabaseBadge = { ...mockBadge, requirement: { type: 'login_streak' as const, threshold: 3 } };
-      (UserModel.findOne as jest.Mock).mockResolvedValueOnce({ ...mockUser, maxLoginStreak: undefined });
+      const badge: DatabaseBadge = {
+        ...mockBadge,
+        requirement: { type: 'login_streak' as const, threshold: 3 },
+      };
+      (UserModel.findOne as jest.Mock).mockResolvedValueOnce({
+        ...mockUser,
+        maxLoginStreak: undefined,
+      });
 
       const result = await calculateBadgeProgress('testuser', badge);
 
@@ -219,7 +234,10 @@ describe('badge.service', () => {
     });
 
     it('should calculate progress for upvote_count type', async () => {
-      const badge: DatabaseBadge = { ...mockBadge, requirement: { type: 'upvote_count' as const, threshold: 10 } };
+      const badge: DatabaseBadge = {
+        ...mockBadge,
+        requirement: { type: 'upvote_count' as const, threshold: 10 },
+      };
       const questions = [
         { upVotes: ['user1', 'user2', 'user3'] },
         { upVotes: ['user4', 'user5'] },
@@ -235,7 +253,10 @@ describe('badge.service', () => {
     });
 
     it('should handle questions without upVotes array for upvote_count', async () => {
-      const badge: DatabaseBadge = { ...mockBadge, requirement: { type: 'upvote_count' as const, threshold: 10 } };
+      const badge: DatabaseBadge = {
+        ...mockBadge,
+        requirement: { type: 'upvote_count' as const, threshold: 10 },
+      };
       const questions = [{ upVotes: null }, { upVotes: undefined }, {}];
       (UserModel.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
       (QuestionModel.find as jest.Mock).mockResolvedValueOnce(questions);
@@ -272,7 +293,10 @@ describe('badge.service', () => {
     });
 
     it('should calculate progress for first_answer type - has answers', async () => {
-      const badge: DatabaseBadge = { ...mockBadge, requirement: { type: 'first_answer' as const, threshold: 1 } };
+      const badge: DatabaseBadge = {
+        ...mockBadge,
+        requirement: { type: 'first_answer' as const, threshold: 1 },
+      };
       (UserModel.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
       (AnswerModel.countDocuments as jest.Mock).mockResolvedValueOnce(2);
 
@@ -282,7 +306,10 @@ describe('badge.service', () => {
     });
 
     it('should calculate progress for first_answer type - no answers', async () => {
-      const badge: DatabaseBadge = { ...mockBadge, requirement: { type: 'first_answer' as const, threshold: 1 } };
+      const badge: DatabaseBadge = {
+        ...mockBadge,
+        requirement: { type: 'first_answer' as const, threshold: 1 },
+      };
       (UserModel.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
       (AnswerModel.countDocuments as jest.Mock).mockResolvedValueOnce(0);
 
@@ -292,7 +319,10 @@ describe('badge.service', () => {
     });
 
     it('should return 0 for unknown requirement type', async () => {
-      const badge: DatabaseBadge = { ...mockBadge, requirement: { type: 'unknown_type' as any, threshold: 1 } };
+      const badge: DatabaseBadge = {
+        ...mockBadge,
+        requirement: { type: 'unknown_type' as any, threshold: 1 },
+      };
       (UserModel.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
 
       const result = await calculateBadgeProgress('testuser', badge);
@@ -498,7 +528,6 @@ describe('badge.service', () => {
 
     it('should filter out invalid badge IDs', async () => {
       const badge1Id = new mongoose.Types.ObjectId();
-      const badge2Id = new mongoose.Types.ObjectId();
       const invalidBadgeId = new mongoose.Types.ObjectId();
       const userWithBadges = {
         ...mockUser,

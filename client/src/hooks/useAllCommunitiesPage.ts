@@ -66,7 +66,7 @@ const useAllCommunitiesPage = () => {
     return () => {
       socket.off('communityUpdate', handleCommunityUpdate);
     };
-  }, [socket]);
+  }, [socket, user.username]);
 
   return {
     communities,

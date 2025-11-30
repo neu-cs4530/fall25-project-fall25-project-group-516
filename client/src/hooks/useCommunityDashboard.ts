@@ -156,7 +156,7 @@ const useCommunityDashboard = () => {
     return () => {
       socket.off('communityUpdate', handleCommunityUpdate);
     };
-  }, [communityID, socket, user.username]);
+  }, [communityID, socket, user.username, fetchAppeals, refreshDashboard]);
 
   return {
     community,
