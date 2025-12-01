@@ -17,7 +17,6 @@ const TagPage = () => {
 
   return (
     <Container maxW='1000px' padding='var(--spacing-lg)'>
-      {/* Header Section */}
       <Flex justify='space-between' align='center' mb='var(--spacing-lg)'>
         <VStack align='start' gap={0}>
           <Heading size='lg' color='var(--pancake-brown-dark)' fontWeight='700'>
@@ -33,20 +32,14 @@ const TagPage = () => {
 
       <Separator borderColor='var(--pancake-border)' mb='var(--spacing-lg)' opacity={0.6} />
 
-      {/* Responsive Grid Layout */}
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3, xl: 4 }} gap='var(--spacing-md)'>
-        {tlist.map((t, index) => (
-          <Box
-            key={t.name}
-            className='question-animate-item' /* Reusing your existing animation class! */
-            style={{ animationDelay: `${index * 0.05}s` }} /* Stagger effect */
-          >
+        {tlist.map(t => (
+          <Box key={t.name} className='question-animate-item' style={{ animationDelay: `0.5s` }}>
             <TagView t={t} clickTag={clickTag} />
           </Box>
         ))}
       </SimpleGrid>
 
-      {/* Empty State (Just in case) */}
       {tlist.length === 0 && (
         <Box textAlign='center' py={12} color='var(--pancake-text-medium)'>
           No tags available yet. Be the first to start a new topic!

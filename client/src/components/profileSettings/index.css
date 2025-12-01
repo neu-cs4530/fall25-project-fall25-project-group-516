@@ -13,7 +13,7 @@
   --color-text-secondary: var(--pancake-text-medium);
   --radius: 6px;
 
-  background: var(--color-bg);
+  background: inherit;
   padding: 2rem;
   display: flex;
   justify-content: center;

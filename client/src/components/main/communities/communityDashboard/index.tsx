@@ -186,6 +186,12 @@ const CommunityDashboard = () => {
     <div className='dashboard-container'>
       {/* Sidebar */}
       <aside className='dashboard-sidebar'>
+        <button
+          className='nav-item return-btn'
+          onClick={() => navigate(`/communities/${community._id}`)}>
+          <FiArrowLeft className='nav-icon' />
+          <span>Back to Community</span>
+        </button>
         <div className='dashboard-sidebar-header'>
           <h3 className='community-name'>{community.name}</h3>
           <span className='dashboard-badge'>MOD VIEW</span>
@@ -227,13 +233,6 @@ const CommunityDashboard = () => {
               <FiRadio className='nav-icon' />
               <span>Announcements</span>
             </div>
-          </button>
-
-          <button
-            className='nav-item return-btn'
-            onClick={() => navigate(`/communities/${community._id}`)}>
-            <FiArrowLeft className='nav-icon' />
-            <span>Back to Community</span>
           </button>
         </nav>
       </aside>

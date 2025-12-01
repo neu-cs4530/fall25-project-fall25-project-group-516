@@ -15,10 +15,10 @@ const UsersListHeader = ({ userCount, setUserFilter }: UserHeaderProps) => {
     <Flex justify='space-between' align='center' mb='var(--spacing-lg)' wrap='wrap' gap={4}>
       <VStack align='start' gap={0}>
         <Heading size='lg' color='var(--pancake-brown-dark)' fontWeight='700'>
-          Community
+          Users
         </Heading>
         <Text color='var(--pancake-text-medium)' fontSize='0.95rem'>
-          {userCount} {userCount === 1 ? 'member' : 'members'} found
+          {userCount} {userCount === 1 ? 'user' : 'users'} found
         </Text>
       </VStack>
 

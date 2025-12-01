@@ -11,7 +11,6 @@ const UserCardView = ({ user, handleUserCardViewClickHandler }: UserProps) => {
     <Box
       onClick={() => handleUserCardViewClickHandler(user)}
       bg='var(--pancake-white)'
-      border='1px solid var(--pancake-border)'
       borderRadius='2xl'
       padding='var(--spacing-md)'
       cursor='pointer'
@@ -20,7 +19,6 @@ const UserCardView = ({ user, handleUserCardViewClickHandler }: UserProps) => {
       _hover={{
         borderColor: 'var(--pancake-brown-light)',
         boxShadow: 'var(--shadow-md)',
-        transform: 'scale(1.02)',
         bg: 'var(--pancake-cream-light)',
       }}>
       <HStack gap={4}>

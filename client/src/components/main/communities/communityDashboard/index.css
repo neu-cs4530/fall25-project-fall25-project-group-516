@@ -29,20 +29,21 @@
   --shadow-lg: 0 4px 12px var(--pancake-shadow);
 }
 
-
-
 /* Dashboard Container */
 .dashboard-container {
   display: flex;
   min-height: 100vh;
-  background-color: var(--pancake-bg-light);
-  font-family: system-ui, -apple-system, sans-serif;
+  background-color: inherit;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 /* Sidebar */
 .dashboard-sidebar {
   width: 260px;
-  background-color: var(--pancake-white);
+  background-color: inherit;
   border-right: 1px solid var(--pancake-border);
   display: flex;
   flex-direction: column;
@@ -75,7 +76,7 @@
 }
 
 .dashboard-nav {
- padding: var(--spacing-md);
+  padding: var(--spacing-md);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
@@ -119,11 +120,14 @@
 }
 
 .return-btn {
-  margin-top: auto;
-  border-top: 1px solid var(--pancake-border);
+  margin-top: 1rem;
+  border-bottom: 1px solid var(--pancake-border);
   border-radius: 0;
   color: var(--pancake-text-medium);
   font-size: 0.9rem;
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
 }
 
 .notification-pill {
