@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useEffect } from 'react';
+import { useState, ChangeEvent, useEffect, useCallback } from 'react';
 import useUserContext from './useUserContext';
 import { getCommunityById, sendAppeal } from '../services/communityService';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -85,17 +85,20 @@ const useAppealsPage = (): UseAppealsPageReturn => {
     navigate('/communities');
   };
 
-  const fetchIsBannedOrMuted = async (communityId: string) => {
-    try {
-      const community = await getCommunityById(communityId);
-      setIsAccountSuspended(
-        (community.muted?.includes(username) || community.banned?.includes(username)) ?? false,
-      );
-      setCommunity(community);
-    } catch (error) {
-      setError((error as Error).message);
-    }
-  };
+  const fetchIsBannedOrMuted = useCallback(
+    async (communityId: string) => {
+      try {
+        const community = await getCommunityById(communityId);
+        setIsAccountSuspended(
+          (community.muted?.includes(username) || community.banned?.includes(username)) ?? false,
+        );
+        setCommunity(community);
+      } catch (error) {
+        setError((error as Error).message);
+      }
+    },
+    [username],
+  );
 
   useEffect(() => {
     if (communityID) {

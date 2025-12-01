@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, ChangeEvent } from 'react';
+import { useEffect, useState, useMemo, ChangeEvent, useCallback } from 'react';
 import useUserContext from './useUserContext';
 import useUsersListPage from './useUsersListPage';
 import { CommunityUpdatePayload, DatabaseAppeal, DatabaseCommunity } from '../types/types';
@@ -16,51 +16,41 @@ const useCommunityDashboard = () => {
   const { user, socket } = useUserContext();
   const { communityID } = useParams();
 
-  // User list for search functionality
   const { userList } = useUsersListPage();
 
-  // State
   const [community, setCommunity] = useState<DatabaseCommunity | null>(null);
   const [appeals, setAppeals] = useState<DatabaseAppeal[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [userSearchQuery, setUserSearchQuery] = useState<string>('');
 
-  /**
-   * Fetches the list of appeals for the community.
-   */
-  const fetchAppeals = async (communityId: string) => {
-    try {
-      const appealsData = await getCommunityAppeals(communityId, user.username);
-      setAppeals(appealsData);
-    } catch (err) {
-      setError((err as Error).message);
-    }
-  };
+  const fetchAppeals = useCallback(
+    async (communityId: string) => {
+      try {
+        const appealsData = await getCommunityAppeals(communityId, user.username);
+        setAppeals(appealsData);
+      } catch (err) {
+        setError((err as Error).message);
+      }
+    },
+    [user.username],
+  );
 
-  /**
-   * Fetches the community details.
-   */
-  const fetchCommunity = async (communityId: string) => {
+  const fetchCommunity = useCallback(async (communityId: string) => {
     try {
       const communityData = await getCommunityById(communityId);
       setCommunity(communityData);
     } catch (err) {
       setError((err as Error).message);
     }
-  };
+  }, []);
 
-  /**
-   * Refreshes all dashboard data.
-   */
-  const refreshDashboard = () => {
+  const refreshDashboard = useCallback(() => {
     if (communityID) {
       fetchCommunity(communityID);
       fetchAppeals(communityID);
     }
-  };
-
-  // --- Search Logic ---
+  }, [communityID, fetchCommunity, fetchAppeals]);
 
   const handleQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUserSearchQuery(e.target.value);
@@ -74,8 +64,6 @@ const useCommunityDashboard = () => {
       u => u.username !== community.admin && u.username.toLowerCase().includes(query),
     );
   }, [userSearchQuery, userList, community]);
-
-  // --- Moderator Actions ---
 
   const handleToggleBan = async (usernameToBan: string) => {
     if (!communityID || !user.username) return;
@@ -129,9 +117,13 @@ const useCommunityDashboard = () => {
     }
   };
 
-  // --- Effects ---
-
   useEffect(() => {
+    const refreshDashboard = () => {
+      if (communityID) {
+        fetchCommunity(communityID);
+        fetchAppeals(communityID);
+      }
+    };
     if (communityID) {
       refreshDashboard();
     }
@@ -156,7 +148,7 @@ const useCommunityDashboard = () => {
     return () => {
       socket.off('communityUpdate', handleCommunityUpdate);
     };
-  }, [communityID, socket, user.username, fetchAppeals, refreshDashboard]);
+  }, [communityID, socket, fetchAppeals, refreshDashboard]);
 
   return {
     community,

@@ -1,74 +1,128 @@
-import './index.css';
-import OrderButton from './orderButton';
 import { OrderType } from '../../../../types/types';
 import { orderTypeDisplayName } from '../../../../types/constants';
 import AskQuestionButton from '../../askQuestionButton';
+import { Button, createListCollection, Select, Flex, HStack, Portal } from '@chakra-ui/react';
 
-/**
- * Interface representing the props for the QuestionHeader component.
- *
- * titleText - The title text displayed at the top of the header.
- * qcnt - The number of questions to be displayed in the header.
- * setQuestionOrder - A function that sets the order of questions based on the selected message.
- * collectionEditMode - Boolean indicating if collection edit mode is active.
- * setCollectionEditMode - Function to toggle collection edit mode.
- */
 interface QuestionHeaderProps {
-  titleText: string;
-  qcnt: number;
   setQuestionOrder: (order: OrderType) => void;
   collectionEditMode: boolean;
   setCollectionEditMode: (mode: boolean) => void;
 }
 
-/**
- * QuestionHeader component displays the header section for a list of questions.
- * It includes the title, a button to ask a new question, the number of the quesions,
- * and buttons to set the order of questions.
- *
- * @param titleText - The title text to display in the header.
- * @param qcnt - The number of questions displayed in the header.
- * @param setQuestionOrder - Function to set the order of questions based on input message.
- * @param collectionEditMode - Boolean indicating if collection edit mode is active.
- * @param setCollectionEditMode - Function to toggle collection edit mode.
- */
+const ORDER_OPTIONS = Object.entries(orderTypeDisplayName).map(([value, label]) => ({
+  value: value,
+  label: label,
+}));
+
 const QuestionHeader = ({
-  titleText,
-  qcnt,
   setQuestionOrder,
   collectionEditMode,
   setCollectionEditMode,
 }: QuestionHeaderProps) => (
-  <div>
-    <div className='space_between right_padding flex_center'>
-      <div className='title'>{titleText}</div>
-      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-        <button
-          className={`collection-edit-toggle ${collectionEditMode ? 'active' : ''}`}
-          onClick={() => setCollectionEditMode(!collectionEditMode)}
-          title={
-            collectionEditMode
-              ? 'Exit collection edit mode'
-              : 'Enter collection edit mode - click questions to add to collections'
-          }>
-          {collectionEditMode ? '✓ Collection Edit Mode' : 'Edit My Collections'}
-        </button>
-        <AskQuestionButton />
-      </div>
-    </div>
-    <div className='space_between right_padding flex_center'>
-      <div id='question_count'>{qcnt} Questions</div>
-      <div className='btns'>
-        {Object.keys(orderTypeDisplayName).map(order => (
-          <OrderButton
-            key={order}
-            orderType={order as OrderType}
-            setQuestionOrder={setQuestionOrder}
-          />
-        ))}
-      </div>
-    </div>
-  </div>
+  <Flex
+    justify='space-between'
+    align='center'
+    paddingRight='var(--spacing-lg)'
+    gap='var(--spacing-md)'>
+    <Select.Root
+      collection={createListCollection({ items: ORDER_OPTIONS })}
+      defaultValue={['newest']}
+      width='fit-content'
+      positioning={{ sameWidth: true, placement: 'bottom-start' }}
+      onValueChange={e => setQuestionOrder(e.value[0] as OrderType)}>
+      <Select.Trigger
+        borderRadius='var(--radius-pill)'
+        bg='inherit'
+        width='fit-content'
+        padding='0 1.25rem'
+        height='44px'
+        fontSize='15px'
+        fontWeight='600'
+        color='var(--pancake-brown-dark)'
+        transition='all 0.2s ease'
+        cursor='pointer'
+        display='flex'
+        alignItems='center'
+        _hover={{
+          bg: 'var(--pancake-cream)',
+          borderColor: 'var(--pancake-brown-medium)',
+          boxShadow: 'var(--shadow-sm)',
+        }}>
+        <Select.ValueText placeholder='Sort by...' />
+
+        <Select.Indicator color='var(--pancake-brown-medium)' />
+      </Select.Trigger>
+
+      <Portal>
+        <Select.Positioner>
+          <Select.Content
+            bg='white'
+            borderRadius='xl'
+            boxShadow='xl'
+            border='1px solid var(--pancake-border)'
+            zIndex={100}
+            width='fit-content'
+            padding='4px'>
+            {ORDER_OPTIONS.map(option => (
+              <Select.Item
+                item={option}
+                key={option.value}
+                fontSize='15px'
+                borderRadius='lg'
+                padding='10px 16px'
+                cursor='pointer'
+                transition='all 0.1s ease'
+                display='flex'
+                alignItems='center'
+                justifyContent='space-between'
+                _hover={{
+                  bg: 'var(--pancake-bg-light)',
+                  color: 'var(--pancake-brown-dark)',
+                }}
+                _selected={{
+                  bg: 'var(--pancake-cream)',
+                  color: 'var(--pancake-brown-dark)',
+                  fontWeight: '600',
+                }}>
+                <Select.ItemText>{option.label}</Select.ItemText>
+
+                <Select.ItemIndicator color='var(--pancake-brown-dark)'>✓</Select.ItemIndicator>
+              </Select.Item>
+            ))}
+          </Select.Content>
+        </Select.Positioner>
+      </Portal>
+    </Select.Root>
+
+    <HStack gap={3}>
+      <Button
+        onClick={() => setCollectionEditMode(!collectionEditMode)}
+        borderRadius='var(--radius-pill)'
+        variant={collectionEditMode ? 'solid' : 'outline'}
+        bg={collectionEditMode ? 'var(--pancake-brown-medium)' : 'inherit'}
+        color={collectionEditMode ? 'white' : 'var(--pancake-brown-medium)'}
+        borderColor={collectionEditMode ? 'var(--pancake-brown-dark)' : 'var(--pancake-border)'}
+        borderWidth='1.5px'
+        fontWeight='600'
+        fontSize='1rem'
+        height='44px'
+        px={6}
+        transition='all 0.2s ease'
+        _hover={{
+          bg: collectionEditMode ? 'var(--pancake-brown-dark)' : 'var(--pancake-cream)',
+          borderColor: 'var(--pancake-brown-medium)',
+          transform: 'none',
+          boxShadow: 'var(--shadow-sm)',
+        }}
+        _active={{
+          transform: 'scale(0.98)',
+        }}>
+        {collectionEditMode ? '✓ Collection Edit Mode' : 'Edit My Collections'}
+      </Button>
+
+      <AskQuestionButton />
+    </HStack>
+  </Flex>
 );
 
 export default QuestionHeader;

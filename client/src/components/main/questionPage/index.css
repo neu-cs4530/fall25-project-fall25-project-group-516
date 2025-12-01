@@ -12,38 +12,22 @@
   --pancake-border: #e8d4c0;
   --pancake-shadow: rgba(107, 68, 35, 0.12);
 
-  /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
 
-  /* Radius */
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
   --radius-pill: 999px;
 
-  /* Shadows */
   --shadow-sm: 0 1px 3px var(--pancake-shadow);
   --shadow-md: 0 4px 12px var(--pancake-shadow);
   --shadow-lg: 0 8px 24px rgba(107, 68, 35, 0.15);
 }
 
-.question-page-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: var(--spacing-lg);
-  min-height: 100vh;
-}
-
-.question_list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-md);
-}
 
 .btn-primary {
   background-color: var(--pancake-brown-dark);
@@ -54,7 +38,7 @@
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: all 0.2s ease;
   box-shadow: var(--shadow-sm);
   display: inline-flex;
   align-items: center;
@@ -65,10 +49,58 @@
 .btn-primary:hover {
   background-color: var(--pancake-brown-medium);
   border-color: var(--pancake-brown-medium);
-  transform: translateY(-2px);
+  transform: scale(1.02); 
   box-shadow: var(--shadow-md);
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  transform: scale(0.98);
+}
+
+@keyframes smoothLoadIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.question-animate-item {
+  animation: smoothLoadIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0; 
+}
+
+
+/* 🥞 The "Syrup" Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--pancake-border); 
+  border: 3px solid transparent;
+  border-radius: var(--radius-pill);
+  background-clip: content-box;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--pancake-brown-light);
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--pancake-border) transparent;
 }

@@ -4,13 +4,6 @@ import useUserContext from './useUserContext';
 import { OrderType, PopulatedDatabaseQuestion } from '../types/types';
 import { getQuestionsByFilter } from '../services/questionService';
 
-/**
- * Custom hook for managing the question page state and filtering.
- *
- * @returns titleText - The current title of the question page
- * @returns qlist - The list of questions to display
- * @returns setQuestionOrder - Function to set the sorting order of questions (e.g., newest, oldest).
- */
 const useQuestionPage = () => {
   const { user } = useUserContext();
 
@@ -19,6 +12,11 @@ const useQuestionPage = () => {
   const [search, setSearch] = useState<string>('');
   const [questionOrder, setQuestionOrder] = useState<OrderType>('newest');
   const [qlist, setQlist] = useState<PopulatedDatabaseQuestion[]>([]);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
+
+  const [listVersion, setListVersion] = useState<number>(0);
 
   useEffect(() => {
     let pageTitle = 'All Questions';
@@ -40,26 +38,42 @@ const useQuestionPage = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    /**
-     * Function to fetch questions based on the filter and update the question list.
-     */
+    let ignore = false;
+
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const res = await getQuestionsByFilter(questionOrder, search);
-        setQlist(res || []);
+
+        if (!ignore) {
+          setQlist(res || []);
+          setListVersion(v => v + 1);
+        }
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
+      } finally {
+        if (!ignore) {
+          setIsLoading(false);
+          setIsFirstLoad(false);
+        }
       }
     };
 
     fetchData();
+
+    return () => {
+      ignore = true;
+    };
   }, [questionOrder, search, user?.blockedUsers]);
 
   return {
     titleText,
     qlist,
     setQuestionOrder,
+    isLoading,
+    isFirstLoad,
+    listVersion,
   };
 };
 
