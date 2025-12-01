@@ -12,7 +12,7 @@ describe("Cypress Tests to verify deleting a collections", () => {
 
   it("9.1 | Delete an exisitng collections in the My Collections Page", () => {
     
-    loginUser('user123');
+    loginUser('anonchef123');
 
     goToMyCollections();
     

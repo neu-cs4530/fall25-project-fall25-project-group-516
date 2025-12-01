@@ -10,12 +10,12 @@ describe("CommunityPage", () => {
   });
 
   it("8.1 | Display community page", () => {
-    loginUser("user123");
+    loginUser("anonchef123");
     goToCommunities();
 
     const communityName = "Community Page Display";
     const communityDesc = "Description for display test";
     createCommunity(communityName, communityDesc, false);
-    verifyCommunityDetailsDisplayed(communityName, communityDesc, ["user123"]);
+    verifyCommunityDetailsDisplayed(communityName, communityDesc, ["anonchef123"]);
   });
 });

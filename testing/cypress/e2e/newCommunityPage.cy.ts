@@ -10,7 +10,7 @@ describe("NewCommunityPage", () => {
   });
 
   it("15.1 | Create a new community with the form", () => {
-    loginUser("user123");
+    loginUser("anonchef123");
     goToCommunities();
 
     const communityName = "Page Create Community";
@@ -24,6 +24,6 @@ describe("NewCommunityPage", () => {
 
     // We should land on the community page for the new id
     cy.url().should('include', '/communities/');
-    verifyCommunityDetailsDisplayed(communityName, communityDesc, ["user123"]);
+    verifyCommunityDetailsDisplayed(communityName, communityDesc, ["anonchef123"]);
   });
 });

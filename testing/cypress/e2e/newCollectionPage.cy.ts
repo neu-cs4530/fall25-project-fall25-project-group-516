@@ -22,7 +22,7 @@ describe('Cypress Tests for creating collections', () => {
     const collectionName = 'Reactss Favorites';
 
     // Log in
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // Navigate to My Collections
     goToMyCollections();
@@ -37,14 +37,14 @@ describe('Cypress Tests for creating collections', () => {
     // Verify the resulting collection page
     verifyCollectionExists(collectionName);
     // cy.get('.collection-meta').should('contain', 'Public');
-    verifyCollectionPageDetails(collectionName, "user123");
+    verifyCollectionPageDetails(collectionName, "anonchef123");
   });
 
   it('13.2 | Allows user to create a new Private collection', () => {
     const collectionName = 'Private Collection';
 
     // Log in
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // Navigate to My Collections
     goToMyCollections();
@@ -57,6 +57,6 @@ describe('Cypress Tests for creating collections', () => {
     verifyCollectionExists(collectionName);
     // cy.get('.collection-meta').should('contain', 'Private');
 
-    verifyCollectionPageDetails(collectionName, "user123");
+    verifyCollectionPageDetails(collectionName, "anonchef123");
   });
 });

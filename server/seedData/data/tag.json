@@ -1,42 +1,50 @@
 {
-  "tag1": {
-    "name": "javascript",
-    "description": "A high-level, interpreted programming language used for web development."
-  },
-  "tag2": {
-    "name": "python",
-    "description": "A versatile programming language known for its readability and wide range of applications."
-  },
-  "tag3": {
-    "name": "react",
-    "description": "A JavaScript library for building user interfaces, particularly single-page applications."
-  },
-  "tag4": {
-    "name": "node.js",
-    "description": "A JavaScript runtime built on Chrome's V8 JavaScript engine, used for server-side scripting."
-  },
-  "tag5": {
-    "name": "html",
-    "description": "The standard markup language for creating web pages and web applications."
-  },
-  "tag6": {
-    "name": "css",
-    "description": "A stylesheet language used for describing the presentation of a document written in HTML."
-  },
-  "tag7": {
-    "name": "mongodb",
-    "description": "A NoSQL database known for its scalability and flexibility in handling large volumes of data."
-  },
-  "tag8": {
-    "name": "express",
-    "description": "A minimal and flexible Node.js web application framework that provides a robust set of features."
-  },
-  "tag9": {
-    "name": "typescript",
-    "description": "A superset of JavaScript that adds static typing and modern features to the language."
-  },
   "tag10": {
-    "name": "git",
-    "description": "A distributed version control system to track changes in source code during software development."
+    "name": "Korean",
+    "description": "Cuisine originating from the Korean Penninsula."
+  },
+  "tag11": {
+    "name": "meat",
+    "description": "Animal tissue eaten as food."
+  },
+  "tag12": {
+    "name": "soup",
+    "description": "A liquid savory dish."
+  },
+  "tag13": {
+    "name": "grilling",
+    "description": "A cooking technique involving heat applied to the surface of a food."
+  },
+  "tag14": {
+    "name": "presentation",
+    "description": "The way a finished dish is plated."
+  },
+  "tag15": {
+    "name": "baking",
+    "description": "Method of preparing food involving dry heat, usually in an oven."
+  },
+  "tag16": {
+    "name": "pastry",
+    "description": "Sweet and savory baked goods made from pastry dough."
+  },
+  "tag17": {
+    "name": "technique",
+    "description": "Covering the aspects of cooking that require some kind of skill."
+  },
+  "tag18": {
+    "name": "fondant",
+    "description": "A mixture of sugar and water used as a confection, filling, or icing."
+  },
+  "tag19": {
+    "name": "breakfast",
+    "description": "The first meal of the day, typically eaten in the morning."
+  },
+  "tag20": {
+    "name": "professional",
+    "description": "Pertaining to a profesional cooking environment such as a restaurant."
+  },
+  "tag21": {
+    "name": "homecooking",
+    "description": "Food prepared/to be consumed at home."
   }
 }

@@ -11,7 +11,7 @@ describe("CommunityMembershipButton", () => {
 
   it("7.1 | Join or leave communities upon clicking", () => {
     // Login with seed data user
-    loginUser("user123");
+    loginUser("anonchef123");
 
     // Go to communities and create a new community
     goToCommunities();
@@ -23,7 +23,7 @@ describe("CommunityMembershipButton", () => {
     cy.get(".logout-button").click();
 
     // Login as another user to join/leave
-    loginUser("user234", "strongP@ss234");
+    loginUser("anonchef234", "strongP@ss234");
     goToCommunities();
 
     // Open the created community card

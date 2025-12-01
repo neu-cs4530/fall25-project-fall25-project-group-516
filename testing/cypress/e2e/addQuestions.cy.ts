@@ -12,13 +12,13 @@ describe("Cypress Tests to verify asking new questions", () => {
 
 
   it("2.1 | Ask a Question creates and displays expected meta data", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     createQuestion("Test Question Q1", "Test Question Q1 Text T1", "javascript");
 
     cy.contains("PancakeOverflow");
     cy.contains("11 questions");
-    cy.contains("user123 asked 0 seconds ago");
+    cy.contains("anonchef123 asked 0 seconds ago");
     const answers = [
       "0 answers",
       "1 answers",
@@ -55,7 +55,7 @@ describe("Cypress Tests to verify asking new questions", () => {
   });
 
   it("2.2 | Ask a Question with empty title shows error", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
     
     cy.contains("Ask a Question").click();
     cy.get("#formTextInput").type("Test Question 1 Text Q1");

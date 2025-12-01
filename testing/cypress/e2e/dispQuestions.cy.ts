@@ -21,7 +21,7 @@ describe("Cypress Tests to verify order of questions displayed", () => {
   });
 
   it('10.1 | Adds three questions and one answer, then click "Questions", then click unanswered button, verifies the sequence', () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     createQuestion("Test Question A", "Test Question A Text", "javascript");
 
@@ -57,7 +57,7 @@ describe("Cypress Tests to verify order of questions displayed", () => {
       Q1_TITLE
     ];
 
-    loginUser('user123');
+    loginUser('anonchef123');
     
     cy.get(".postTitle").each(($el, index, $list) => {
       cy.wrap($el).should("contain", qTitles[index]);
@@ -78,7 +78,7 @@ describe("Cypress Tests to verify order of questions displayed", () => {
       Q9_TITLE
     ];
 
-    loginUser('user123');
+    loginUser('anonchef123');
 
     cy.contains("Most Viewed").click();
     cy.get(".postTitle").each(($el, index, $list) => {

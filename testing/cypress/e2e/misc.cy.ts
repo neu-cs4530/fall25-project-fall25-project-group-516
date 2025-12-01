@@ -21,7 +21,7 @@ describe("Cypress Tests for verifying active order and initial test data", () =>
   });
 
   it("12.1 | Adds a question, clicks active button, verifies the sequence", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // Create a new test question
     createQuestion('Test Question A', 'Test Question A Text', 'javascript');
@@ -61,7 +61,7 @@ describe("Cypress Tests for verifying active order and initial test data", () =>
   });
 
   it("12.2 | Checks if seeded answers exist in Q3 (Webpack) answers page", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // Navigate to Q3 (Webpack configuration question)
     cy.contains(Q3_DESC).click();
@@ -76,7 +76,7 @@ describe("Cypress Tests for verifying active order and initial test data", () =>
   });
 
   it("12.3 | Checks if seeded answer exists in Q4 (PostgreSQL) answers page", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
     
     // Navigate to Q4 (PostgreSQL optimization question)
     cy.contains(Q4_DESC).click();
@@ -91,7 +91,7 @@ describe("Cypress Tests for verifying active order and initial test data", () =>
   });
 
   it("12.4 | Verifies that questions with no answers appear correctly", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
     createQuestion('Test Question A', 'Test Question A Text', 'javascript');
     
     // Check unanswered questions
@@ -106,7 +106,7 @@ describe("Cypress Tests for verifying active order and initial test data", () =>
   });
 
   it("12.5 | Verifies question view counts are tracked correctly", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
     
     // Click on a question to view it
     cy.contains(Q10_DESC).click();

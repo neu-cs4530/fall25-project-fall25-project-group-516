@@ -12,7 +12,7 @@ describe("Cypress Tests to verify viewing all collections", () => {
 
   it("3.1 | Displays the exisitng collections in the My Collections Page", () => {
     
-    loginUser('user123');
+    loginUser('anonchef123');
 
     goToMyCollections();
     

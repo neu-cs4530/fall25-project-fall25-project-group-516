@@ -19,7 +19,7 @@ describe("Cypress Tests to verify display of all communities", () => {
   it("4.1 | Displays all communities on the community page", () => {
     
     // login with seed data user
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // go to all communities page
     goToCommunities();
@@ -44,7 +44,7 @@ describe("Cypress Tests to verify display of all communities", () => {
   });
 
   it("4.2 | Should search for a community", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
     goToCommunities();
     cy.get('.community-search').type(C1_NAME);
     cy.get('.community-card').should("contain", C1_NAME);

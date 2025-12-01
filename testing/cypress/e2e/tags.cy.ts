@@ -17,7 +17,7 @@ describe("Cypress Tests to verify tagging functionality", () => {
   });
 
   it("18.1 | Adds a question with multiple tags and verifies tags are created", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // Create a question with multiple new tags
     createQuestion('Test Question A', 'Test Question A Text', 'test1 test2 test3');
@@ -36,7 +36,7 @@ describe("Cypress Tests to verify tagging functionality", () => {
   });
 
   it("18.2 | Checks if all seeded tags exist on the Tags page", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // Navigate to Tags page
     cy.contains('Tags').click();
@@ -76,7 +76,7 @@ describe("Cypress Tests to verify tagging functionality", () => {
   });
 
   it("18.3 | Verifies tag counts and question counts display correctly", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // Navigate to Tags page
     cy.contains('Tags').click();
@@ -88,7 +88,7 @@ describe("Cypress Tests to verify tagging functionality", () => {
   });
 
   it("18.4 | Navigates to questions filtered by 'react' tag", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // Go to Tags page and click on 'react' tag
     cy.contains('Tags').click();
@@ -105,7 +105,7 @@ describe("Cypress Tests to verify tagging functionality", () => {
   });
 
   it("18.5 | Navigates to questions filtered by 'python' tag", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // Go to Tags page and click on 'python' tag
     cy.contains('Tags').click();
@@ -118,7 +118,7 @@ describe("Cypress Tests to verify tagging functionality", () => {
   });
 
   it("18.6 | Clicks on a tag from Tags page and verifies filtered questions all have that tag", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
     
     // Navigate to Tags page and click on 'javascript' tag
     cy.contains('Tags').click();
@@ -151,7 +151,7 @@ describe("Cypress Tests to verify tagging functionality", () => {
   });
 
   it("18.7 | Clicks on a tag button from question list and verifies tag filtering", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     waitForQuestionsToLoad();
 
@@ -177,7 +177,7 @@ describe("Cypress Tests to verify tagging functionality", () => {
   });
 
   it("18.8 | Verifies tag navigation maintains proper question filtering", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // Test multiple tag navigations to ensure filtering works correctly
 

@@ -18,7 +18,7 @@ describe("Cypress Tests to verify saving to collection", () => {
   it("16.1 | Allows users to save questions to their collections with a save button, and shows saved status", () => {
     
     // login with a seed data user
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // go to questions page
     goToQuestions();
@@ -44,7 +44,7 @@ describe("Cypress Tests to verify saving to collection", () => {
 
   it("16.2 | Allows users to unsave questions to their collections with a save button, and shows unsaved status", () => {
     
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // go to questions page
     goToQuestions();

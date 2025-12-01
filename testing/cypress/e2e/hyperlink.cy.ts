@@ -21,7 +21,7 @@ describe("Cypress Tests to verify adding hyperlinks to text", () => {
   });
 
   it("11.1 | Adds a question with a hyperlink and verifies markdown rendering", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
     
     // Create a question with a valid markdown link
     createQuestion(
@@ -41,7 +41,7 @@ describe("Cypress Tests to verify adding hyperlinks to text", () => {
   });
 
   it("11.2 | Creates new answer with hyperlink and verifies it's displayed at the top", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
     
     // Add an answer with a hyperlink to an existing question
     goToAnswerQuestion(Q1_DESC);
@@ -51,7 +51,7 @@ describe("Cypress Tests to verify adding hyperlinks to text", () => {
     cy.url().should('include', '/question/');
 
     // Verify author and timestamp
-    cy.get('.answerAuthor').should('contain', 'user123');
+    cy.get('.answerAuthor').should('contain', 'anonchef123');
     cy.get('.answerAuthor').should('contain', '0 seconds ago');
 
     // Verify the existing seeded answer is still there
@@ -77,7 +77,7 @@ describe("Cypress Tests to verify adding hyperlinks to text", () => {
       '[Facebook](https:/facebook.com)',         // Missing slash
     ];
     
-    loginUser('user123');
+    loginUser('anonchef123');
     
     // Test each invalid URL
     invalidUrls.forEach((invalidUrl, index) => {
@@ -100,7 +100,7 @@ describe("Cypress Tests to verify adding hyperlinks to text", () => {
   });
 
   it("11.4 | Attempts to add an answer with invalid hyperlink and verifies validation", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
     
     // Try to add an answer with invalid hyperlink
     goToAnswerQuestion(Q1_DESC);
@@ -121,7 +121,7 @@ describe("Cypress Tests to verify adding hyperlinks to text", () => {
   });
 
   it("11.5 | Adds multiple questions with valid hyperlinks and verifies all links work", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     // List of questions with valid hyperlinks
     const questionsWithLinks = [
@@ -169,7 +169,7 @@ describe("Cypress Tests to verify adding hyperlinks to text", () => {
   });
 
   it("11.6 | Verifies hyperlinks in both questions and answers work correctly", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
     
     // Create a question with a hyperlink
     createQuestion(

@@ -10,12 +10,12 @@ describe("NewCommunityButton", () => {
   });
 
   it("14.1 | Create a new community", () => {
-    loginUser("user123");
+    loginUser("anonchef123");
     goToCommunities();
 
     const communityName = "Button Create Community";
     const communityDesc = "Created via NewCommunityButton";
     createCommunity(communityName, communityDesc, false);
-    verifyCommunityDetailsDisplayed(communityName, communityDesc, ["user123"]);
+    verifyCommunityDetailsDisplayed(communityName, communityDesc, ["anonchef123"]);
   });
 });

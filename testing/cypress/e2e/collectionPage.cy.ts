@@ -12,7 +12,7 @@ describe("Cypress Tests to verify viewing of a specific collection page", () => 
 
   it("5.1 | Displays the collection page after clicking on an existing collection in the my collections page", () => {
     
-    loginUser('user123');
+    loginUser('anonchef123');
 
     goToMyCollections();
     
@@ -23,7 +23,7 @@ describe("Cypress Tests to verify viewing of a specific collection page", () => 
     
     goToCollection("React Favorites");
 
-     verifyCollectionPageDetails("React Favorites", "user123");
+     verifyCollectionPageDetails("React Favorites", "anonchef123");
 
   });
 });

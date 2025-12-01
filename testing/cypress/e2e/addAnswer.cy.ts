@@ -17,20 +17,20 @@ describe("Cypress Tests to verify adding new answers", () => {
       A1_TXT,
     ];
     
-    loginUser('user123');
+    loginUser('anonchef123');
 
     goToAnswerQuestion(Q1_DESC);
 
     createAnswer(answers[0]);
 
     cy.get(".answerText").contains(answers[0])
-    cy.contains("user123");
+    cy.contains("anonchef123");
     cy.contains("0 seconds ago");
   });
 
 
   it("1.2 | Answer is mandatory when creating a new answer", () => {
-    loginUser('user123');
+    loginUser('anonchef123');
 
     goToAnswerQuestion(Q1_DESC);
 
