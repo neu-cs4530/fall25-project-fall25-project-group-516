@@ -1,39 +1,57 @@
-import './index.css';
 import { TagData } from '../../../../types/types';
 import useTagSelected from '../../../../hooks/useTagSelected';
+import { Box, Text, VStack, Badge, Flex } from '@chakra-ui/react';
 
-/**
- * Props for the Tag component.
- *
- * t - The tag object.
- * clickTag - Function to handle the tag click event.
- */
 interface TagProps {
   t: TagData;
   clickTag: (tagName: string) => void;
 }
 
-/**
- * Tag component that displays information about a specific tag.
- * The component displays the tag's name, description, and the number of associated questions.
- * It also triggers a click event to handle tag selection.
- *
- * @param t - The tag object .
- * @param clickTag - Function to handle tag clicks.
- */
 const TagView = ({ t, clickTag }: TagProps) => {
   const { tag } = useTagSelected(t);
 
   return (
-    <div
-      className='tagNode'
-      onClick={() => {
-        clickTag(t.name);
+    <Box
+      onClick={() => clickTag(t.name)}
+      bg='var(--pancake-white)'
+      borderRadius='2xl'
+      padding='var(--spacing-lg)'
+      cursor='pointer'
+      position='relative'
+      transition='all 0.2s ease'
+      height='100%'
+      display='flex'
+      flexDirection='column'
+      justifyContent='space-between'
+      _hover={{
+        borderColor: 'var(--pancake-brown-light)',
+        boxShadow: 'var(--shadow-md)',
+        bg: 'var(--pancake-cream-light)',
       }}>
-      <div className='tagName'>{tag.name}</div>
-      <div className='tagDescription'>{tag.description}</div>
-      <div>{t.qcnt} questions</div>
-    </div>
+      <VStack align='start' gap={3} mb={4}>
+        <Text color='var(--pancake-brown-dark)' fontWeight='700' fontSize='lg' lineHeight='1.2'>
+          #{tag.name}
+        </Text>
+
+        <Text color='var(--pancake-text-medium)' fontSize='0.9rem' lineHeight='1.5'>
+          {tag.description}
+        </Text>
+      </VStack>
+
+      <Flex justify='flex-start'>
+        <Badge
+          bg='var(--pancake-cream)'
+          color='var(--pancake-brown-medium)'
+          px={3}
+          py={1}
+          borderRadius='full'
+          fontSize='xs'
+          fontWeight='600'
+          textTransform='lowercase'>
+          {t.qcnt} {t.qcnt === 1 ? 'question' : 'questions'}
+        </Badge>
+      </Flex>
+    </Box>
   );
 };
 

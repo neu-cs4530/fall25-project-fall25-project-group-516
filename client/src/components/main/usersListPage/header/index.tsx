@@ -1,44 +1,48 @@
 import './index.css';
 import useUserSearch from '../../../../hooks/useUserSearch';
+import { Search } from 'lucide-react';
+import { Flex, Heading, Text, Input, VStack, InputGroup } from '@chakra-ui/react';
 
-/**
- * Interface representing the props for the UserHeader component.
- *
- * userCount - The number of users to be displayed in the header.
- * setUserFilter - A function that sets the search bar filter value.
- */
 interface UserHeaderProps {
   userCount: number;
   setUserFilter: (search: string) => void;
 }
 
-/**
- * UsersListHeader component displays the header section for a list of users.
- * It includes the title and search bar to filter the user.
- * Username search is case-sensitive.
- *
- * @param userCount - The number of users displayed in the header.
- * @param setUserFilter - Function that sets the search bar filter value.
- */
 const UsersListHeader = ({ userCount, setUserFilter }: UserHeaderProps) => {
   const { val, handleInputChange } = useUserSearch(setUserFilter);
 
   return (
-    <div>
-      <div className='space_between right_padding'>
-        <div className='bold_title'>Users List</div>
-        <input
-          id='user_search_bar'
-          placeholder='Search Usernames ...'
-          type='text'
+    <Flex justify='space-between' align='center' mb='var(--spacing-lg)' wrap='wrap' gap={4}>
+      <VStack align='start' gap={0}>
+        <Heading size='lg' color='var(--pancake-brown-dark)' fontWeight='700'>
+          Community
+        </Heading>
+        <Text color='var(--pancake-text-medium)' fontSize='0.95rem'>
+          {userCount} {userCount === 1 ? 'member' : 'members'} found
+        </Text>
+      </VStack>
+
+      <InputGroup
+        width='300px'
+        startElement={<Search size={18} color='var(--pancake-text-medium)' />}>
+        <Input
+          placeholder='Find a member...'
           value={val}
           onChange={handleInputChange}
+          bg='inherit'
+          borderRadius='var(--radius-pill)'
+          borderColor='var(--pancake-border)'
+          _focus={{
+            borderColor: 'var(--pancake-brown-medium)',
+            boxShadow: '0 0 0 3px rgba(107, 68, 35, 0.1)',
+            outline: 'none',
+          }}
+          _hover={{
+            borderColor: 'var(--pancake-brown-light)',
+          }}
         />
-      </div>
-      <div className='space_between right_padding'>
-        <div id='user_count'>{userCount} users</div>
-      </div>
-    </div>
+      </InputGroup>
+    </Flex>
   );
 };
 

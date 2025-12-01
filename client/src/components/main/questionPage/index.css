@@ -28,7 +28,6 @@
   --shadow-lg: 0 8px 24px rgba(107, 68, 35, 0.15);
 }
 
-
 .btn-primary {
   background-color: var(--pancake-brown-dark);
   color: white;
@@ -49,7 +48,7 @@
 .btn-primary:hover {
   background-color: var(--pancake-brown-medium);
   border-color: var(--pancake-brown-medium);
-  transform: scale(1.02); 
+  transform: scale(1.02);
   box-shadow: var(--shadow-md);
 }
 
@@ -68,14 +67,22 @@
   }
 }
 
-
 .question-animate-item {
   animation: smoothLoadIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  opacity: 0; 
+  opacity: 0;
 }
 
+@keyframes scrollbar-fade-in {
+  from {
+    background-color: transparent;
+    border-color: transparent;
+  }
+  to {
+    background-color: var(--pancake-border);
+    border-color: transparent;
+  }
+}
 
-/* 🥞 The "Syrup" Scrollbar */
 ::-webkit-scrollbar {
   width: 12px;
   height: 12px;
@@ -87,20 +94,21 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--pancake-border); 
+  /* Start transparent */
+  background-color: transparent;
   border: 3px solid transparent;
   border-radius: var(--radius-pill);
   background-clip: content-box;
-  transition: background-color 0.2s ease;
+
+  animation: scrollbar-fade-in 1s ease-in-out 0.5s forwards;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--pancake-brown-light);
-  border: 3px solid transparent;
-  background-clip: content-box;
 }
 
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--pancake-border) transparent;
+  scrollbar-gutter: stable;
 }

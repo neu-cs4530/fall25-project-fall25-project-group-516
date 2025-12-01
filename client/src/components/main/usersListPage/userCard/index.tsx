@@ -1,36 +1,50 @@
-import './index.css';
 import { PopulatedSafeDatabaseUser } from '../../../../types/types';
+import { Box, Text, HStack, VStack, Avatar } from '@chakra-ui/react';
 
-/**
- * Interface representing the props for the User component.
- *
- * user - The user object containing details about the user.
- * handleUserCardViewClickHandler - The function to handle the click event on the user card.
- */
 interface UserProps {
   user: PopulatedSafeDatabaseUser;
   handleUserCardViewClickHandler: (user: PopulatedSafeDatabaseUser) => void;
 }
 
-/**
- * User component renders the details of a user including its username and dateJoined.
- * Clicking on the component triggers the handleUserPage function,
- * and clicking on a tag triggers the clickTag function.
- *
- * @param user - The user object containing user details.
- */
-const UserCardView = (props: UserProps) => {
-  const { user, handleUserCardViewClickHandler } = props;
-
+const UserCardView = ({ user, handleUserCardViewClickHandler }: UserProps) => {
   return (
-    <div className='user right_padding' onClick={() => handleUserCardViewClickHandler(user)}>
-      <div className='user_mid'>
-        <div className='userUsername'>{user.username}</div>
-      </div>
-      <div className='userStats'>
-        <div>joined {new Date(user.dateJoined).toUTCString()}</div>
-      </div>
-    </div>
+    <Box
+      onClick={() => handleUserCardViewClickHandler(user)}
+      bg='var(--pancake-white)'
+      borderRadius='2xl'
+      padding='var(--spacing-md)'
+      cursor='pointer'
+      transition='all 0.2s ease'
+      height='100%'
+      _hover={{
+        boxShadow: 'var(--shadow-md)',
+        bg: 'var(--pancake-cream-light)',
+      }}>
+      <HStack gap={4}>
+        {/* 🥞 Initials Only Avatar */}
+        <Avatar.Root
+          size='md'
+          border='2px solid var(--pancake-cream)'
+          borderRadius='full'
+          overflow='hidden'
+          bg='var(--pancake-brown-light)'
+        >
+          <Avatar.Fallback color='white' fontWeight='bold' fontSize='sm'>
+            {/* Simple initials generation */}
+            {user.username.substring(0, 2).toUpperCase()}
+          </Avatar.Fallback>
+        </Avatar.Root>
+
+        <VStack align='start' gap={0}>
+          <Text fontWeight='700' color='var(--pancake-brown-dark)' fontSize='md' lineHeight='1.2'>
+            {user.username}
+          </Text>
+          <Text fontSize='xs' color='var(--pancake-text-medium)' fontWeight='500'>
+            Joined {new Date(user.dateJoined).toLocaleDateString()}
+          </Text>
+        </VStack>
+      </HStack>
+    </Box>
   );
 };
 

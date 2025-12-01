@@ -23,7 +23,6 @@ const QuestionSkeleton = () => (
     bg='var(--pancake-white)'
     borderRadius='2xl'
     boxShadow='var(--shadow-sm)'
-    border='1px solid var(--pancake-border)'
     width='100%'>
     <Flex justify='space-between' align='center' mb='var(--spacing-sm)'>
       <HStack gap={2}>
