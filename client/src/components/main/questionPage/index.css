@@ -110,5 +110,4 @@
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--pancake-border) transparent;
-  scrollbar-gutter: stable;
 }
