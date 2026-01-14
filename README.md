@@ -1,47 +1,86 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Uq-6GvbM)
-The team project for this class is designed to mirror the experiences of a software engineer: by virtue of your individual projects, you have been _onboarded_ to our codebase, made several individual contributions, and have formed a team to propose, develop and implement new features. The codebase that we’ll be developing on is a PancakeOverflow project. You will get an opportunity to work with the starter code which provides basic skeleton for the app and then additional features will be proposed and implemented by you! All implementation will take place in the TypeScript programming language, using React for the user interface.
+# Pancake Overflow
 
-## Getting Started
+A Q&A platform for developers who are particularly interested in cooking. Built with the MERN stack as part of Northeastern CS4530 Fundamentals of Software Engineering Fall 2025 course.
 
-Run `npm install` in the root directory to install all dependencies for the `client`, `server`, and `shared` folders.
+Designed and implemented by **Minh Nguyen**, **Cecily Stevens**, and **Edward Ibarra**.
 
-Run `cd client` and `npm install @fortawesome/react-fontawesome @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons`
+## Live Site
 
-Seed the database with `cd server` `npm run delete-db` `npm run populate-db` 
+[Pancake Overflow](https://pancake-overflow.onrender.com)
 
-> [!NOTE]
-> Refer to [IP1](https://neu-se.github.io/CS4530-Spring-2025/assignments/ip1) and [IP2](https://neu-se.github.io/CS4530-Spring-2025/assignments/ip2) for further instructions related to setting up MongoDB, setting environment variables, and running the client and server.
+## Prerequisites
 
-## Codebase Folder Structure
+- Node.js (v14 or higher)
+- MongoDB (v4.4 or higher)
+- npm package manager
 
-- `client`: Contains the frontend application code, responsible for the user interface and interacting with the backend. This directory includes all React components and related assets.
-- `server`: Contains the backend application code, handling the logic, APIs, and database interactions. It serves requests from the client and processes data accordingly.
-- `shared`: Contains all shared type definitions that are used by both the client and server. This helps maintain consistency and reduces duplication of code between the two folders. The type definitions are imported and shared within each folder's `types/types.ts` file.
+## Installation
 
-### Setup Instructions
+### 1. Clone and Install Dependencies
 
-1. Navigate to the `testing` directory:
-   ```sh
-   cd testing
-   ```
+```bash
+cd CS4530-Group-Project
 
-2. Install dependencies:
-   ```sh
-   npm install
-   ```
+# Install all dependencies for client, server, and shared folders
+npm install
 
-3. Refer to the atached .zip file for .env details and where to store them
+# Install FontAwesome icons for client
+cd client
+npm install @fortawesome/react-fontawesome @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons
+cd ..
+```
 
-4. Make sure that both the server and client are already running
+### 2. Database Setup
 
-5. Run Cypress tests:
-   ```sh
-   npx cypress open
-   ```
+```bash
+cd server
 
-6. In the Cypress UI that opens:
-   - Select *E2E Testing*
-   - Choose your browser (Chrome is preferred)
-   - Click on any of the test files to run it
-   - If any of the tests fail, you should be able to see the exact sequence of steps that led to the failure.
+# Delete existing database (if any)
+npm run delete-db
 
+# Populate database with seed data
+npm run populate-db
+```
+
+### 3. Environment Variables
+
+Create a `.env` file in the `server` folder:
+
+```
+GITHUB_CLIENT_SECRET=<your-github-client-secret>
+GITHUB_CLIENT_ID=<your-github-client-id>
+GOOGLE_CLIENT_ID=<your-google-client-id>
+GOOGLE_CLIENT_SECRET=<your-google-client-secret>
+SERVER_URL=http://localhost:8000
+MONGODB_URI=mongodb://127.0.0.1:27017
+CLIENT_URL=http://localhost:4530
+PORT=8000
+```
+
+Create a `.env` file in the `client` folder:
+
+```
+VITE_SERVER_URL=http://localhost:8000
+```
+
+> **Note:** You will need to create your own OAuth credentials for GitHub and Google to enable social login functionality.
+
+### 4. Start the Application
+
+Open two terminal windows:
+
+**Terminal 1 - Server:**
+
+```bash
+cd server
+npm run dev
+```
+
+**Terminal 2 - Client:**
+
+```bash
+cd client
+npm run dev
+```
+
+The app will be available at [http://localhost:4530](http://localhost:4530)
