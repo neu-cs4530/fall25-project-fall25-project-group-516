@@ -6,7 +6,7 @@ Designed and implemented by **Minh Nguyen**, **Cecily Stevens**, and **Edward Ib
 
 ## Live Site
 
-[Pancake Overflow](https://pancake-overflow.onrender.com)
+[Pancake Overflow](https://cs4530-f25-516.onrender.com)
 
 ## Prerequisites
 
